@@ -187,8 +187,9 @@ as phylip multiple alignment file in text format.
 ```{r}
 al <- alignment(seqEN, list(human=aln_hs, mouse=aln_mm),
                 method="ClustalOmega", order="input")
-saveAlignments(al)
-readLines("aln1.phylip.txt")
+tmpfolder <- tempdir()
+saveAlignments(al, output_folder = tmpfolder)
+readLines(file.path(tmpfolder, "aln1.phylip.txt"))
 ```
 ## Session info
 

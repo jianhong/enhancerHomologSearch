@@ -17,5 +17,6 @@ Save enhancer homologs to file in phylip format.
 \examples{
 al <- readRDS(system.file("extdata", "al.rds",
                package="enhancerHomologSearch"))
-saveAlignments(al)
+tmpfolder <- tempdir()
+saveAlignments(al, output_folder=tmpfolder)
 }

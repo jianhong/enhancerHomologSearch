@@ -27,7 +27,8 @@ saveAln <- function (x, filepath) {
 #' @examples
 #' al <- readRDS(system.file("extdata", "al.rds",
 #'                package="enhancerHomologSearch"))
-#' saveAlignments(al)
+#' tmpfolder <- tempdir()
+#' saveAlignments(al, output_folder=tmpfolder)
 saveAlignments <- function(al, output_folder="."){
   if(!file.exists(output_folder)){
     dir.create(output_folder)
