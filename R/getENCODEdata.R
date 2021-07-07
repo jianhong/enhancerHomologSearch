@@ -3,20 +3,15 @@
 #' @param genome An object of \link[BSgenome:BSgenome-class]{BSgenome}.
 #' @param markers Enhancer markers. Default 'H3K4me1'. For active enhancer,
 #' it can be set as c('H3K4me1', 'H3K27ac')
-#' @param file_format File format for the peak files. Default is bed.
-#' @param output_filter The filter for output type of peak files.
-#' Default is "stable peaks".
 #' @param window_size,step The size of windows and steps to split the peaks
 #' into small pieces. These parameter is used because the width of
 #' histone marker peaks are different sizes. Break the peaks into small
 #' pieces can increase the matching score and align the matching for
 #' different peaks into same size. The window_size is also be used for
 #' overlapping detection of multiple histone markers.
-#' @param \dots The parameters could be used by
-#' \link[ENCODExplorer:queryEncode]{queryEncode}
+#' @param \dots Parameters can be passed to \link{queryEncode}
 #' @return An object of \link{enhancers} with genome, and peaks.
 #' The peaks is an object of GRanges. The genome is an object of BSgenome.
-#' @importFrom ENCODExplorer queryEncode downloadEncode
 #' @importFrom rtracklayer import
 #' @importFrom Biostrings getSeq
 #' @importFrom BiocGenerics organism
@@ -27,12 +22,9 @@
 #' @examples
 #' library(BSgenome.Hsapiens.UCSC.hg38)
 #' hs <- getENCODEdata(genome=Hsapiens,
-#'                     biosample_name = "spinal cord",
-#'                     biosample_type = "tissue")
+#'                     partialMatch=c(biosample_summary="spinal cord"))
 getENCODEdata <- function(genome,
-                          markers = c("H3K4me1"),
-                          file_format = "bed",
-                          output_filter = c("stable peaks", "replicated peaks"),
+                          markers="H3K4me1",
                           window_size = 1000L,
                           step = 50L,
                           ...) {
@@ -40,37 +32,50 @@ getENCODEdata <- function(genome,
   dir = tempdir() #The directory for saving peak files.
   org <- organism(genome)
   assembly <- guessAssembly(genome)
-  peaks <- lapply(markers, FUN=function(marker){
-    q <- queryEncode(organism = org,
-                     target = marker,
-                     file_format = file_format,
-                     ...)
-    keep <- q$output_type %in% output_filter &
-      q$assembly %in% assembly
-    if(sum(keep)<1){
-      message("The output of searching results before filtering:")
-      print(q)
-      stop("No data available by current setting:",
-           "output_filter == ", output_filter,
-           " and assembly == ", paste(assembly, collapse="/"),
-           "Available output_filter: ", unique(q$output_type),
-           "Avallable assembly: ", unique(q$assembly))
-    }
-    q <- q[keep, , drop = FALSE]
-    f <- downloadEncode(q, dir = dir)
-    p <- tryCatch({
-        if(file_format=="bed"){
-          lapply(f, import, format = "narrowPeak")
-        }else{
-          lapply(f, import)
-        }
-      },
-      error = function(e){
-        warning(e)
-      })
-    unlink(f)
-    p <- reduce(unlist(GRangesList(p)))
-  })
+  names(assembly) <- rep("assembly", length(assembly))
+  names(markers) <- rep("target.label", length(markers))
+  args <- list(...)
+  if(!"exactMatch" %in% names(args)){
+    exactMatch <- markers
+  }else{
+    exactMatch <- exactMatch[!names(exactMatch) %in% "target.label"]
+    exactMatch <- c(markers, exactMatch)
+  }
+  if(!"assembly" %in% names(exactMatch)){
+    exactMatch <- c(exactMatch, assembly)
+  }
+  if(!"replicates.library.biosample.donor.organism.scientific_name" %in%
+     names(exactMatch)){
+    exactMatch <-
+      c(replicates.library.biosample.donor.organism.scientific_name=org,
+        exactMatch)
+  }
+  res <- queryEncode(exactMatch=exactMatch, ...)
+
+  if(length(res)==0){
+    stop("No data available by current setting.")
+  }
+
+  datasets <- vapply(res, FUN = function(.ele) .ele$`@id`,
+                     FUN.VALUE = character(1))
+  names(datasets) <- rep("dataset", length(datasets))
+
+  args$exactMatch <- c(type='File', output_type="peaks",
+                       file_format="bed", assembly,
+                       datasets)
+
+  res2 <- do.call(queryEncode, args = args)
+  if(length(res2)==0){
+    stop("No data available by current setting.")
+  }
+
+  urls <- lapply(res2, FUN = function(.ele) .ele$cloud_metadata$url)
+  format <- lapply(res2, FUN = function(.ele) .ele$file_format_type)
+
+  peaks <- mapply(import, urls, format, SIMPLIFY = FALSE)
+  peaks <- split(peaks,
+                 vapply(res2, `[[`, FUN.VALUE = character(1), i="target"))
+  peaks <- lapply(peaks, function(.ele) reduce(unlist(GRangesList(.ele))))
   ## get intersection of the ranges
   subsetByOverlapsWindow <- function(a, b){
     subsetByOverlaps(a, b, maxgap = window_size)

@@ -6,9 +6,7 @@
 \usage{
 getENCODEdata(
   genome,
-  markers = c("H3K4me1"),
-  file_format = "bed",
-  output_filter = c("stable peaks", "replicated peaks"),
+  markers = "H3K4me1",
   window_size = 1000L,
   step = 50L,
   ...
@@ -20,11 +18,6 @@ getENCODEdata(
 \item{markers}{Enhancer markers. Default 'H3K4me1'. For active enhancer,
 it can be set as c('H3K4me1', 'H3K27ac')}
 
-\item{file_format}{File format for the peak files. Default is bed.}
-
-\item{output_filter}{The filter for output type of peak files.
-Default is "stable peaks".}
-
 \item{window_size, step}{The size of windows and steps to split the peaks
 into small pieces. These parameter is used because the width of
 histone marker peaks are different sizes. Break the peaks into small
@@ -32,8 +25,7 @@ pieces can increase the matching score and align the matching for
 different peaks into same size. The window_size is also be used for
 overlapping detection of multiple histone markers.}
 
-\item{\dots}{The parameters could be used by
-\link[ENCODExplorer:queryEncode]{queryEncode}}
+\item{\dots}{Parameters can be passed to \link{queryEncode}}
 }
 \value{
 An object of \link{enhancers} with genome, and peaks.
@@ -45,6 +37,5 @@ Query enhancer peak and extract sequences from ENCODE
 \examples{
 library(BSgenome.Hsapiens.UCSC.hg38)
 hs <- getENCODEdata(genome=Hsapiens,
-                    biosample_name = "spinal cord",
-                    biosample_type = "tissue")
+                    partialMatch=c(biosample_summary="spinal cord"))
 }
