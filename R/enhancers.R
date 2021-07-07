@@ -37,6 +37,7 @@ setClass("enhancers",
 #' or An object of \code{"GRanges"} for getSeq,enhancers-method
 #' \code{"enhancers"}
 #' @export
+#' @return An object of enhancers.
 enhancers <- function(...){
   new("enhancers", ...)
 }
