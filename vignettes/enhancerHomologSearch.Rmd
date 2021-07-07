@@ -23,7 +23,6 @@ suppressPackageStartupMessages({
   library(BSgenome.Drerio.UCSC.danRer10)
   library(BSgenome.Hsapiens.UCSC.hg38)
   library(BSgenome.Mmusculus.UCSC.mm10)
-  library(ENCODExplorer)
   library(TxDb.Hsapiens.UCSC.hg38.knownGene)
   library(org.Hs.eg.db)
   library(TxDb.Mmusculus.UCSC.mm10.knownGene)
@@ -99,15 +98,12 @@ For additional filters, please refer `?getENCODEdata`.
 library(enhancerHomologSearch)
 library(BSgenome.Hsapiens.UCSC.hg38)
 library(BSgenome.Mmusculus.UCSC.mm10)
-library(ENCODExplorer)
 # download enhancer candidates for human heart tissue
 hs <- getENCODEdata(genome=Hsapiens,
-                    biosample_name = "heart",
-                    biosample_type = "tissue")
+                    partialMatch=c(biosample_summary = "heart"))
 # download enhancer candidates for mouse heart tissue
 mm <- getENCODEdata(genome=Mmusculus,
-                    biosample_name = "heart",
-                    biosample_type = "tissue")
+                    partialMatch=c(biosample_summary = "heart"))
 ```
 
 ## Step 3, get alignment score for target enhancer and candidate enhancers.
