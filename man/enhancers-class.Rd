@@ -57,6 +57,9 @@ or An object of \code{"GRanges"} for getSeq,enhancers-method
 
 \item{object}{An object of \code{"enhancers"}}
 }
+\value{
+An object of enhancers.
+}
 \description{
 An object of class "enhancers"
 represents the output of function \link{getENCODEdata},

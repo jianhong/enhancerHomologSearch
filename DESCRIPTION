@@ -1,20 +1,18 @@
 Package: enhancerHomologSearch
 Type: Package
 Title: Identification of putative mammalian orthologs to given enhancer
-Version: 0.1.2
-Author@R: c(person(given="Jianhong", family="Ou", email="jianhong.ou@duke.edu", 
+Version: 0.99.0
+Authors@R: c(person(given="Jianhong", family="Ou", email="jianhong.ou@duke.edu", 
                  role=c("aut", "cre"), comment=c(ORCID="0000-0002-8652-2488")),
-            person(given="Valentina", family="Cigliola", role=c("aut")),
-            person(given="Kenneth", family="Poss", role=c("aut")))
-Author: Jianhong Ou, Valentina Cigliola, Kenneth Poss
-Maintainer: Jianhong Ou <jianhong.ou@duke.edu>
+            person(given="Valentina", family="Cigliola", role=c("dtc")),
+            person(given="Kenneth", family="Poss", role=c("fnd")))
 Description: Get ENCODE data of enhancer region via H3K4me1 peaks and
              search homolog regions for given sequences. The candidates
              of enhancer homolog regions can be filtered by distance to
              target TSS. The top candidates from human and mouse will be
              aligned to each other and then exported as multiple alignments
              with given enhancer.
-Depends: R (>= 3.5.0), methods
+Depends: R (>= 4.1.0), methods
 Imports: BiocGenerics, Biostrings, BSgenome, BiocParallel,
          GenomeInfoDb, GenomicRanges,
          httr,
@@ -22,8 +20,9 @@ Imports: BiocGenerics, Biostrings, BSgenome, BiocParallel,
          jsonlite,
          msa,
          rtracklayer,
-         S4Vectors
-Suggests: knitr, rmarkdown, utils,
+         S4Vectors, stats,
+         utils
+Suggests: knitr, rmarkdown,
   BSgenome.Drerio.UCSC.danRer10,
   BSgenome.Hsapiens.UCSC.hg38,
   BSgenome.Mmusculus.UCSC.mm10,
@@ -31,7 +30,7 @@ Suggests: knitr, rmarkdown, utils,
   org.Hs.eg.db,
   TxDb.Mmusculus.UCSC.mm10.knownGene,
   org.Mm.eg.db
-biocViews: Sequencing, GeneRegulation
+biocViews: Sequencing, GeneRegulation, Alignment
 License: GPL (>= 2)
 Encoding: UTF-8
 VignetteBuilder: knitr

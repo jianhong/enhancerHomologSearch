@@ -11,6 +11,9 @@ saveAlignments(al, output_folder = ".")
 
 \item{output_folder}{output folder.}
 }
+\value{
+The I/O status.
+}
 \description{
 Save enhancer homologs to file in phylip format.
 }

@@ -23,7 +23,7 @@ saveAln <- function (x, filepath) {
 #' @param al output of \link{alignment}.
 #' @param output_folder output folder.
 #' @export
-#' @return NULL
+#' @return The I/O status.
 #' @examples
 #' al <- readRDS(system.file("extdata", "al.rds",
 #'                package="enhancerHomologSearch"))
@@ -39,5 +39,5 @@ saveAlignments <- function(al, output_folder="."){
     names(al) <- paste0(names(al), ".phylip.txt")
   }
   null <- mapply(saveAln, x=al, filepath = file.path(output_folder, names(al)))
-  return(invisible())
+  return(invisible(null))
 }
