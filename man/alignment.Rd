@@ -27,8 +27,10 @@ hbegfEN <- GRanges("chr14", IRanges(6760805,	6761115))
 seqEN <- getSeq(BSgenome.Drerio.UCSC.danRer10, hbegfEN)
 aln_hs <- readRDS(system.file("extdata", "aln_hs.rds",
                package="enhancerHomologSearch"))
+aln_hs$genome <- Hsapiens
 aln_mm <- readRDS(system.file("extdata", "aln_mm.rds",
                package="enhancerHomologSearch"))
+aln_mm$genome <- Mmusculus
 al <- alignment(seqEN, list(human=aln_hs, mouse=aln_mm),
                 method="ClustalOmega", order="input")
 }
