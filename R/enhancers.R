@@ -2,21 +2,21 @@
 #' @importClassesFrom BSgenome BSgenome
 #' @importClassesFrom S4Vectors Annotated
 setClassUnion("BSgenomeOrNULL", c("BSgenome", "NULL"))
-#' Class \code{"enhancers"}
-#' @description An object of class "enhancers"
+#' Class \code{"Enhancers"}
+#' @description An object of class "Enhancers"
 #' represents the output of function \link{getENCODEdata},
 #' which includes the sequences of enhancers and their genomic coordinates.
-#' @aliases enhancers
-#' @rdname enhancers-class
+#' @aliases Enhancers
+#' @rdname Enhancers-class
 #' @slot genome An object of \link[BSgenome:BSgenome-class]{BSgenome}.
 #' @slot peaks An object of \link[GenomicRanges:GRanges-class]{GRanges}.
 #' @import methods
 #' @importFrom Biostrings DNAStringSet
 #' @export
 #' @examples
-#' enhancers()
+#' Enhancers()
 #'
-setClass("enhancers",
+setClass("Enhancers",
          representation(genome = "BSgenomeOrNULL",
                         peaks = "GRanges"),
          prototype(genome = NULL,
@@ -26,51 +26,82 @@ setClass("enhancers",
              if(length(intersect(seqlevels(object@peaks),
                                  seqlevels(object@genome)))<1){
                return(
-                 "Please use getENCODEdata to create enhancers object.")
+                 "Please use getENCODEdata to create Enhancers object.")
              }
            }
            return(TRUE)
          })
 
-#' @rdname enhancers-class
-#' @param \dots Each argument in \dots becomes an slot in the new("enhancers")
-#' or An object of \code{"GRanges"} for getSeq,enhancers-method
-#' \code{"enhancers"}
+#' @rdname Enhancers-class
+#' @param genome An object of \link[BSgenome:BSgenome-class]{BSgenome}.
+#' @param peaks An object of \link[GenomicRanges:GRanges-class]{GRanges}.
+#' \code{"Enhancers"}
 #' @export
-#' @return An object of enhancers.
-enhancers <- function(...){
-  new("enhancers", ...)
+#' @return An object of Enhancers.
+Enhancers <- function(genome, peaks){
+  if(missing(genome)) genome <- NULL
+  if(missing(peaks)) peaks <- GRanges()
+  new("Enhancers", genome=genome, peaks=peaks)
 }
 
-#' @rdname enhancers-class
-#' @aliases $,enhancer-method
-#' @aliases $<-,enhancer-method
-#' @param x An object of \code{"enhancers"}
+#' @rdname Enhancers-class
+#' @aliases $,Enhancers-method
+#' @param x An object of \code{"Enhancers"}
 #' @param name Slot name.
 #' @exportMethod `$`
-setMethod("$", "enhancers", function(x, name) slot(x, name))
+setMethod("$", "Enhancers", function(x, name) slot(x, name))
 
-#' @rdname enhancers-class
-#' @aliases $<-,enhancer-method
+#' @rdname Enhancers-class
+#' @aliases $<-,Enhancers-method
 #' @param value The values.
 #' @exportMethod `$<-`
 setReplaceMethod("$",
-                 signature(x="enhancers"),
+                 signature(x="Enhancers"),
                  function(x, name, value){
                    slot(x, name, check = TRUE) <- value
                    x
                  })
-#' @rdname enhancers-class
-#' @aliases getSeq,enhancers-method
+
+#' @rdname Enhancers-class
+#' @aliases distance
+#' @aliases distance,Enhancers-method
+#' @exportMethod `distance`
+setMethod("distance", "Enhancers", function(x) slot(x, "peaks")$distance)
+
+
+if(!exists("distance<-")){
+  setGeneric("distance<-", function(x, value) standardGeneric("distance<-"))
+}
+#' @rdname Enhancers-class
+#' @aliases distance<-
+#' @aliases distance<-,Enhancers-method
+#' @aliases distance<-,Enhancers,ANY-method
+#' @exportMethod `distance<-`
+setReplaceMethod("distance",
+                 signature(x="Enhancers"),
+                 function(x, value){
+                   x@peaks$distance <- value
+                   x
+                 })
+
+#' @rdname Enhancers-class
+#' @aliases getSeq,Enhancers-method
 #' @importMethodsFrom Biostrings getSeq reverseComplement
 #' @export
+#' @param \dots parameters can be passed to upstream functions.
 setMethod("getSeq",
-          signature(x="enhancers"),
+          signature(x="Enhancers"),
           function(x, ...){
             genome <- x@genome
             dot <- list(...)
             if(length(dot)>0){
               seq <- getSeq(x = genome, ...)
+              if(length(dot[[1]]$id)==0){
+                dot[[1]]$id <- paste0(seqnames(dot[[1]]),":",
+                                      start(dot[[1]]), "-",
+                                      end(dot[[1]]), ":",
+                                      strand(dot[[1]]))
+              }
             }else{
               seq <- getSeq(x = genome, x@peaks)
               dot <- list(x@peaks)
@@ -84,14 +115,14 @@ setMethod("getSeq",
             names(seq2) <- sub("fwd", "rev", names(seq))
             c(seq, seq2)
           })
-#' @rdname enhancers-class
-#' @aliases subsetByOverlpas,enhancers-method
+#' @rdname Enhancers-class
+#' @aliases subsetByOverlpas,Enhancers-method
 #' @param ranges,maxgap,minoverlap,type,invert parameters used by
 #' \link[GenomicRanges:findOverlaps-methods]{subsetByOverlaps}
 #' @importMethodsFrom IRanges subsetByOverlaps
 #' @export
 setMethod("subsetByOverlaps",
-          signature(x="enhancers"),
+          signature(x="Enhancers"),
           function(x, ranges, maxgap = -1L, minoverlap = 0L,
                    type = c("any", "start", "end", "within", "equal"),
                    invert = FALSE, ...){
@@ -103,49 +134,107 @@ setMethod("subsetByOverlaps",
                                         ...)
             x
           })
-#' @rdname enhancers-class
-#' @aliases subset,enhancers-method
+#' @rdname Enhancers-class
+#' @aliases subset,Enhancers-method
 #' @export
 setMethod("subset",
-          signature(x="enhancers"),
+          signature(x="Enhancers"),
           function(x, ...){
             x@peaks <- subset(x@peaks, ...)
             x
           })
-#' @name genome
-#' @rdname enhancers-class
-#' @aliases genome,enhancers-method
-#' @importFrom GenomeInfoDb genome
-#' @importMethodsFrom GenomeInfoDb genome
-#' @export
+
 if(!exists("genome")){
   setGeneric("genome", function(x) standardGeneric("genome"))
 }
+if(!exists("genome<-")){
+  setGeneric("genome<-", function(x, value) standardGeneric("genome<-"))
+}
+
+#' @rdname Enhancers-class
+#' @aliases seqinfo,Enhancers-method
+#' @importFrom GenomeInfoDb seqinfo
+#' @importMethodsFrom GenomeInfoDb seqinfo
+#' @exportMethod `seqinfo`
+setMethod("seqinfo",
+          signature(x="Enhancers"),
+          function(x){
+            seqinfo(x@genome)
+          })
+#' @rdname Enhancers-class
+#' @aliases genome
+#' @aliases genome,Enhancers-method
+#' @importFrom GenomeInfoDb genome
+#' @importMethodsFrom GenomeInfoDb genome
+#' @exportMethod `genome`
 setMethod("genome",
-         signature(x="enhancers"),
+         signature(x="Enhancers"),
          function(x){
            x@genome
          })
+#' @rdname Enhancers-class
+#' @aliases genome<-
+#' @aliases genome<-,Enhancers-method
+#' @aliases genome<-,Enhancers,BSgenome-method
+#' @importFrom GenomeInfoDb genome<-
+#' @importMethodsFrom GenomeInfoDb genome<-
+#' @exportMethod `genome<-`
+setReplaceMethod("genome",
+                 signature(x="Enhancers"),
+                 function(x, value){
+                   x@genome <- value
+                   x
+                 })
+
+
+if(!exists("peaks")){
+  setGeneric("peaks", function(x) standardGeneric("peaks"))
+}
+if(!exists("peaks<-")){
+  setGeneric("peaks<-", function(x, value) standardGeneric("peaks<-"))
+}
+
+#' @rdname Enhancers-class
+#' @aliases peaks
+#' @aliases peaks,Enhancers-method
+#' @exportMethod `peaks`
+setMethod("peaks",
+          signature(x="Enhancers"),
+          function(x){
+            x@peaks
+          })
+#' @rdname Enhancers-class
+#' @aliases peaks<-
+#' @aliases peaks<-,Enhancers-method
+#' @aliases peaks<-,Enhancers,GRanges-method
+#' @exportMethod `peaks<-`
+setReplaceMethod("peaks",
+                 signature(x="Enhancers"),
+                 function(x, value){
+                   x@peaks <- value
+                   x
+                 })
+
 #' @name coerce
-#' @rdname enhancers-class
-#' @aliases coerce,enhancers,GRanges-method
+#' @rdname Enhancers-class
+#' @aliases coerce,Enhancers,GRanges-method
 #' @exportMethod coerce
-setAs(from="enhancers", to="GRanges", function(from){
+setAs(from="Enhancers", to="GRanges", function(from){
   from@peaks
 })
-#' @rdname enhancers-class
-#' @aliases show,enhancers-method
-#' @param object An object of \code{"enhancers"}
+#' @rdname Enhancers-class
+#' @aliases show,Enhancers-method
+#' @param object An object of \code{"Enhancers"}
 #' @export
 setMethod("show",
-          signature(object="enhancers"),
+          signature(object="Enhancers"),
           function(object){
             if(length(object@peaks)){
               cat("This is an object with ",
                   length(object@peaks),
-                  " enhancers for ",
+                  " Enhancers for ",
                   organism(object@genome))
             }else{
-              cat("This is an empty object of enhancers.")
+              cat("This is an empty object of Enhancers.")
             }
           })

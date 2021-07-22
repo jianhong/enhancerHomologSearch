@@ -1,3 +1,7 @@
+# Change in 0.99.2
+
+  o Fix the issues listed in [#2181](https://github.com/Bioconductor/Contributions/issues/2181)
+
 # Change in 0.99.1
 
   o fix the mis-link of genome in examples of alignment.

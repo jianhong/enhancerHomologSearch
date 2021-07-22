@@ -10,12 +10,13 @@
 #' different peaks into same size. The window_size is also be used for
 #' overlapping detection of multiple histone markers.
 #' @param \dots Parameters can be passed to \link{queryEncode}
-#' @return An object of \link{enhancers} with genome, and peaks.
+#' @return An object of \link{Enhancers} with genome, and peaks.
 #' The peaks is an object of GRanges. The genome is an object of BSgenome.
 #' @importFrom rtracklayer import
 #' @importFrom Biostrings getSeq
 #' @importFrom BiocGenerics organism
 #' @importFrom IRanges subsetByOverlaps
+#' @importFrom BiocFileCache BiocFileCache getBFCOption bfcrpath
 #' @import methods
 #' @import GenomicRanges
 #' @export
@@ -29,7 +30,6 @@ getENCODEdata <- function(genome,
                           step = 50L,
                           ...) {
   stopifnot('genome must be an object of BSgenome'=is(genome, "BSgenome"))
-  dir = tempdir() #The directory for saving peak files.
   org <- organism(genome)
   assembly <- guessAssembly(genome)
   names(assembly) <- rep("assembly", length(assembly))
@@ -72,7 +72,10 @@ getENCODEdata <- function(genome,
   urls <- lapply(res2, FUN = function(.ele) .ele$cloud_metadata$url)
   format <- lapply(res2, FUN = function(.ele) .ele$file_format_type)
 
-  peaks <- mapply(import, urls, format, SIMPLIFY = FALSE)
+  bfc <- BiocFileCache(cache = getBFCOption("CACHE"), ask = interactive())
+  cpath <- lapply(urls, bfcrpath, x=bfc)
+
+  peaks <- mapply(import, cpath, format, SIMPLIFY = FALSE)
   peaks <- split(peaks,
                  vapply(res2, `[[`, FUN.VALUE = character(1), i="target"))
   peaks <- lapply(peaks, function(.ele) reduce(unlist(GRangesList(.ele))))
@@ -100,5 +103,5 @@ getENCODEdata <- function(genome,
   peaks <- unlist(peaks)
   peaks$id <- paste(pid, pid2, sep="_")
   #peaks <- peaks[width(peaks)==window_size]
-  enhancers(genome = genome, peaks = peaks)
+  Enhancers(genome = genome, peaks = peaks)
 }

@@ -28,7 +28,7 @@ overlapping detection of multiple histone markers.}
 \item{\dots}{Parameters can be passed to \link{queryEncode}}
 }
 \value{
-An object of \link{enhancers} with genome, and peaks.
+An object of \link{Enhancers} with genome, and peaks.
 The peaks is an object of GRanges. The genome is an object of BSgenome.
 }
 \description{

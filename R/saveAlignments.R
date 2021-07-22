@@ -29,7 +29,7 @@ saveAln <- function (x, filepath) {
 #'                package="enhancerHomologSearch"))
 #' tmpfolder <- tempdir()
 #' saveAlignments(al, output_folder=tmpfolder)
-saveAlignments <- function(al, output_folder="."){
+saveAlignments <- function(al, output_folder=tempdir()){
   if(!file.exists(output_folder)){
     dir.create(output_folder)
   }

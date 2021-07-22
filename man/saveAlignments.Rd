@@ -4,7 +4,7 @@
 \alias{saveAlignments}
 \title{output alignments}
 \usage{
-saveAlignments(al, output_folder = ".")
+saveAlignments(al, output_folder = tempdir())
 }
 \arguments{
 \item{al}{output of \link{alignment}.}

@@ -1,12 +1,12 @@
 #' Get alignment scores
 #' @description Do pairwise alignment for query enhancer to target genome
 #' @param query An object of DNAStringSet to represent enhancer
-#' @param subject Output of getENCODEdata. An object of \link{enhancers}
+#' @param subject Output of getENCODEdata. An object of \link{Enhancers}
 #' @param block The size of sequences to do alignment. Increase the size will
 #' increase the memory cost. Default 1000.
 #' @param bpparam BiocParallel parameters.
 #' @param \dots not used.
-#' @return An object of \link{enhancers}.
+#' @return An object of \link{Enhancers}.
 #' @importFrom Biostrings pairwiseAlignment reverseComplement unaligned
 #' @importFrom BiocGenerics score
 #' @importFrom IRanges subject
@@ -15,19 +15,15 @@
 #' @export
 #' @examples
 #' library(BiocParallel)
-#' bpparam <- MulticoreParam(workers = 2, tasks=200, progressbar=TRUE)
+#' bpparam <- MulticoreParam(workers = 1, tasks=200, progressbar=TRUE)
 #' library(BSgenome.Hsapiens.UCSC.hg38)
 #' peaks <- GRanges("chr1", IRanges(seq(5000, 50000, by=1000), width=1000))
 #' peaks$id <- paste(seq_along(peaks), 1, sep="_")
-#' subj <- enhancers(genome=Hsapiens, peaks=peaks)
+#' subj <- Enhancers(genome=Hsapiens, peaks=peaks)
 #' q <- getSeq(Hsapiens, GRanges("chr1", IRanges(90000, width=1000)))
 #' ao <- alignmentOne(q, subj, bpparam=bpparam)
 alignmentOne <- function(query, subject, block=1000, bpparam = bpparam(), ...){
-  stopifnot("query must be an object of DNAStringSet" =
-              is(query, "DNAStringSet"))
-  stopifnot("The length of query must be 1" = length(query)==1)
-  stopifnot("subject must be an object of enhancers" =
-              is(subject, "enhancers"))
+  checkQuerySubject(query, subject, subjectIsList=FALSE)
   peaks <- subject@peaks
   l <- length(peaks)
   pid <- rep(seq.int(ceiling(l/block)), each = block)[seq.int(l)]
@@ -46,6 +42,7 @@ alignmentOne <- function(query, subject, block=1000, bpparam = bpparam(), ...){
                   names(unaligned(subject(al))),
                   names(unaligned(subject(al_neg))))
     qid <- do.call(rbind, strsplit(qid, "_"))
+    stopifnot("subject must be output of getENCODEdata."=ncol(qid)==3)
     colnames(qid) <- c("dire", "peakID", "tileID")
     ## get max value for qsocre by peakID
     qid <- as.data.frame(qid)
@@ -74,15 +71,15 @@ alignmentOne <- function(query, subject, block=1000, bpparam = bpparam(), ...){
   }, FUN.VALUE = numeric(1))
   peaks$adjp <- p.adjust(peaks$pval, method = "BH")
 
-  enhancers(genome = subject@genome, peaks = peaks)
+  Enhancers(genome = subject@genome, peaks = peaks)
 }
 
 #' Output
 #' @description Do pairwise alignment for query enhancer to target genome
 #' @param query An object of DNAStringSet to represent enhancer
-#' @param subject An list of objects of \link{enhancers}.
+#' @param subject An list of objects of \link{Enhancers}.
 #' @param \dots Parameters to be used by \link[msa:msa]{msa}.
-#' @return An object of \link{enhancers}.
+#' @return An object of \link{Enhancers}.
 #' @importFrom Biostrings pairwiseAlignment reverseComplement unaligned pattern
 #' @importFrom BiocGenerics score
 #' @importFrom IRanges subject
@@ -97,24 +94,14 @@ alignmentOne <- function(query, subject, block=1000, bpparam = bpparam(), ...){
 #' seqEN <- getSeq(BSgenome.Drerio.UCSC.danRer10, hbegfEN)
 #' aln_hs <- readRDS(system.file("extdata", "aln_hs.rds",
 #'                package="enhancerHomologSearch"))
-#' aln_hs$genome <- Hsapiens
+#' genome(aln_hs) <- Hsapiens
 #' aln_mm <- readRDS(system.file("extdata", "aln_mm.rds",
 #'                package="enhancerHomologSearch"))
-#' aln_mm$genome <- Mmusculus
+#' genome(aln_mm) <- Mmusculus
 #' al <- alignment(seqEN, list(human=aln_hs, mouse=aln_mm),
 #'                 method="ClustalOmega", order="input")
 alignment <- function(query, subject, ...){
-  stopifnot("query must be an object of DNAStringSet" =
-              is(query, "DNAStringSet"))
-  stopifnot("The length of query must be 1" = length(query)==1)
-  stopifnot("subject must be an list of object of enhancers" =
-              is(subject, "list"))
-  stopifnot("The length of subject must be more than 0" = length(subject)>0)
-  stopifnot("The length of subject must be less than 3" = length(subject)<3)
-  null <- lapply(subject, FUN = function(.ele){
-    stopifnot("subject must be an list of object of enhancers" =
-                is(.ele, "enhancers"))
-  })
+  checkQuerySubject(query, subject, subjectIsList=TRUE)
   if(length(subject)==1){
     q <- getSeq(subject[[1]])
     q <- q[grepl("fwd", names(q))]

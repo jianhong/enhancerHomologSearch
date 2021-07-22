@@ -50,8 +50,8 @@ such as enhancers and silencers.
 
 In 2020, Emily S. Wong et. al. provide a new
 methods for identification of putative human orthologs to enhancers 
-of zebrafish[@wong2020deep]. They used the method to interrogate conserved syntenic regions 
-and human and mouse using candidate sponge enhancer sequences. 
+of zebrafish[@wong2020deep]. They used the method to interrogate conserved 
+syntenic regions and human and mouse using candidate sponge enhancer sequences. 
 First, they looked for overlap with available functional genomics
 information. For example, they used mouse ENCODE data to infer enhancer activity
 based on histone marks in specific tissues.
@@ -64,7 +64,7 @@ This package is modified from Wong's methods and provide the easy to used
 script for researchers to quick search putative mammalian orthologs to enhancers.
 The modified algorithm is:
 The candidate regions were determined by ENCODE histone marks (default is 
-H3K4me1) in specific tissue for humam and mouse[@pages2013package].
+H3K4me1) in specific tissue for human and mouse.
 The mapping score were calculated by pairwise alignment between enhancer sequences 
 and candidates by global sequence alignment[@pages2013package].
 The Z-score were calculated from
@@ -74,6 +74,42 @@ The candidates were filtered by p-value and distance from the TSS of
 target homologs. 
 And then the top candidates from human and mouse were aligned to each other and
 exported as multiple alignments with given enhancer[@bodenhofer2015msa].
+
+## Installation
+
+First install `enhancerHomologSearch` and other packages required to run the 
+examples. Please note the example dataset used here is from zebrafish. 
+To run analysis with dataset from a different species or different assembly,
+please install the corresponding Bsgenome and TxDb. 
+For example, to analyze cattle data aligned to bosTau9,
+please install BSgenome.Btaurus.UCSC.bosTau9,
+and TxDb.Btaurus.UCSC.bosTau9.refGene.
+You can also generate a TxDb object by functions makeTxDbFromGFF from a local
+gff file, or makeTxDbFromUCSC, makeTxDbFromBiomart, and makeTxDbFromEnsembl,
+from online resources in GenomicFeatures package.
+
+```{r, installation,eval=FALSE}
+if (!"BiocManager" %in% rownames(installed.packages()))
+     install.packages("BiocManager")
+library(BiocManager)
+BiocManager::install(c("enhancerHomologSearch",
+                       "BiocParallel",
+                       "BSgenome.Drerio.UCSC.danRer10",
+                       "BSgenome.Hsapiens.UCSC.hg38",
+                       "BSgenome.Mmusculus.UCSC.mm10",
+                       "TxDb.Hsapiens.UCSC.hg38.knownGene",
+                       "TxDb.Mmusculus.UCSC.mm10.knownGene",
+                       "org.Hs.eg.db",
+                       "org.Mm.eg.db"))
+```
+
+If you have trouble in install ribosomeProfilingQC, 
+please check your R version first. 
+The `enhancerHomologSearch` package require R >= 4.1.0.
+
+```{r}
+R.version
+```
 
 ## Step 1, prepare target enhancer sequences.
 In this example, we will use an enhancer of hbegf gene in zebrafish.
@@ -165,13 +201,13 @@ p-value.
 ext <- 100000
 aln_hs <- subsetByOverlaps(aln_hs, ranges = expandGR(g_hs, ext=ext))
 ## filter by distance
-aln_hs$peaks$distance <- distance(aln_hs$peaks, g_hs, ignore.strand=TRUE)
+distance(aln_hs) <- distance(peaks(aln_hs), g_hs, ignore.strand=TRUE)
 aln_hs <- subset(aln_hs, pval<0.05 & distance >5000)
 
 
 aln_mm <- subsetByOverlaps(aln_mm, ranges = expandGR(g_mm, ext=ext))
 ## filter by distance
-aln_mm$peaks$distance <- distance(aln_mm$peaks, g_mm, ignore.strand=TRUE)
+distance(aln_mm) <- distance(peaks(aln_mm), g_mm, ignore.strand=TRUE)
 aln_mm <- subset(aln_mm, pval<0.05 & distance >5000)
 ```
 

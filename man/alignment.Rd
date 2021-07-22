@@ -9,12 +9,12 @@ alignment(query, subject, ...)
 \arguments{
 \item{query}{An object of DNAStringSet to represent enhancer}
 
-\item{subject}{An list of objects of \link{enhancers}.}
+\item{subject}{An list of objects of \link{Enhancers}.}
 
 \item{\dots}{Parameters to be used by \link[msa:msa]{msa}.}
 }
 \value{
-An object of \link{enhancers}.
+An object of \link{Enhancers}.
 }
 \description{
 Do pairwise alignment for query enhancer to target genome
@@ -27,10 +27,10 @@ hbegfEN <- GRanges("chr14", IRanges(6760805,	6761115))
 seqEN <- getSeq(BSgenome.Drerio.UCSC.danRer10, hbegfEN)
 aln_hs <- readRDS(system.file("extdata", "aln_hs.rds",
                package="enhancerHomologSearch"))
-aln_hs$genome <- Hsapiens
+genome(aln_hs) <- Hsapiens
 aln_mm <- readRDS(system.file("extdata", "aln_mm.rds",
                package="enhancerHomologSearch"))
-aln_mm$genome <- Mmusculus
+genome(aln_mm) <- Mmusculus
 al <- alignment(seqEN, list(human=aln_hs, mouse=aln_mm),
                 method="ClustalOmega", order="input")
 }
