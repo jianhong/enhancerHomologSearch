@@ -78,14 +78,27 @@ alignmentOne <- function(query, subject, block=1000, bpparam = bpparam(), ...){
 #' @description Do pairwise alignment for query enhancer to target genome
 #' @param query An object of DNAStringSet to represent enhancer
 #' @param subject An list of objects of \link{Enhancers}.
-#' @param \dots Parameters to be used by \link[msa:msa]{msa}.
+#' @param method specifies the multiple sequence alignment to be used;
+#' currently, "ClustalW", and "Muscle" are supported. Default is "Muscle"
+#' @param cluster The clustering method which should be used.
+#' Possible values are "nj" (default) and "upgma".
+#' In the original ClustalW implementation, this parameter is called clustering.
+#' @param gapOpening gap opening penalty; the default is 400 for DNA sequences and 420 for RNA sequences. The default for amino acid sequences depends on the profile score settings: for the setting le=TRUE, the default is 2.9, for sp=TRUE, the default is 1,439, and for sv=TRUE, the default is 300. Note that these defaults may not be suitable if custom substitution matrices are being used. In such a case, a sensible choice of gap penalties that fits well to the substitution matrix must be made.
+#' @param gapExtension gap extension penalty; the default is 0.
+#' @param maxiters maximum number of iterations; the default is 16.
+#' @param substitutionMatrix substitution matrix for scoring matches and
+#' mismatches; The valid choices for this parameter are "iub" and "clustalw".
+#' In the original ClustalW implementation, this parameter is called matrix.
+#' @param order how the sequences should be ordered in the output object; if "aligned" is chosen, the sequences are ordered in the way the multiple sequence alignment algorithm orders them. If "input" is chosen, the sequences in the output object are ordered in the same way as the input sequences.
+#' @param \dots Parameters can be used by Muscle, or ClustalW.
 #' @return An object of \link{Enhancers}.
 #' @importFrom Biostrings pairwiseAlignment reverseComplement unaligned pattern
 #' @importFrom BiocGenerics score
 #' @importFrom IRanges subject
 #' @importFrom utils combn
-#' @importFrom msa msa msaClustalOmega msaClustalW msaMuscle
+#' @import Rcpp
 #' @export
+#' @useDynLib enhancerHomologSearch
 #' @examples
 #' library(BSgenome.Hsapiens.UCSC.hg38)
 #' library(BSgenome.Mmusculus.UCSC.mm10)
@@ -99,16 +112,37 @@ alignmentOne <- function(query, subject, block=1000, bpparam = bpparam(), ...){
 #'                package="enhancerHomologSearch"))
 #' genome(aln_mm) <- Mmusculus
 #' al <- alignment(seqEN, list(human=aln_hs, mouse=aln_mm),
-#'                 method="ClustalOmega", order="input")
-alignment <- function(query, subject, ...){
+#'                 method="ClustalW", order="input")
+alignment <- function(query, subject,
+                      method=c("ClustalW", "Muscle"),
+                      cluster=c("nj", "upgma", "upgmamax", "upgmamin", "upgmb"),
+                      substitutionMatrix=c("iub", "clustalw"),
+                      gapOpening=ifelse(method[1]=="ClustalW", 15.0, 400),
+                      gapExtension=ifelse(method[1]=="ClustalW", 6.66, 0),
+                      maxiters=ifelse(method[1]=="ClustalW", 3, 16),
+                      order=c("aligned", "input"),
+                      ...){
   checkQuerySubject(query, subject, subjectIsList=TRUE)
+  args <- as.list(match.call(expand.dots=FALSE))
+  args$query <- NULL
+  args$subject <- NULL
+  args$cluster <- match.arg(cluster)
+  args$method <- match.arg(method)
+  args$order <- match.arg(order)
+  if(is.character(substitutionMatrix)){
+    args$substitutionMatrix <- match.arg(substitutionMatrix)
+  }
+  args$gapExtension <- eval(quote(gapExtension))
+  args$gapOpening <- eval(quote(gapOpening))
+  args$maxiters <- eval(quote(maxiters))
   if(length(subject)==1){
     q <- getSeq(subject[[1]])
     q <- q[grepl("fwd", names(q))]
     names(q) <- paste(names(subject), names(q), sep = "_")
     if(length(names(query))<1) names(query) <- "Enhancer"
     o <- lapply(seq_along(q), FUN = function(.ele){
-      msa(c(query, q[.ele]), ...)
+      args$inputSeqs <- c(query, q[.ele])
+      do.call(msa, args)
     })
   }else{
     cmb <- combn(x=length(subject), m=2, simplify = FALSE)
@@ -145,7 +179,8 @@ alignment <- function(query, subject, ...){
       names(s) <- sub("fwd|rev", sub("^.*___", "", names(aln)), names(s))
       if(length(names(query))<1) names(query) <- "Enhancer"
       o <- lapply(seq_along(q), FUN = function(.ele){
-        msa(c(query, q[.ele], s[.ele]), ...)
+        args$inputSeqs <- c(query, q[.ele], s[.ele])
+        do.call(msa, args)
       })
     }else{
       # not support yet.

@@ -73,7 +73,7 @@ normal distribution.
 The candidates were filtered by p-value and distance from the TSS of 
 target homologs. 
 And then the top candidates from human and mouse were aligned to each other and
-exported as multiple alignments with given enhancer[@bodenhofer2015msa].
+exported as multiple alignments with given enhancer.
 
 ## Installation
 
@@ -218,7 +218,8 @@ as phylip multiple alignment file in text format.
 
 ```{r}
 al <- alignment(seqEN, list(human=aln_hs, mouse=aln_mm),
-                method="ClustalOmega", order="input")
+                method="ClustalW", order="input")
+al
 tmpfolder <- tempdir()
 saveAlignments(al, output_folder = tmpfolder)
 readLines(file.path(tmpfolder, "aln1.phylip.txt"))

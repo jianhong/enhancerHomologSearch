@@ -4,14 +4,44 @@
 \alias{alignment}
 \title{Output}
 \usage{
-alignment(query, subject, ...)
+alignment(
+  query,
+  subject,
+  method = c("ClustalW", "Muscle"),
+  cluster = c("nj", "upgma", "upgmamax", "upgmamin", "upgmb"),
+  substitutionMatrix = c("iub", "clustalw"),
+  gapOpening = ifelse(method[1] == "ClustalW", 15, 400),
+  gapExtension = ifelse(method[1] == "ClustalW", 6.66, 0),
+  maxiters = ifelse(method[1] == "ClustalW", 3, 16),
+  order = c("aligned", "input"),
+  ...
+)
 }
 \arguments{
 \item{query}{An object of DNAStringSet to represent enhancer}
 
 \item{subject}{An list of objects of \link{Enhancers}.}
 
-\item{\dots}{Parameters to be used by \link[msa:msa]{msa}.}
+\item{method}{specifies the multiple sequence alignment to be used;
+currently, "ClustalW", and "Muscle" are supported. Default is "Muscle"}
+
+\item{cluster}{The clustering method which should be used.
+Possible values are "nj" (default) and "upgma".
+In the original ClustalW implementation, this parameter is called clustering.}
+
+\item{substitutionMatrix}{substitution matrix for scoring matches and
+mismatches; The valid choices for this parameter are "iub" and "clustalw".
+In the original ClustalW implementation, this parameter is called matrix.}
+
+\item{gapOpening}{gap opening penalty; the default is 400 for DNA sequences and 420 for RNA sequences. The default for amino acid sequences depends on the profile score settings: for the setting le=TRUE, the default is 2.9, for sp=TRUE, the default is 1,439, and for sv=TRUE, the default is 300. Note that these defaults may not be suitable if custom substitution matrices are being used. In such a case, a sensible choice of gap penalties that fits well to the substitution matrix must be made.}
+
+\item{gapExtension}{gap extension penalty; the default is 0.}
+
+\item{maxiters}{maximum number of iterations; the default is 16.}
+
+\item{order}{how the sequences should be ordered in the output object; if "aligned" is chosen, the sequences are ordered in the way the multiple sequence alignment algorithm orders them. If "input" is chosen, the sequences in the output object are ordered in the same way as the input sequences.}
+
+\item{\dots}{Parameters can be used by Muscle, or ClustalW.}
 }
 \value{
 An object of \link{Enhancers}.
@@ -32,5 +62,5 @@ aln_mm <- readRDS(system.file("extdata", "aln_mm.rds",
                package="enhancerHomologSearch"))
 genome(aln_mm) <- Mmusculus
 al <- alignment(seqEN, list(human=aln_hs, mouse=aln_mm),
-                method="ClustalOmega", order="input")
+                method="ClustalW", order="input")
 }
