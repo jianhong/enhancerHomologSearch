@@ -37,7 +37,6 @@
 #include "general/ClustalWResources.h"
 #include "Help.h"
 #include <ctime>
-#include <Rcpp.h>
 
 using namespace std;
 using namespace Rcpp;
