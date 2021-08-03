@@ -1,3 +1,7 @@
+# Change in 0.99.5
+
+  o Remove the so file in the src folder.
+
 # Change in 0.99.4
 
   o Remove the dependence of msa.
