@@ -3,15 +3,15 @@
 
 const char *SecsToStr(unsigned long Secs)
 	{
-	static char Str[17];
-  memset(Str, 0, 17);
+	static char Str[29];
+  memset(Str, 0, sizeof(Str));
 	long hh, mm, ss;
 
 	hh = Secs/(60*60);
 	mm = (Secs/60)%60;
 	ss = Secs%60;
 
-	sprintf(Str, "%02ld:%02ld:%02ld", hh, mm, ss);
+	snprintf(Str, sizeof(Str), "%02ld:%02ld:%02ld", hh, mm, ss);
 	return Str;
 	}
 
