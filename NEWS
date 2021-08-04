@@ -1,4 +1,7 @@
-<<<<<<< HEAD
+# Change in 0.99.7
+
+  o Remove functions contain fgets.
+
 # Change in 0.99.6
 
   o Update the sample data al.

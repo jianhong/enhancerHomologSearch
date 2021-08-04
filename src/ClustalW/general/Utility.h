@@ -1,7 +1,7 @@
 /**
  * Author: Mark Larkin
- * 
- * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.  
+ *
+ * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.
  */
 #ifndef UTILITY_H
 #define UTILITY_H
@@ -30,16 +30,16 @@ class Utility
         string blankToUnderscore(string str);
         void getStr(string instr, string& outstr);
         char getChoice(string instr);
-        double getReal(const char *instr, double minx, double maxx, double def);
-        int getInt(const char *instr,int minx,int maxx, int def);
+        //double getReal(const char *instr, double minx, double maxx, double def);
+        //int getInt(const char *instr,int minx,int maxx, int def);
         unsigned long getUniqueSequenceIdentifier();
         bool lineType(char *line, const char *code);
 
         bool blankLine(char *line);
         bool blankLineNumericLabel(char *line);
-        
+
         void getPath(string str, string *path);
-        
+
         virtual char promptForYesNo(char *title, const char *prompt);
         virtual char promptForYesNo(const char *title, const char *prompt);
         virtual void error( char *msg,...);
@@ -60,7 +60,7 @@ class Utility
         double median(std::vector<double> v);
         /* Attributes */
         void beQuiet(bool b) {quiet=b;};
-        
+
     private:
         /* Functions */
 

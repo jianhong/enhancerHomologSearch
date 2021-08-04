@@ -3,7 +3,8 @@
 
 const char *SecsToStr(unsigned long Secs)
 	{
-	static char Str[16];
+	static char Str[17];
+  memset(Str, 0, 17);
 	long hh, mm, ss;
 
 	hh = Secs/(60*60);

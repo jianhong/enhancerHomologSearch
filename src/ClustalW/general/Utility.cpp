@@ -1,21 +1,21 @@
 /**
  * Author: Mark Larkin
- * 
- * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.  
+ *
+ * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.
  *
  * @author Mark Larkin, Conway Institute, UCD. mark.larkin@ucd.ie
  *
  * Changes:
  *
  *  2007-12-03, Andreas Wilm (UCD): replaced gets with fgets, and
- *  got rid of some compiler warning 
+ *  got rid of some compiler warning
  *
  */
 #ifdef HAVE_CONFIG_H
     #include "config.h"
 #endif
-#include <iostream> 
-#include <algorithm> 
+#include <iostream>
+#include <algorithm>
 #include "Utility.h"
 #include "general/userparams.h"
 
@@ -29,14 +29,14 @@ Utility::Utility()
     quiet=false;
 }
 
-    
+
 /**
  * Removes trailing blanks from a string
  */
 void Utility::rTrim(string *str)
 {
     string::reverse_iterator rit = str->rbegin();
-     
+
      while(rit != str->rend() && isspace(*rit))
      {
          str->erase((++rit).base());
@@ -67,7 +67,7 @@ char * Utility::rTrim(char *str)
 /**
  * Replace blanks in a string with underscores. Also replaces , ; : ( or ) with _.
  * @param str String to process.
- * @return Pointer to the processed string 
+ * @return Pointer to the processed string
  */
 char * Utility::blankToUnderscore(char *str)
 {
@@ -88,7 +88,7 @@ char * Utility::blankToUnderscore(char *str)
 /**
  * Replace blanks in a string with underscores. Also replaces , ; : ( or ) with _.
  * @param str String to process.
- * @return Pointer to the processed string 
+ * @return Pointer to the processed string
  */
 string Utility::blankToUnderscore(string str)
 {
@@ -107,9 +107,9 @@ string Utility::blankToUnderscore(string str)
 }
 
 /**
- * 
- * @param instr 
- * @return 
+ *
+ * @param instr
+ * @return
  */
 char Utility::getChoice(string instr)
 {
@@ -148,14 +148,14 @@ bool Utility::isNumeric(char ch)
 
 
 /**
- * 
- * @param instr 
- * @param outstr 
+ *
+ * @param instr
+ * @param outstr
  */
 void Utility::getStr(string instr, string& outstr)
 {
     cout << instr << ": ";
-    cout.flush();    
+    cout.flush();
     string temp;
     getline(cin, temp, '\n');
     outstr = temp;
@@ -163,53 +163,53 @@ void Utility::getStr(string instr, string& outstr)
 }
 
 /**
- * 
- * @param instr 
- * @param minx 
- * @param maxx 
- * @param def 
- * @return 
+ *
+ * @param instr
+ * @param minx
+ * @param maxx
+ * @param def
+ * @return
  */
-double Utility::getReal(const char *instr, double minx, double maxx, double def)
-{
-    int status;
-    float ret;
-    char line[MAXLINE];
+//double Utility::getReal(const char *instr, double minx, double maxx, double def)
+//{
+    //int status;
+    //float ret;
+    //char line[MAXLINE];
 
-    while (true)
-    {
-        fprintf(stdout, "%s (%.1f-%.1f)   [%.1f]: ", instr, minx, maxx, def);
-        //gets(line);
-        fgets(line, MAXLINE, stdin);
-        status = sscanf(line, "%f", &ret);
-        if (status == EOF)
-        {
-            return def;
-        }
-        if (ret > maxx)
-        {
-            fprintf(stderr, "ERROR: Max. value=%.1f\n\n", maxx);
-            continue;
-        }
-        if (ret < minx)
-        {
-            fprintf(stderr, "ERROR: Min. value=%.1f\n\n", minx);
-            continue;
-        }
-        break;
-    }
-    return (double)ret;
-}
+    //while (true)
+    //{
+        //fprintf(stdout, "%s (%.1f-%.1f)   [%.1f]: ", instr, minx, maxx, def);
+
+        //fgets(line, MAXLINE, stdin);
+        //status = sscanf(line, "%f", &ret);
+        //if (status == EOF)
+        //{
+        //    return def;
+        //}
+        //if (ret > maxx)
+        //{
+        //    fprintf(stderr, "ERROR: Max. value=%.1f\n\n", maxx);
+        //    continue;
+        //}
+        //if (ret < minx)
+        //{
+        //    fprintf(stderr, "ERROR: Min. value=%.1f\n\n", minx);
+        //    continue;
+        //}
+        //break;
+    //}
+    //return (double)ret;
+//}
 
 /**
- * 
- * @param instr 
- * @param minx 
- * @param maxx 
- * @param def 
- * @return 
+ *
+ * @param instr
+ * @param minx
+ * @param maxx
+ * @param def
+ * @return
  */
-int Utility::getInt(const char *instr, int minx, int maxx, int def)
+/*int Utility::getInt(const char *instr, int minx, int maxx, int def)
 {
     int ret, status;
     char line[MAXLINE];
@@ -237,13 +237,13 @@ int Utility::getInt(const char *instr, int minx, int maxx, int def)
         break;
     }
     return ret;
-}
+}*/
 
 /**
- * 
- * @param line 
- * @param code 
- * @return 
+ *
+ * @param line
+ * @param code
+ * @return
  */
 bool Utility::lineType(char *line, const char *code)
 {
@@ -253,14 +253,14 @@ bool Utility::lineType(char *line, const char *code)
      n=strlen(line);
    else
      n=strlen(code);
-   
+
    return (strncmp(line, code, strlen(code)) == 0);
 }
 
 /**
- * 
- * @param line 
- * @return 
+ *
+ * @param line
+ * @return
  */
 bool Utility::blankLine(char *line)
 {
@@ -280,12 +280,12 @@ bool Utility::blankLine(char *line)
 }
 
 /**
- * 
- * @param line 
- * @return 
+ *
+ * @param line
+ * @return
  */
 // Utility::blankLine thinks that a line like
-// 2125209         .......... .......... .......... .......... .......... 
+// 2125209         .......... .......... .......... .......... ..........
 // is blank, causing problems for countSeqs when sequence labels are numeric
 // this function will return false if there's a number and a bunch of dots (not ideal, i know)
 bool Utility::blankLineNumericLabel(char *line)
@@ -315,16 +315,16 @@ bool Utility::blankLineNumericLabel(char *line)
 }
 
 /**
- * 
- * @param str 
- * @param path 
+ *
+ * @param str
+ * @param path
  */
 void Utility::getPath(string str, string *path)
 {
     int i;
     string _temp;
     _temp = str;
-    
+
     for (i = _temp.length() - 1; i >  - 1; --i)
     {
         if (str[i] == DIRDELIM)
@@ -335,9 +335,9 @@ void Utility::getPath(string str, string *path)
         if (str[i] == '.')
         {
             break;
-        }    
+        }
     }
-    
+
     if (i < 0)
     {
         _temp += ".";
@@ -346,13 +346,13 @@ void Utility::getPath(string str, string *path)
     {
         _temp = _temp.substr(0, i + 1);
     }
-    *path = _temp;   
+    *path = _temp;
 }
 
 /**
- * 
- * @param title 
- * @param prompt 
+ *
+ * @param title
+ * @param prompt
  * @return
  *
  *
@@ -361,10 +361,10 @@ char Utility::promptForYesNo(char *title, const char *prompt)
 {
     cout << "\n" << title << "\n";
     string promptMessage = string(prompt) + "(y/n) ? [y]";
-    
+
     string answer;
     getStr(promptMessage, answer);
-    
+
     if(!answer.empty())
     {
         if ((answer[0] != 'n') && (answer[0] != 'N'))
@@ -376,9 +376,9 @@ char Utility::promptForYesNo(char *title, const char *prompt)
 }
 
 /**
- * 
- * @param title 
- * @param prompt 
+ *
+ * @param title
+ * @param prompt
  * @return
  *
  */
@@ -386,10 +386,10 @@ char Utility::promptForYesNo(const char *title, const char *prompt)
 {
     cout << "\n" << title << "\n";
     string promptMessage = string(prompt) + "(y/n) ? [y]";
-    
+
     string answer;
     getStr(promptMessage, answer);
-    
+
     if(!answer.empty())
     {
         if ((answer[0] != 'n') && (answer[0] != 'N'))
@@ -401,8 +401,8 @@ char Utility::promptForYesNo(const char *title, const char *prompt)
 }
 
 /**
- * 
- * @param msg 
+ *
+ * @param msg
  */
 void Utility::error( char *msg,...)
 {
@@ -416,8 +416,8 @@ void Utility::error( char *msg,...)
 }
 
 /**
- * 
- * @param msg 
+ *
+ * @param msg
  */
 void Utility::warning( char *msg,...)
 {
@@ -431,8 +431,8 @@ void Utility::warning( char *msg,...)
 }
 
 /**
- * 
- * @param msg 
+ *
+ * @param msg
  */
 void Utility::error( const char *msg,...)
 {
@@ -446,8 +446,8 @@ void Utility::error( const char *msg,...)
 }
 
 /**
- * 
- * @param msg 
+ *
+ * @param msg
  */
 void Utility::warning( const char *msg,...)
 {
@@ -461,8 +461,8 @@ void Utility::warning( const char *msg,...)
 }
 
 /**
- * 
- * @param msg 
+ *
+ * @param msg
  */
 void Utility::info( char *msg,...)
 {
@@ -478,8 +478,8 @@ void Utility::info( char *msg,...)
 }
 
 /**
- * 
- * @param msg 
+ *
+ * @param msg
  */
 void Utility::info(const char *msg,...)
 {
@@ -494,9 +494,9 @@ void Utility::info(const char *msg,...)
 }
 
 
-    
+
 /**
- * 
+ *
  */
 void Utility::myname( char *myname)
 {
@@ -504,7 +504,7 @@ void Utility::myname( char *myname)
 }
 
 
-    
+
 /**
  * Change:
  * Mark 25-1-2007. I made this change to get around the problem of having to keep track
@@ -544,7 +544,7 @@ double Utility::stdDev(std::vector<double>& v)
 
     if (v.size() == 0)
         return 0.0;
-    
+
     for(i=v.begin(); i != v.end(); ++i)
         tmp += (*i - avg) * (*i - avg);
     return sqrt(tmp / v.size());
@@ -555,10 +555,10 @@ double Utility::median(std::vector<double> v)
     // From Moo & Koenig, "Accelerated C++:
     typedef vector<double>::size_type vec_sz;
     vec_sz size = v.size();
-    
+
     if (v.size() == 0)
         return 0.0;
-    
+
     std::sort(v.begin(), v.end());
     vec_sz mid = size/2;
     return size % 2 == 0 ? (v[mid] + v[mid-1]) / 2 : v[mid];
