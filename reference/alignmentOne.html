@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">enhancerHomologSearch</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.8</span>
       </span>
     </div>
 
@@ -92,7 +92,12 @@
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/jianhong/enhancerHomologSearch/">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -107,7 +112,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Get alignment scores</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/jianhong/enhancerHomologSearch/blob/master/R/alignment.R'><code>R/alignment.R</code></a></small>
     <div class="hidden name"><code>alignmentOne.Rd</code></div>
     </div>
 
@@ -126,7 +131,7 @@
     </tr>
     <tr>
       <th>subject</th>
-      <td><p>Output of getENCODEdata. An object of <a href='enhancers-class.html'>enhancers</a></p></td>
+      <td><p>Output of getENCODEdata. An object of <a href='Enhancers-class.html'>Enhancers</a></p></td>
     </tr>
     <tr>
       <th>block</th>
@@ -145,15 +150,15 @@ increase the memory cost. Default 1000.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An object of <a href='enhancers-class.html'>enhancers</a>.</p>
+    <p>An object of <a href='Enhancers-class.html'>Enhancers</a>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/Bioconductor/BiocParallel'>BiocParallel</a></span><span class='op'>)</span>
-<span class='va'>bpparam</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/BiocParallel/man/MulticoreParam-class.html'>MulticoreParam</a></span><span class='op'>(</span>workers <span class='op'>=</span> <span class='fl'>2</span>, tasks<span class='op'>=</span><span class='fl'>200</span>, progressbar<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
+<span class='va'>bpparam</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/BiocParallel/man/MulticoreParam-class.html'>MulticoreParam</a></span><span class='op'>(</span>workers <span class='op'>=</span> <span class='fl'>1</span>, tasks<span class='op'>=</span><span class='fl'>200</span>, progressbar<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
 <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>BSgenome.Hsapiens.UCSC.hg38</span><span class='op'>)</span>
 <span class='va'>peaks</span> <span class='op'>&lt;-</span> <span class='fu'>GRanges</span><span class='op'>(</span><span class='st'>"chr1"</span>, <span class='fu'>IRanges</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>5000</span>, <span class='fl'>50000</span>, by<span class='op'>=</span><span class='fl'>1000</span><span class='op'>)</span>, width<span class='op'>=</span><span class='fl'>1000</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>peaks</span><span class='op'>$</span><span class='va'>id</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq_along</a></span><span class='op'>(</span><span class='va'>peaks</span><span class='op'>)</span>, <span class='fl'>1</span>, sep<span class='op'>=</span><span class='st'>"_"</span><span class='op'>)</span>
-<span class='va'>subj</span> <span class='op'>&lt;-</span> <span class='fu'><a href='enhancers-class.html'>enhancers</a></span><span class='op'>(</span>genome<span class='op'>=</span><span class='va'>Hsapiens</span>, peaks<span class='op'>=</span><span class='va'>peaks</span><span class='op'>)</span>
+<span class='va'>subj</span> <span class='op'>&lt;-</span> <span class='fu'><a href='Enhancers-class.html'>Enhancers</a></span><span class='op'>(</span>genome<span class='op'>=</span><span class='va'>Hsapiens</span>, peaks<span class='op'>=</span><span class='va'>peaks</span><span class='op'>)</span>
 <span class='va'>q</span> <span class='op'>&lt;-</span> <span class='fu'>getSeq</span><span class='op'>(</span><span class='va'>Hsapiens</span>, <span class='fu'>GRanges</span><span class='op'>(</span><span class='st'>"chr1"</span>, <span class='fu'>IRanges</span><span class='op'>(</span><span class='fl'>90000</span>, width<span class='op'>=</span><span class='fl'>1000</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>ao</span> <span class='op'>&lt;-</span> <span class='fu'>alignmentOne</span><span class='op'>(</span><span class='va'>q</span>, <span class='va'>subj</span>, bpparam<span class='op'>=</span><span class='va'>bpparam</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;   |                                                                              |                                                                      |   0%  |                                                                              |======================================================================| 100%

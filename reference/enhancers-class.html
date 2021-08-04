@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Class "enhancers" — enhancers-class • enhancerHomologSearch</title>
+<title>Class "Enhancers" — Enhancers-class • enhancerHomologSearch</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Class "enhancers" — enhancers-class" />
-<meta property="og:description" content="An object of class &quot;enhancers&quot;
+<meta property="og:title" content="Class "Enhancers" — Enhancers-class" />
+<meta property="og:description" content="An object of class &quot;Enhancers&quot;
 represents the output of function getENCODEdata,
 which includes the sequences of enhancers and their genomic coordinates." />
 
@@ -74,7 +74,7 @@ which includes the sequences of enhancers and their genomic coordinates." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">enhancerHomologSearch</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.8</span>
       </span>
     </div>
 
@@ -94,7 +94,12 @@ which includes the sequences of enhancers and their genomic coordinates." />
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/jianhong/enhancerHomologSearch/">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -108,29 +113,35 @@ which includes the sequences of enhancers and their genomic coordinates." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Class <code>"enhancers"</code></h1>
-    
+    <h1>Class <code>"Enhancers"</code></h1>
+    <small class="dont-index">Source: <a href='https://github.com/jianhong/enhancerHomologSearch/blob/master/R/enhancers.R'><code>R/enhancers.R</code></a></small>
     <div class="hidden name"><code>enhancers-class.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>An object of class "enhancers"
+    <p>An object of class "Enhancers"
 represents the output of function <a href='getENCODEdata.html'>getENCODEdata</a>,
 which includes the sequences of enhancers and their genomic coordinates.</p>
     </div>
 
-    <pre class="usage">enhancers(...)
+    <pre class="usage">Enhancers(genome, peaks)
 
-# S4 method for enhancers
+# S4 method for Enhancers
 $(x, name)
 
-# S4 method for enhancers
+# S4 method for Enhancers
 $(x, name) &lt;- value
 
-# S4 method for enhancers
+# S4 method for Enhancers,ANY
+distance(x)
+
+# S4 method for Enhancers
+distance(x) &lt;- value
+
+# S4 method for Enhancers
 getSeq(x, ...)
 
-# S4 method for enhancers,ANY
+# S4 method for Enhancers,ANY
 subsetByOverlaps(
   x,
   ranges,
@@ -141,24 +152,42 @@ subsetByOverlaps(
   ...
 )
 
-# S4 method for enhancers
+# S4 method for Enhancers
 subset(x, ...)
 
-# S4 method for enhancers
+# S4 method for Enhancers
+seqinfo(x)
+
+# S4 method for Enhancers
+genome(x)
+
+# S4 method for Enhancers
+genome(x) &lt;- value
+
+# S4 method for Enhancers
+peaks(x)
+
+# S4 method for Enhancers
+peaks(x) &lt;- value
+
+# S4 method for Enhancers
 show(object)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>...</th>
-      <td><p>Each argument in ... becomes an slot in the new("enhancers")
-or An object of <code>"GRanges"</code> for getSeq,enhancers-method
-<code>"enhancers"</code></p></td>
+      <th>genome</th>
+      <td><p>An object of <a href='https://rdrr.io/pkg/BSgenome/man/BSgenome-class.html'>BSgenome</a>.</p></td>
+    </tr>
+    <tr>
+      <th>peaks</th>
+      <td><p>An object of <a href='https://rdrr.io/pkg/GenomicRanges/man/GRanges-class.html'>GRanges</a>.
+<code>"Enhancers"</code></p></td>
     </tr>
     <tr>
       <th>x</th>
-      <td><p>An object of <code>"enhancers"</code></p></td>
+      <td><p>An object of <code>"Enhancers"</code></p></td>
     </tr>
     <tr>
       <th>name</th>
@@ -169,19 +198,23 @@ or An object of <code>"GRanges"</code> for getSeq,enhancers-method
       <td><p>The values.</p></td>
     </tr>
     <tr>
+      <th>...</th>
+      <td><p>parameters can be passed to upstream functions.</p></td>
+    </tr>
+    <tr>
       <th>ranges, maxgap, minoverlap, type, invert</th>
       <td><p>parameters used by
 <a href='https://rdrr.io/pkg/GenomicRanges/man/findOverlaps-methods.html'>subsetByOverlaps</a></p></td>
     </tr>
     <tr>
       <th>object</th>
-      <td><p>An object of <code>"enhancers"</code></p></td>
+      <td><p>An object of <code>"Enhancers"</code></p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An object of enhancers.</p>
+    <p>An object of Enhancers.</p>
     <h2 class="hasAnchor" id="slots"><a class="anchor" href="#slots"></a>Slots</h2>
 
     
@@ -194,8 +227,8 @@ or An object of <code>"GRanges"</code> for getSeq,enhancers-method
 </dl>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>enhancers</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; This is an empty object of enhancers.</div><div class='input'>
+    <pre class="examples"><div class='input'><span class='fu'>Enhancers</span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; This is an empty object of Enhancers.</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
