@@ -17,6 +17,7 @@
 #include "../tree/TreeInterface.h"
 #include "../clustalw_version.h"
 #include "MSA.h"
+#include <unistd.h>
 
 namespace clustalw
 {
@@ -228,7 +229,14 @@ bool Iteration::removeFirstIterate(Alignment* alnPtr)
                  * we just pass down the filename :(
                  */
                 char buffer[L_tmpnam];
-                mkstemp(buffer);
+                //tmpnam(buffer);
+                int fd = -1;
+                while(fd<0){
+                    fd = mkstemp(buffer);
+                }
+                if(fd>=0){
+                    close(fd);
+                }
                 p2TreeName = buffer + string(".dnd");
                 // should test here if file is writable
             }
