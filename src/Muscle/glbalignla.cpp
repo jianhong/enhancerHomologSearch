@@ -1,6 +1,9 @@
 #include "muscle.h"
 #include "profile.h"
 #include "pwpath.h"
+#if WIN32
+    #include <math.h>
+#endif
 
 #define	OCC	1
 

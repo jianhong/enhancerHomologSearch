@@ -14,4 +14,4 @@ all: $(SHLIB)
 
 # Provide recipe to remove all objects
 clean:
-	@rm -f $(OBJECTS)
+	rm -f $(OBJECTS)
