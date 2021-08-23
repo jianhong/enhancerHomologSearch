@@ -1,5 +1,9 @@
 # Change in 0.99.9
 
+  o Add Makevars.win file to clean .o files in src.
+
+# Change in 0.99.9
+
   o fix the make error: 'logf' was not declared in this scope.
 
 # Change in 0.99.8
