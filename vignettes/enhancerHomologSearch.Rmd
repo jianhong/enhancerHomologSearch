@@ -28,6 +28,7 @@ suppressPackageStartupMessages({
   library(TxDb.Mmusculus.UCSC.mm10.knownGene)
   library(org.Mm.eg.db)
   library(utils)
+  library(MotifDb)
 })
 knitr::opts_chunk$set(warning=FALSE, message=FALSE)
 ```
@@ -44,12 +45,12 @@ methods to identify the orthologs to enhancers in human and mouse,
 
 2. use spotted gar genome as bridge genome to search the orthologs[@braasch2016spotted].
 
-Both of the methods will work well in the coding region. 
-However, there is lacking of comparative data in distal regulation region 
+Both methods will work well in the coding region. 
+However, there is lacking comparative data in distal regulation region 
 such as enhancers and silencers. 
 
-In 2020, Emily S. Wong et. al. provide a new
-methods for identification of putative human orthologs to enhancers 
+In 2020, Emily S. Wong et. al. provides a new
+method for identification of putative human orthologs to enhancers 
 of zebrafish[@wong2020deep]. They used the method to interrogate conserved 
 syntenic regions and human and mouse using candidate sponge enhancer sequences. 
 First, they looked for overlap with available functional genomics
@@ -57,10 +58,10 @@ information. For example, they used mouse ENCODE data to infer enhancer activity
 based on histone marks in specific tissues.
 Second, they select the best-aligned region by whole genome alignment from the
 candidates regions for human and mouse as orthologs.
-This methods provide the possibility to search orthologs for enhancers or 
+This method provides the possibility to search orthologs for enhancers or 
 silencers even there is not genome comparative data available.
 
-This package is modified from Wong's methods and provide the easy to used
+This package is modified from Wong's methods and provide the easy-to-use 
 script for researchers to quick search putative mammalian orthologs to enhancers.
 The modified algorithm is:
 The candidate regions were determined by ENCODE histone marks (default is 
@@ -112,14 +113,14 @@ R.version
 ```
 
 ## Step 1, prepare target enhancer sequences.
-In this example, we will use an enhancer of hbegf gene in zebrafish.
+In this example, we will use an enhancer of `lepb` gene in zebrafish.
 ```{r}
 # load genome sequences
 library(BSgenome.Drerio.UCSC.danRer10)
 # define the enhancer genomic coordinates
-hbegfEN <- GRanges("chr14", IRanges(6760805,	6761115))
+LEN <- GRanges("chr4", IRanges(19050041, 19051709))
 # extract the sequences as Biostrings::DNAStringSet object
-(seqEN <- getSeq(BSgenome.Drerio.UCSC.danRer10, hbegfEN))
+(seqEN <- getSeq(BSgenome.Drerio.UCSC.danRer10, LEN))
 ```
 
 ## Step 2, download candidate regions of enhancers from ENCODE by H3K4me1 marks
@@ -150,12 +151,12 @@ by given genomic coordinates.
 # in human, the homolog HBEGF gene is located at chromosome 5
 # you can try to subset the data by chromosome 5
 gr <- as(seqinfo(Hsapiens), "GRanges")
-hs <- subsetByOverlaps(hs, gr[seqnames(gr)=="chr5"])
+hs <- subsetByOverlaps(hs, gr[seqnames(gr)=="chr7"])
 # In this test run, we will only use upstream 1M and downstream 1M of homolog
 # gene
 library(TxDb.Hsapiens.UCSC.hg38.knownGene)
 library(org.Hs.eg.db)
-eid <- mget("HBEGF", org.Hs.egALIAS2EG)[[1]]
+eid <- mget("LEP", org.Hs.egALIAS2EG)[[1]]
 g_hs <- select(TxDb.Hsapiens.UCSC.hg38.knownGene,
                keys=eid,
                columns=c("GENEID", "TXCHROM", "TXSTART", "TXEND", "TXSTRAND"),
@@ -171,16 +172,20 @@ hs <- subsetByOverlaps(hs, expandGR(g_hs, ext=1000000))
 # in mouse, the homolog Hbegf gene is located at chromosome 18
 # same as above script in human, you can try to subset the data by chromosome.
 gr <- as(seqinfo(Mmusculus), "GRanges")
-mm <- subsetByOverlaps(mm, gr[seqnames(gr)=="chr18"])
+mm <- subsetByOverlaps(mm, gr[seqnames(gr)=="chr6"])
 # Here we use the subset of 1M upstream and downstream of homolog gene.
 library(TxDb.Mmusculus.UCSC.mm10.knownGene)
 library(org.Mm.eg.db)
-eid <- mget("Hbegf", org.Mm.egALIAS2EG)[[1]]
+eid <- mget("Lep", org.Mm.egALIAS2EG)[[1]]
 g_mm <- select(TxDb.Mmusculus.UCSC.mm10.knownGene,
                keys=eid,
                columns=c("GENEID", "TXCHROM", "TXSTART", "TXEND", "TXSTRAND"),
                keytype="GENEID")
-g_mm <- range(with(g_mm, GRanges(TXCHROM, IRanges(TXSTART, TXEND))))
+g_mm <- range(with(g_mm,
+                   GRanges(TXCHROM,
+                           IRanges(TXSTART, TXEND),
+                           strand=TXSTRAND)))
+g_mm <- g_mm[seqnames(g_mm) %in% "chr6" & strand(g_mm) %in% "+"]
 mm <- subsetByOverlaps(mm, expandGR(g_mm, ext=1000000))
 
 # use parallel computing to speed up.
@@ -220,8 +225,12 @@ as phylip multiple alignment file in text format.
 al <- alignment(seqEN, list(human=aln_hs, mouse=aln_mm),
                 method="ClustalW", order="input")
 al
+library(MotifDb)
+motifs <- query(MotifDb, "JASPAR_CORE")
+consensus <- sapply(motifs, consensusString)
+consensus <- DNAStringSet(gsub("\\?", "N", consensus))
 tmpfolder <- tempdir()
-saveAlignments(al, output_folder = tmpfolder)
+saveAlignments(al, output_folder = tmpfolder, motifConsensus=consensus)
 readLines(file.path(tmpfolder, "aln1.phylip.txt"))
 ```
 ## Session info

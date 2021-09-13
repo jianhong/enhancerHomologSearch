@@ -1,7 +1,7 @@
 Package: enhancerHomologSearch
 Type: Package
 Title: Identification of putative mammalian orthologs to given enhancer
-Version: 0.99.10
+Version: 0.99.12
 Authors@R: c(person(given="Jianhong", family="Ou", email="jianhong.ou@duke.edu", 
                  role=c("aut", "cre"), comment=c(ORCID="0000-0002-8652-2488")),
             person(given="Valentina", family="Cigliola", role=c("dtc")),
@@ -31,6 +31,7 @@ Suggests: knitr, rmarkdown,
   org.Hs.eg.db,
   TxDb.Mmusculus.UCSC.mm10.knownGene,
   org.Mm.eg.db,
+  MotifDb,
   testthat
 biocViews: Sequencing, GeneRegulation, Alignment
 License: GPL (>= 2)
