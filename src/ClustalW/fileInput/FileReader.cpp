@@ -689,7 +689,7 @@ void FileReader::checkInfile(int *nseqs, unique_ptr<FileParser>& fileParser)
         *nseqs = fileParser->countSeqs();
         // no output in 1.83: cout << "number of seqs is: " << *nseqs << "\n";
     }
-    catch(exception ex)
+    catch(std::exception& ex)
     {
         *nseqs = 0;
     }

@@ -4,12 +4,14 @@
 \alias{saveAlignments}
 \title{output alignments}
 \usage{
-saveAlignments(al, output_folder = tempdir())
+saveAlignments(al, output_folder = tempdir(), motifConsensus = NULL)
 }
 \arguments{
 \item{al}{output of \link{alignment}.}
 
 \item{output_folder}{output folder.}
+
+\item{motifConsensus}{Transcription factor binding consensus.}
 }
 \value{
 The I/O status.
@@ -21,5 +23,9 @@ Save enhancer homologs to file in phylip format.
 al <- readRDS(system.file("extdata", "al.rds",
                package="enhancerHomologSearch"))
 tmpfolder <- tempdir()
-saveAlignments(al, output_folder=tmpfolder)
+library(MotifDb)
+motifs <- query(MotifDb, "JASPAR_CORE")
+consensus <- sapply(motifs, consensusString)
+consensus <- DNAStringSet(gsub("\\\\?", "N", consensus))
+saveAlignments(al, output_folder=tmpfolder, motifConsensus=consensus)
 }

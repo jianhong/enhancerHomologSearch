@@ -29,7 +29,6 @@ extern const char *MUSCLE_LONG_VERSION;
 #include <stdarg.h>
 #include <stdio.h>
 
-
 #define DOUBLE_AFFINE	0
 #define SINGLE_AFFINE	1
 #define PAF				0

@@ -1,4 +1,21 @@
-# Change in 0.99.7
+# Change in 0.99.12
+
+  o Update the documentation.
+  o Add motifConsensus argument for saveAlignments function.
+
+# Change in 0.99.11
+
+  o Fix typos in documentation.
+
+# Change in 0.99.10
+
+  o Add Makevars.win file to clean .o files in src.
+
+# Change in 0.99.9
+
+  o fix the make error: 'logf' was not declared in this scope.
+
+# Change in 0.99.8
 
   o Change sprintf to snprintf for Muscle/typetostr.cpp:14:22.
 

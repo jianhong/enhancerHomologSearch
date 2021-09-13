@@ -680,7 +680,7 @@ void AlignmentOutput::fastaOut(Alignment* alignPtr, outputRegion partToOutput, C
              << e.what() << "\n";
         throw 1;
     }
-    catch(VectorOutOfRange e)
+    catch(const VectorOutOfRange& e)
     {
         //fastaOutFile->close();
         cerr << "An exception has occured in the fastaOut function.\n"
@@ -875,7 +875,7 @@ void AlignmentOutput::gcgOut(Alignment* alignPtr, outputRegion partToOutput)
              << e.what() << "\n";
         throw 1;
     }
-    catch(VectorOutOfRange e)
+    catch(const VectorOutOfRange& e)
     {
         gcgOutFile->close();
         cerr << "An exception has occured in the gcgOut function.\n"
@@ -1034,7 +1034,7 @@ void AlignmentOutput::phylipOut(Alignment* alignPtr, outputRegion partToOutput)
              << e.what() << "\n";
         throw 1;
     }
-    catch(VectorOutOfRange e)
+    catch(const VectorOutOfRange& e)
     {
         phylipOutFile->close();
         cerr << "An exception has occured in the phylipOut function.\n"
@@ -1163,7 +1163,7 @@ void AlignmentOutput::nexusOut(Alignment* alignPtr, outputRegion partToOutput)
              << e.what() << "\n";
         throw 1;
     }
-    catch(VectorOutOfRange e)
+    catch(const VectorOutOfRange& e)
     {
         nexusOutFile->close();
         cerr << "An exception has occured in the nexusOut function.\n"
@@ -1452,7 +1452,7 @@ void AlignmentOutput::gdeOut(Alignment* alignPtr, outputRegion partToOutput)
              << e.what() << "\n";
         throw 1;
     }
-    catch(VectorOutOfRange e)
+    catch(const VectorOutOfRange& e)
     {
         gdeOutFile->close();
         cerr << "An exception has occured in the gdeOut function.\n"
@@ -1567,7 +1567,7 @@ void AlignmentOutput::nbrfOut(Alignment* alignPtr, outputRegion partToOutput)
              << e.what() << "\n";
         throw 1;
     }
-    catch(VectorOutOfRange e)
+    catch(const VectorOutOfRange& e)
     {
         nbrfOutFile->close();
         cerr << "An exception has occured in the nbrfOut function.\n"
@@ -2150,14 +2150,14 @@ void AlignmentOutput::clustalOut(Alignment* alignPtr, outputRegion partToOutput,
              << e.what() << "\n";
         throw 1;
     }
-    catch(VectorOutOfRange e)
+    catch(const VectorOutOfRange& e)
     {
         //clustalOutFile->close();
         cerr << "An exception has occured in the clustalOut function.\n"
              << e.what() << "\n";
         throw 1;
     }
-    catch(exception e)
+    catch(std::exception& e)
     {
         //clustalOutFile->close();
         cerr << "An exception has occured in the clustalOut function.\n"
@@ -2407,7 +2407,7 @@ void AlignmentOutput::findRangeValues(Alignment* alignPtr, rangeNum *rnum, int f
              << " - " << rnum->end;
         cout << " Done checking.........";
     }
-    catch(VectorOutOfRange e)
+    catch(const VectorOutOfRange& e)
     {
         cerr << "An exception has occured in the findRangeValues function.\n"
              << e.what() << "\n";
