@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">enhancerHomologSearch</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.12</span>
       </span>
     </div>
 
@@ -120,7 +120,7 @@
     <p>Save enhancer homologs to file in phylip format.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>saveAlignments</span><span class='op'>(</span><span class='va'>al</span>, output_folder <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>saveAlignments</span><span class='op'>(</span><span class='va'>al</span>, output_folder <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span><span class='op'>(</span><span class='op'>)</span>, motifConsensus <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -133,6 +133,10 @@
       <th>output_folder</th>
       <td><p>output folder.</p></td>
     </tr>
+    <tr>
+      <th>motifConsensus</th>
+      <td><p>Transcription factor binding consensus.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -143,7 +147,11 @@
     <pre class="examples"><div class='input'><span class='va'>al</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"al.rds"</span>,
                package<span class='op'>=</span><span class='st'>"enhancerHomologSearch"</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>tmpfolder</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span><span class='op'>(</span><span class='op'>)</span>
-<span class='fu'>saveAlignments</span><span class='op'>(</span><span class='va'>al</span>, output_folder<span class='op'>=</span><span class='va'>tmpfolder</span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>MotifDb</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>See system.file("LICENSE", package="MotifDb") for use restrictions.</span></div><div class='input'><span class='va'>motifs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/MotifDb/man/query.html'>query</a></span><span class='op'>(</span><span class='va'>MotifDb</span>, <span class='st'>"JASPAR_CORE"</span><span class='op'>)</span>
+<span class='va'>consensus</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>sapply</a></span><span class='op'>(</span><span class='va'>motifs</span>, <span class='va'>consensusString</span><span class='op'>)</span>
+<span class='va'>consensus</span> <span class='op'>&lt;-</span> <span class='fu'>DNAStringSet</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/grep.html'>gsub</a></span><span class='op'>(</span><span class='st'>"\\?"</span>, <span class='st'>"N"</span>, <span class='va'>consensus</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'>saveAlignments</span><span class='op'>(</span><span class='va'>al</span>, output_folder<span class='op'>=</span><span class='va'>tmpfolder</span>, motifConsensus<span class='op'>=</span><span class='va'>consensus</span><span class='op'>)</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
