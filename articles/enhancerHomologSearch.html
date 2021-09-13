@@ -114,20 +114,20 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">R.version</span></code></pre></div>
 <pre><code>##                _                           
-## platform       x86_64-apple-darwin17.0     
+## platform       x86_64-pc-linux-gnu         
 ## arch           x86_64                      
-## os             darwin17.0                  
-## system         x86_64, darwin17.0          
+## os             linux-gnu                   
+## system         x86_64, linux-gnu           
 ## status                                     
 ## major          4                           
-## minor          1.0                         
+## minor          1.1                         
 ## year           2021                        
-## month          05                          
-## day            18                          
-## svn rev        80317                       
+## month          08                          
+## day            10                          
+## svn rev        80725                       
 ## language       R                           
-## version.string R version 4.1.0 (2021-05-18)
-## nickname       Camp Pontanezen</code></pre>
+## version.string R version 4.1.1 (2021-08-10)
+## nickname       Kick Things</code></pre>
 </div>
 <div id="step-1-prepare-target-enhancer-sequences-" class="section level2">
 <h2 class="hasAnchor">
@@ -487,43 +487,47 @@
 <a href="#session-info" class="anchor"></a>Session info</h2>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<pre><code>## R version 4.1.0 (2021-05-18)
-## Platform: x86_64-apple-darwin17.0 (64-bit)
-## Running under: macOS Big Sur 10.16
+<pre><code>## R version 4.1.1 (2021-08-10)
+## Platform: x86_64-pc-linux-gnu (64-bit)
+## Running under: Ubuntu 20.04.3 LTS
 ## 
 ## Matrix products: default
-## BLAS:   /Library/Frameworks/R.framework/Versions/4.1/Resources/lib/libRblas.dylib
-## LAPACK: /Library/Frameworks/R.framework/Versions/4.1/Resources/lib/libRlapack.dylib
+## BLAS/LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.8.so
 ## 
 ## locale:
-## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=C             
+##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
 ## 
 ## attached base packages:
-## [1] stats4    parallel  stats     graphics  grDevices utils     datasets 
-## [8] methods   base     
+## [1] stats4    stats     graphics  grDevices utils     datasets  methods  
+## [8] base     
 ## 
 ## other attached packages:
-##  [1] MotifDb_1.34.0                           
+##  [1] MotifDb_1.35.5                           
 ##  [2] org.Mm.eg.db_3.13.0                      
 ##  [3] TxDb.Mmusculus.UCSC.mm10.knownGene_3.10.0
 ##  [4] org.Hs.eg.db_3.13.0                      
 ##  [5] TxDb.Hsapiens.UCSC.hg38.knownGene_3.13.0 
-##  [6] GenomicFeatures_1.44.2                   
-##  [7] AnnotationDbi_1.54.1                     
-##  [8] Biobase_2.52.0                           
-##  [9] BSgenome.Mmusculus.UCSC.mm10_1.4.0       
+##  [6] GenomicFeatures_1.45.2                   
+##  [7] AnnotationDbi_1.55.1                     
+##  [8] Biobase_2.53.0                           
+##  [9] BSgenome.Mmusculus.UCSC.mm10_1.4.3       
 ## [10] BSgenome.Hsapiens.UCSC.hg38_1.4.3        
 ## [11] BSgenome.Drerio.UCSC.danRer10_1.4.2      
-## [12] BSgenome_1.60.0                          
-## [13] rtracklayer_1.52.1                       
-## [14] Biostrings_2.60.2                        
-## [15] XVector_0.32.0                           
-## [16] GenomicRanges_1.44.0                     
-## [17] GenomeInfoDb_1.28.4                      
-## [18] IRanges_2.26.0                           
-## [19] S4Vectors_0.30.0                         
-## [20] BiocGenerics_0.38.0                      
-## [21] BiocParallel_1.26.2                      
+## [12] BSgenome_1.61.0                          
+## [13] rtracklayer_1.53.1                       
+## [14] Biostrings_2.61.2                        
+## [15] XVector_0.33.0                           
+## [16] GenomicRanges_1.45.0                     
+## [17] GenomeInfoDb_1.29.8                      
+## [18] IRanges_2.27.2                           
+## [19] S4Vectors_0.31.3                         
+## [20] BiocGenerics_0.39.2                      
+## [21] BiocParallel_1.27.7                      
 ## [22] enhancerHomologSearch_0.99.12            
 ## 
 ## loaded via a namespace (and not attached):
@@ -531,43 +535,42 @@
 ##  [3] fs_1.5.0                    bit64_4.0.5                
 ##  [5] filelock_1.0.2              progress_1.2.2             
 ##  [7] httr_1.4.2                  rprojroot_2.0.2            
-##  [9] tools_4.1.0                 bslib_0.2.5.1              
-## [11] utf8_1.2.2                  R6_2.5.1                   
-## [13] splitstackshape_1.4.8       DBI_1.1.1                  
-## [15] withr_2.4.2                 tidyselect_1.1.1           
-## [17] prettyunits_1.1.1           bit_4.0.4                  
-## [19] curl_4.3.2                  compiler_4.1.0             
-## [21] textshaping_0.3.5           xml2_1.3.2                 
-## [23] desc_1.3.0                  DelayedArray_0.18.0        
-## [25] sass_0.4.0                  rappdirs_0.3.3             
-## [27] pkgdown_1.6.1               systemfonts_1.0.2          
-## [29] stringr_1.4.0               digest_0.6.27              
-## [31] Rsamtools_2.8.0             rmarkdown_2.10             
-## [33] pkgconfig_2.0.3             htmltools_0.5.2            
-## [35] MatrixGenerics_1.4.3        dbplyr_2.1.1               
-## [37] fastmap_1.1.0               rlang_0.4.11               
-## [39] RSQLite_2.2.8               jquerylib_0.1.4            
-## [41] BiocIO_1.2.0                generics_0.1.0             
-## [43] jsonlite_1.7.2              dplyr_1.0.7                
-## [45] RCurl_1.98-1.4              magrittr_2.0.1             
-## [47] GenomeInfoDbData_1.2.6      Matrix_1.3-4               
-## [49] Rcpp_1.0.7                  fansi_0.5.0                
-## [51] lifecycle_1.0.0             stringi_1.7.4              
-## [53] yaml_2.2.1                  SummarizedExperiment_1.22.0
-## [55] zlibbioc_1.38.0             BiocFileCache_2.0.0        
-## [57] grid_4.1.0                  blob_1.2.2                 
-## [59] crayon_1.4.1                lattice_0.20-44            
-## [61] hms_1.1.0                   KEGGREST_1.32.0            
-## [63] knitr_1.33                  pillar_1.6.2               
-## [65] rjson_0.2.20                biomaRt_2.48.3             
-## [67] XML_3.99-0.7                glue_1.4.2                 
-## [69] evaluate_0.14               data.table_1.14.0          
-## [71] vctrs_0.3.8                 png_0.1-7                  
-## [73] purrr_0.3.4                 assertthat_0.2.1           
-## [75] cachem_1.0.6                xfun_0.25                  
-## [77] restfulr_0.0.13             ragg_1.1.3                 
-## [79] tibble_3.1.4                GenomicAlignments_1.28.0   
-## [81] memoise_2.0.0               ellipsis_0.3.2</code></pre>
+##  [9] tools_4.1.1                 utf8_1.2.2                 
+## [11] R6_2.5.1                    DBI_1.1.1                  
+## [13] splitstackshape_1.4.8       withr_2.4.2                
+## [15] tidyselect_1.1.1            prettyunits_1.1.1          
+## [17] bit_4.0.4                   curl_4.3.2                 
+## [19] compiler_4.1.1              textshaping_0.3.5          
+## [21] xml2_1.3.2                  desc_1.3.0                 
+## [23] DelayedArray_0.19.2         rappdirs_0.3.3             
+## [25] pkgdown_1.6.1               systemfonts_1.0.2          
+## [27] stringr_1.4.0               digest_0.6.27              
+## [29] Rsamtools_2.9.1             rmarkdown_2.10             
+## [31] pkgconfig_2.0.3             htmltools_0.5.2            
+## [33] MatrixGenerics_1.5.4        dbplyr_2.1.1               
+## [35] fastmap_1.1.0               rlang_0.4.11               
+## [37] RSQLite_2.2.8               BiocIO_1.3.0               
+## [39] generics_0.1.0              jsonlite_1.7.2             
+## [41] dplyr_1.0.7                 RCurl_1.98-1.4             
+## [43] magrittr_2.0.1              GenomeInfoDbData_1.2.6     
+## [45] Matrix_1.3-4                Rcpp_1.0.7                 
+## [47] fansi_0.5.0                 lifecycle_1.0.0            
+## [49] stringi_1.7.4               yaml_2.2.1                 
+## [51] SummarizedExperiment_1.23.4 zlibbioc_1.39.0            
+## [53] BiocFileCache_2.1.1         grid_4.1.1                 
+## [55] blob_1.2.2                  parallel_4.1.1             
+## [57] crayon_1.4.1                lattice_0.20-44            
+## [59] hms_1.1.0                   KEGGREST_1.33.0            
+## [61] knitr_1.34                  pillar_1.6.2               
+## [63] rjson_0.2.20                biomaRt_2.49.4             
+## [65] XML_3.99-0.7                glue_1.4.2                 
+## [67] evaluate_0.14               data.table_1.14.0          
+## [69] vctrs_0.3.8                 png_0.1-7                  
+## [71] purrr_0.3.4                 assertthat_0.2.1           
+## [73] cachem_1.0.6                xfun_0.25                  
+## [75] restfulr_0.0.13             ragg_1.1.3                 
+## [77] tibble_3.1.4                GenomicAlignments_1.29.0   
+## [79] memoise_2.0.0               ellipsis_0.3.2</code></pre>
 <div id="refs" class="references csl-bib-body" line-spacing="2">
 <div id="ref-howe2013zebrafish" class="csl-entry">
 <div class="csl-left-margin">1. </div>
