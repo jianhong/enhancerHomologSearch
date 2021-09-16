@@ -1,3 +1,28 @@
+swapList <- function (x){
+  stopifnot(is.list(x))
+  null <- sapply(x, function(.ele) {
+    stopifnot(is.list(.ele) || is(.ele, "CompressedIRangesList"))
+  })
+  levelsA <- names(x)
+  levelsB <- unique(unlist(sapply(x, names, simplify = FALSE)))
+  if(length(levelsB)==0){
+    stopifnot(all(lengths(x)==length(x[[1]])))
+    levelsB <- seq.int(length(x[[1]]))
+  }
+  y <- as.list(levelsB)
+  names(y) <- levelsB
+  for (.lB in levelsB) {
+    y[[.lB]] <- list()
+  }
+  for (.lA in levelsA) {
+    for (.lB in levelsB) {
+      y[[.lB]][[.lA]] <- x[[.lA]][[.lB]]
+    }
+  }
+  y
+}
+
+
 #' @importFrom GenomeInfoDb mapGenomeBuilds
 guessAssembly <- function(genome){
   # hard coding, maybe an issue.
@@ -21,10 +46,12 @@ checkQuerySubject <- function(query, subject, subjectIsList=FALSE){
     null <- lapply(subject, FUN = function(.ele){
       stopifnot("subject must be an list of object of Enhancers" =
                   is(.ele, "Enhancers"))
+      stopifnot("Enhancers are empty" = length(peaks(.ele))>0)
     })
   }else{
     stopifnot("subject must be an object of Enhancers" =
                 is(subject, "Enhancers"))
+    stopifnot("Enhancers are empty" = length(peaks(subject))>0)
   }
   stopifnot("query must be an object of DNAStringSet" =
               is(query, "DNAStringSet"))
@@ -72,6 +99,18 @@ checkSubstitutionMatrix <- function(substitutionMatrix=c("iub", "clustalw"),
     substitutionMatrix <- auxMat
   }
   return(substitutionMatrix)
+}
+
+# help function to check PWMs
+checkPWMs <- function(PWMs){
+  stopifnot("PWMs must be an object of PWMatrixList or PFMatrixList"=
+              inherits(PWMs, c("PWMatrixList", "PFMatrixList")))
+}
+# help function to check TFBP bar
+checkTFBPs <- function(x){
+  stopifnot("Input of TFBPscore format is not correct"=is.logical(x))
+  stopifnot("Input of TFBPscore format is not correct"=
+              length(names(x))==length(x))
 }
 
 # help function to prepare parameters for ClustalW

@@ -53,8 +53,8 @@ Do pairwise alignment for query enhancer to target genome
 library(BSgenome.Hsapiens.UCSC.hg38)
 library(BSgenome.Mmusculus.UCSC.mm10)
 library(BSgenome.Drerio.UCSC.danRer10)
-hbegfEN <- GRanges("chr14", IRanges(6760805,	6761115))
-seqEN <- getSeq(BSgenome.Drerio.UCSC.danRer10, hbegfEN)
+LEN <- GRanges("chr4", IRanges(19050041, 19051709))
+seqEN <- getSeq(BSgenome.Drerio.UCSC.danRer10, LEN)
 aln_hs <- readRDS(system.file("extdata", "aln_hs.rds",
                package="enhancerHomologSearch"))
 genome(aln_hs) <- Hsapiens

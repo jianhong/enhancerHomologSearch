@@ -12,6 +12,12 @@
 \alias{distance<-,Enhancers-method}
 \alias{distance<-}
 \alias{distance<-,Enhancers,ANY-method}
+\alias{tfbp,Enhancers-method}
+\alias{tfbp}
+\alias{tfbp,Enhancers,ANY-method}
+\alias{query_tfbp,Enhancers-method}
+\alias{query_tfbp}
+\alias{query_tfbp,Enhancers,ANY-method}
 \alias{getSeq,Enhancers-method}
 \alias{subsetByOverlaps,Enhancers,ANY-method}
 \alias{subsetByOverlpas,Enhancers-method}
@@ -32,7 +38,7 @@
 \alias{show,Enhancers-method}
 \title{Class \code{"Enhancers"}}
 \usage{
-Enhancers(genome, peaks)
+Enhancers(genome, peaks, TFBP, TFBP0)
 
 \S4method{$}{Enhancers}(x, name)
 
@@ -41,6 +47,10 @@ Enhancers(genome, peaks)
 \S4method{distance}{Enhancers,ANY}(x)
 
 \S4method{distance}{Enhancers}(x) <- value
+
+\S4method{tfbp}{Enhancers}(x)
+
+\S4method{query_tfbp}{Enhancers}(x)
 
 \S4method{getSeq}{Enhancers}(x, ...)
 
@@ -71,7 +81,11 @@ Enhancers(genome, peaks)
 \arguments{
 \item{genome}{An object of \link[BSgenome:BSgenome-class]{BSgenome}.}
 
-\item{peaks}{An object of \link[GenomicRanges:GRanges-class]{GRanges}.
+\item{peaks}{An object of \link[GenomicRanges:GRanges-class]{GRanges}.}
+
+\item{TFBP}{An object of \link[Matrix:lsparseMatrix-classes]{lgCMatrix}.}
+
+\item{TFBP0}{An vector of logical.
 \code{"Enhancers"}}
 
 \item{x}{An object of \code{"Enhancers"}}
@@ -101,6 +115,10 @@ which includes the sequences of enhancers and their genomic coordinates.
 \item{\code{genome}}{An object of \link[BSgenome:BSgenome-class]{BSgenome}.}
 
 \item{\code{peaks}}{An object of \link[GenomicRanges:GRanges-class]{GRanges}.}
+
+\item{\code{TFBP}}{An object of \link[Matrix:lsparseMatrix-classes]{lgCMatrix}.}
+
+\item{\code{TFBP0}}{An vector of logical.}
 }}
 
 \examples{
