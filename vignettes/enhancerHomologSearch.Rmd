@@ -242,7 +242,7 @@ readLines(file.path(tmpfolder, "aln1.phylip.txt"))
 ## Step 6, check the conserved motifs in the orthologs
 
 ```{r}
-conservedMotifs(al[[i]], aln_hs, aln_mm, PWMs, Drerio)
+conservedMotifs(al[[1]], aln_hs, aln_mm, PWMs, Drerio)
 ```
 ## Session info
 
