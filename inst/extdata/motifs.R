@@ -47,14 +47,14 @@ MotifList2PWMatrixList <- function(motifs, groupDistance=10){
       m <- mat[[n]]
       m[4, ] <- 1 - colSums(m[-4, ])
       tag <- meta[n, , drop=TRUE]
-      PFMatrix(ID=n, name=tag$geneSymbol, matrixClass=tag$tfFamily, tags=tag,
-               profileMatrix=m)
+      PWMatrix(ID=n, name=tag$geneSymbol, matrixClass=tag$tfFamily, tags=tag,
+               profileMatrix=pfm2pwm(m))
     })
     names(newMotifs) <- sapply(newMotifs, function(.ele) .ele@name)
-    do.call(PFMatrixList, newMotifs)
+    do.call(PWMatrixList, newMotifs)
   })
   return(out)
 }
-motifs <- MotifList2PFMatrixList(motifs, seq(10, 100, by=10))
+motifs <- MotifList2PWMatrixList(motifs, seq(10, 100, by=10))
 names(motifs) <- paste0("dist", seq(10, 100, by=10))
-saveRDS(motifs, "PFMatrixList.rds")
+saveRDS(motifs, "PWMatrixList.rds")
