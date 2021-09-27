@@ -48,7 +48,7 @@ MotifList2PWMatrixList <- function(motifs, groupDistance=10){
       m[4, ] <- 1 - colSums(m[-4, ])
       tag <- meta[n, , drop=TRUE]
       PWMatrix(ID=n, name=tag$geneSymbol, matrixClass=tag$tfFamily, tags=tag,
-               profileMatrix=pfm2pwm(m))
+               profileMatrix=m)
     })
     names(newMotifs) <- sapply(newMotifs, function(.ele) .ele@name)
     do.call(PWMatrixList, newMotifs)
