@@ -1,3 +1,7 @@
+# Change in 0.99.17
+
+  o Try to get more error information from BioC build.
+
 # Change in 0.99.16
 
   o Fix the wrong motif PWMs.

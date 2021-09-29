@@ -77,12 +77,12 @@ conservedMotifs <- function(aln, aln_hs, aln_mm, PWMs,
     }
   }
   if(length(dim(TFBPS))!=2){
-    stop("no data available")
+    stop("no data available: TFBPS is not a two dim data.")
   }
   TFBPS <- t(TFBPS)
   PWMs <- PWMs[rownames(TFBPS[rowSums(TFBPS)==ncol(TFBPS), , drop=FALSE])]
   if(length(PWMs)<1){
-    stop("no data available")
+    stop("no data available: not cosvered motifs in all inputs.")
   }
   seq <- gsub("-", "", seq)
   mm <- mapply(seq, genome, FUN=function(s, g){
@@ -95,7 +95,7 @@ conservedMotifs <- function(aln, aln_hs, aln_mm, PWMs,
   mm <- mm[vapply(mm, FUN=function(.ele) all(lengths(.ele)>0),
                   FUN.VALUE = logical(1))]
   if(length(mm)==0){
-    stop("no data available")
+    stop("no data available: no matched consensus.")
   }
   mm <- swapList(mm)
   mm <- lapply(mm, function(.ele) lapply(.ele, reduce))
