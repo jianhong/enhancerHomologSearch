@@ -89,6 +89,8 @@ static unsigned GetAlphaSize(ALPHA Alpha)
 	case ALPHA_RNA:
 	case ALPHA_DNA:
 		return 4;
+	default:
+	  break;
 		}
 	Quit("Invalid Alpha=%d", Alpha);
 	return 0;

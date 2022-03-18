@@ -1,3 +1,7 @@
+# Change in 1.1.1
+
+  o Fix the warning for enumeration value not handled in switch [-Wswitch]
+
 # Change in 0.99.17
 
   o Try to get more error information from BioC build.

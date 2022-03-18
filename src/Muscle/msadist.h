@@ -27,6 +27,8 @@ public:
 			if (dPctId < 0.05)
 				dPctId = 0.05;
 			return -log(dPctId);
+		default:
+		  break;
 			}
 		Quit("MSADist::ComputeDist, invalid DISTANCE_%u", m_Distance);
 		return 0;

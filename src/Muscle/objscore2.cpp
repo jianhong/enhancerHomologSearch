@@ -33,6 +33,9 @@ static SCORE TermGapScore(bool Gap)
 		if (Gap)
 			return g_scoreGapExtend;
 		return 0;
+
+	default:
+	  break;
 		}
 	Quit("TermGapScore?!");
 	return 0;
