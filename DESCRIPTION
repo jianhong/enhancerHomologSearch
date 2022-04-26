@@ -1,7 +1,7 @@
 Package: enhancerHomologSearch
 Type: Package
 Title: Identification of putative mammalian orthologs to given enhancer
-Version: 1.2.0
+Version: 1.3.0
 Authors@R: c(person(given="Jianhong", family="Ou", email="jianhong.ou@duke.edu", 
                  role=c("aut", "cre"), comment=c(ORCID="0000-0002-8652-2488")),
             person(given="Valentina", family="Cigliola", role=c("dtc")),
