@@ -2,7 +2,8 @@
 #' @description Query enhancer peak and extract sequences from ENCODE
 #' @param genome An object of \link[BSgenome:BSgenome-class]{BSgenome}.
 #' @param markers Enhancer markers. Default 'H3K4me1'. For active enhancer,
-#' it can be set as c('H3K4me1', 'H3K27ac')
+#' it can be set as c('H3K4me1', 'H3K27ac').
+#' If markers is a `GRanges` object, the function will skip the download step.
 #' @param window_size,step The size of windows and steps to split the peaks
 #' into small pieces. These parameter is used because the width of
 #' histone marker peaks are different sizes. Break the peaks into small
@@ -30,63 +31,67 @@ getENCODEdata <- function(genome,
                           step = 50L,
                           ...) {
   stopifnot('genome must be an object of BSgenome'=is(genome, "BSgenome"))
-  org <- organism(genome)
-  assembly <- guessAssembly(genome)
-  names(assembly) <- rep("assembly", length(assembly))
-  names(markers) <- rep("target.label", length(markers))
-  args <- list(...)
-  if(!"exactMatch" %in% names(args)){
-    exactMatch <- markers
+  if(is(markers, "GRanges")){
+    peaks <- markers
   }else{
-    exactMatch <- exactMatch[!names(exactMatch) %in% "target.label"]
-    exactMatch <- c(markers, exactMatch)
-  }
-  if(!"assembly" %in% names(exactMatch)){
-    exactMatch <- c(exactMatch, assembly)
-  }
-  if(!"replicates.library.biosample.donor.organism.scientific_name" %in%
-     names(exactMatch)){
-    exactMatch <-
-      c(replicates.library.biosample.donor.organism.scientific_name=org,
-        exactMatch)
-  }
-  res <- queryEncode(exactMatch=exactMatch, ...)
+    org <- organism(genome)
+    assembly <- guessAssembly(genome)
+    names(assembly) <- rep("assembly", length(assembly))
+    names(markers) <- rep("target.label", length(markers))
+    args <- list(...)
+    if(!"exactMatch" %in% names(args)){
+      exactMatch <- markers
+    }else{
+      exactMatch <- exactMatch[!names(exactMatch) %in% "target.label"]
+      exactMatch <- c(markers, exactMatch)
+    }
+    if(!"assembly" %in% names(exactMatch)){
+      exactMatch <- c(exactMatch, assembly)
+    }
+    if(!"replicates.library.biosample.donor.organism.scientific_name" %in%
+       names(exactMatch)){
+      exactMatch <-
+        c(replicates.library.biosample.donor.organism.scientific_name=org,
+          exactMatch)
+    }
+    res <- queryEncode(exactMatch=exactMatch, ...)
 
-  if(length(res)==0){
-    stop("No data available by current setting.")
-  }
+    if(length(res)==0){
+      stop("No data available by current setting.")
+    }
 
-  datasets <- vapply(res, FUN = function(.ele) .ele$`@id`,
-                     FUN.VALUE = character(1))
-  names(datasets) <- rep("dataset", length(datasets))
+    datasets <- vapply(res, FUN = function(.ele) .ele$`@id`,
+                       FUN.VALUE = character(1))
+    names(datasets) <- rep("dataset", length(datasets))
 
-  args$exactMatch <- c(type='File', output_type="peaks",
-                       file_format="bed", assembly,
-                       datasets)
+    args$exactMatch <- c(type='File', output_type="peaks",
+                         file_format="bed", assembly,
+                         datasets)
 
-  res2 <- do.call(queryEncode, args = args)
-  if(length(res2)==0){
-    stop("No data available by current setting.")
-  }
+    res2 <- do.call(queryEncode, args = args)
+    if(length(res2)==0){
+      stop("No data available by current setting.")
+    }
 
-  urls <- lapply(res2, FUN = function(.ele) .ele$cloud_metadata$url)
-  format <- lapply(res2, FUN = function(.ele) .ele$file_format_type)
+    urls <- lapply(res2, FUN = function(.ele) .ele$cloud_metadata$url)
+    format <- lapply(res2, FUN = function(.ele) .ele$file_format_type)
 
-  bfc <- BiocFileCache(cache = getBFCOption("CACHE"), ask = interactive())
-  cpath <- lapply(urls, bfcrpath, x=bfc)
+    bfc <- BiocFileCache(cache = getBFCOption("CACHE"), ask = interactive())
+    cpath <- lapply(urls, bfcrpath, x=bfc)
 
-  peaks <- mapply(import, cpath, format, SIMPLIFY = FALSE)
-  peaks <- split(peaks,
-                 vapply(res2, `[[`, FUN.VALUE = character(1), i="target"))
-  peaks <- lapply(peaks, function(.ele) reduce(unlist(GRangesList(.ele))))
-  ## get intersection of the ranges
-  subsetByOverlapsWindow <- function(a, b){
-    subsetByOverlaps(a, b, maxgap = window_size)
-  }
-  if(length(peaks)>1){
-    peaks <- Reduce(f = subsetByOverlapsWindow, x = peaks)
-  }else{
-    peaks <- peaks[[1]]
+    peaks <- mapply(import, cpath, format, SIMPLIFY = FALSE)
+    peaks <- split(peaks,
+                   vapply(res2, `[[`, FUN.VALUE = character(1), i="target"))
+    peaks <- lapply(peaks, function(.ele) reduce(unlist(GRangesList(.ele))))
+    ## get intersection of the ranges
+    subsetByOverlapsWindow <- function(a, b){
+      subsetByOverlaps(a, b, maxgap = window_size)
+    }
+    if(length(peaks)>1){
+      peaks <- Reduce(f = subsetByOverlapsWindow, x = peaks)
+    }else{
+      peaks <- peaks[[1]]
+    }
   }
   if(length(peaks)<2){
     stop("There is less than 2 peaks left. Please try to reduce the markers")

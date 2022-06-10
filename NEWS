@@ -1,3 +1,7 @@
+# Change in 1.3.1
+
+  o Add suport for import GRanges directly for getENCODEdata.
+
 # Change in 1.1.1
 
   o Fix the warning for enumeration value not handled in switch [-Wswitch]

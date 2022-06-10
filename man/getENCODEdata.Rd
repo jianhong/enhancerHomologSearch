@@ -16,7 +16,8 @@ getENCODEdata(
 \item{genome}{An object of \link[BSgenome:BSgenome-class]{BSgenome}.}
 
 \item{markers}{Enhancer markers. Default 'H3K4me1'. For active enhancer,
-it can be set as c('H3K4me1', 'H3K27ac')}
+it can be set as c('H3K4me1', 'H3K27ac').
+If markers is a `GRanges` object, the function will skip the download step.}
 
 \item{window_size, step}{The size of windows and steps to split the peaks
 into small pieces. These parameter is used because the width of
