@@ -42,7 +42,7 @@ checkQuerySubject <- function(query, subject, subjectIsList=FALSE){
     stopifnot("subject must be an list of object of Enhancers" =
                 is(subject, "list"))
     stopifnot("The length of subject must be more than 0" = length(subject)>0)
-    stopifnot("The length of subject must be less than 3" = length(subject)<3)
+    #stopifnot("The length of subject must be less than 3" = length(subject)<3)
     null <- lapply(subject, FUN = function(.ele){
       stopifnot("subject must be an list of object of Enhancers" =
                   is(.ele, "Enhancers"))

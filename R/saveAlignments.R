@@ -12,6 +12,7 @@ checkMotifCons <- function(motifConsensus){
 #' @importFrom Biostrings consensusMatrix DNAStringSet write.phylip
 #' matchPattern alphabetFrequency injectHardMask
 #' @importFrom IRanges IRangesList Views
+#' @importFrom utils write.csv
 saveAln <- function (x, filepath, motifConsensus) {
   stopifnot("input must be an object of MultipleAlignment"=
               inherits(x, "MultipleAlignment"))
@@ -37,6 +38,7 @@ saveAln <- function (x, filepath, motifConsensus) {
       matchPattern(pattern = .ele, subject = cons_m))
     mt <- mt[lengths(mt)>0]
     mt <- unlist(IRangesList(mt))
+    involved_motifs <- sort(mt)
     mt <- reduce(mt)
     if(length(mt)){
       m <- Views(cons_m, start = start(mt), end = end(mt))
@@ -44,6 +46,9 @@ saveAln <- function (x, filepath, motifConsensus) {
       m <- DNAStringSet(m)
       names(m) <- "motifConsensus"
       x@unmasked <- c(x@unmasked, m)
+      write.csv(involved_motifs, file = paste0(sub(".txt$", "", filepath),
+                                               ".motifConsensus.info.csv"),
+                row.names=FALSE)
     }
   }
   write.phylip(x, filepath = filepath)
