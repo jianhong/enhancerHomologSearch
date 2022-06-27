@@ -49,7 +49,10 @@ conservedMotifs <- function(aln, aln_list, PWMs,
   background <- match.arg(background, choices = c("subject", "genome", "even"))
   ## get the matched motifs for query enhancer
   TFBPS_target <- Reduce(f=function(x, y){
-    query_tfbp(x) & query_tfbp(y)
+    if(is(x, "Enhancers")){
+      x <- query_tfbp(x)
+    }
+    x & query_tfbp(y)
   }, x = aln_list)
   ## get sequences of aligned enhancers
   seq <- unmasked(aln)
