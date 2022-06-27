@@ -4,12 +4,21 @@
 \alias{conservedMotifs}
 \title{check the conserved motifs in the orthologs}
 \usage{
-conservedMotifs(aln, aln_hs, aln_mm, PWMs, queryGenome, background = "genome")
+conservedMotifs(
+  aln,
+  aln_list,
+  PWMs,
+  queryGenome,
+  background = "genome",
+  output_folder,
+  format = c("txt", "html")
+)
 }
 \arguments{
 \item{aln}{alignment of multiple DNAs. Output of \link{alignment} function.}
 
-\item{aln_hs, aln_mm}{output of link{searchTFBPS} for human and mouse.}
+\item{aln_list}{The list of output of \link{searchTFBPS}
+such as for human and mouse.}
 
 \item{PWMs}{The Position Weight Matrix list represented as a numeric matrix.
 Object of \link[TFBSTools:XMatrixList]{PWMatrixList} or
@@ -20,9 +29,14 @@ query enhancer.}
 
 \item{background}{background nucleotide frequencies. Default is "genome".
 Refer \link[motifmatchr]{matchMotifs} for details.}
+
+\item{output_folder}{output folder name.}
+
+\item{format}{The format of output files with motif match positions.
+Available formats are 'txt' and 'html'. Default is 'txt'.}
 }
 \value{
-A list of XStringviews.
+A list of \link[Biostrings:XStringViews-class]{XStringViews}
 }
 \description{
 Print the conserved motifs in the alignments
@@ -42,5 +56,6 @@ genome(aln_mm) <- Mmusculus
 al <- alignment(seqEN, list(human=aln_hs, mouse=aln_mm),
                 method="ClustalW", order="input")
 data(motifs)
-conservedMotifs(al[[1]], aln_hs, aln_mm, motifs[["dist60"]], Drerio)
+conservedMotifs(al[[1]], list(human=aln_hs, mouse=aln_mm),
+                motifs[["dist60"]], Drerio)
 }

@@ -3,7 +3,8 @@
 #' Print the conserved motifs in the alignments
 #'
 #' @param aln alignment of multiple DNAs. Output of \link{alignment} function.
-#' @param aln_hs,aln_mm output of link{searchTFBPS} for human and mouse.
+#' @param aln_list The list of output of \link{searchTFBPS}
+#'  such as for human and mouse.
 #' @param PWMs The Position Weight Matrix list represented as a numeric matrix.
 #' Object of \link[TFBSTools:XMatrixList]{PWMatrixList} or
 #' \link[TFBSTools:XMatrixList]{PFMatrixList}.
@@ -11,12 +12,15 @@
 #' query enhancer.
 #' @param background background nucleotide frequencies. Default is "genome".
 #' Refer \link[motifmatchr]{matchMotifs} for details.
+#' @param output_folder output folder name.
+#' @param format The format of output files with motif match positions.
+#'  Available formats are 'txt' and 'html'. Default is 'txt'.
 #' @importFrom motifmatchr matchMotifs
-#' @importFrom Biostrings unmasked mask
-#' @importFrom IRanges gaps
+#' @importFrom Biostrings unmasked mask getSeq DNAMultipleAlignment
+#' @importFrom IRanges gaps Views
 #' @importMethodsFrom Matrix t rowSums
 #' @export
-#' @return A list of XStringviews.
+#' @return A list of \link[Biostrings:XStringViews-class]{XStringViews}
 #' @examples
 #' library(BSgenome.Hsapiens.UCSC.hg38)
 #' library(BSgenome.Mmusculus.UCSC.mm10)
@@ -32,53 +36,47 @@
 #' al <- alignment(seqEN, list(human=aln_hs, mouse=aln_mm),
 #'                 method="ClustalW", order="input")
 #' data(motifs)
-#' conservedMotifs(al[[1]], aln_hs, aln_mm, motifs[["dist60"]], Drerio)
-conservedMotifs <- function(aln, aln_hs, aln_mm, PWMs,
-                            queryGenome, background="genome"){
+#' conservedMotifs(al[[1]], list(human=aln_hs, mouse=aln_mm),
+#'                 motifs[["dist60"]], Drerio)
+conservedMotifs <- function(aln, aln_list, PWMs,
+                            queryGenome,
+                            background="genome",
+                            output_folder,
+                            format=c("txt", "html")){
   stopifnot(is(aln, "DNAMultipleAlignment"))
   stopifnot(is(queryGenome, "BSgenome"))
-  if(!missing(aln_hs)) stopifnot(is(aln_hs, "Enhancers"))
-  if(!missing(aln_mm)) stopifnot(is(aln_mm, "Enhancers"))
+  checkSubject(aln_list, subjectIsList=TRUE)
   background <- match.arg(background, choices = c("subject", "genome", "even"))
-  TFBPS_target <- 1
   ## get the matched motifs for query enhancer
-  if(!missing(aln_hs)){
-    TFBPS_target <- TFBPS_target & query_tfbp(aln_hs)
-  }
-  if(!missing(aln_mm)){
-    TFBPS_target <- TFBPS_target & query_tfbp(aln_mm)
-  }
+  TFBPS_target <- Reduce(f=function(x, y){
+    query_tfbp(x) & query_tfbp(y)
+  }, x = aln_list)
+  ## get sequences of aligned enhancers
   seq <- unmasked(aln)
   n <- names(seq)
   TFBPS <- TFBPS_target
   genome <- queryGenome
-  if(!missing(aln_hs)){
-    h <- n[grepl("human", n)]
-    TFBPS_human <- tfbp(subsetByOverlaps(aln_hs,
-                                         GRanges(sub("human_", "", h)),
-                                         type = "equal"))
-    if(length(dim(TFBPS_human))){
-      if(nrow(TFBPS_human)==1){
-        TFBPS <- rbind(TFBPS, TFBPS_human)
-        genome <- c(genome, genome(aln_hs))
+  ### get hiting motifs
+  TFBPS <- mapply(aln_list, names(aln_list), FUN=function(enh, prefix){
+    h <- n[grepl(prefix, n)]
+    tfbps <- tfbp(subsetByOverlaps(enh,
+                                   GRanges(sub(paste0(prefix, "_"), "", h)),
+                                   type = "equal"))
+    if(length(dim(tfbps))){
+      if(nrow(tfbps)==1){
+        return(tfbps)
       }
     }
-  }
-  if(!missing(aln_mm)){
-    m <- n[grepl("mouse", n)]
-    TFBPS_mouse <- tfbp(subsetByOverlaps(aln_mm,
-                                         GRanges(sub("mouse_", "", m)),
-                                         type = "equal"))
-    if(length(dim(TFBPS_mouse))){
-      if(nrow(TFBPS_mouse)==1){
-        TFBPS <- rbind(TFBPS, TFBPS_mouse)
-        genome <- c(genome, genome(aln_mm))
-      }
-    }
-  }
+    stop("Something not supported.")
+  })
+  TFBPS <- do.call(rbind, TFBPS)
+  genome <- lapply(aln_list, genome)
+  genome <- c(queryGenome, genome)
+
   if(length(dim(TFBPS))!=2){
     stop("no data available: TFBPS is not a two dim data.")
   }
+
   TFBPS <- t(TFBPS)
   PWMs <- PWMs[rownames(TFBPS[rowSums(TFBPS)==ncol(TFBPS), , drop=FALSE])]
   if(length(PWMs)<1){
@@ -102,7 +100,33 @@ conservedMotifs <- function(aln, aln_hs, aln_mm, PWMs,
   mm <- lapply(mm, IRangesList)
   mm <- lapply(mm, unlist)
   seq <- DNAStringSet(seq)
-  gaps <- mapply(gaps, mm, 1, lengths(seq))
-  mapply(function(.seq, .gap) mask(.seq, start(.gap), end(.gap)),
-         seq, gaps)
+  view_list <- mapply(Views, seq, mm)
+  if(!missing(output_folder)){
+    dir.create(output_folder, showWarnings = FALSE, recursive = TRUE)
+    involved_motifs <- as(IRangesList(mm), "GRanges")
+    involved_motifs$motif <- unlist(lapply(mm, names))
+    involved_motifs$seq <- getSeq(seq, involved_motifs)
+    write.csv(involved_motifs,
+              file = file.path(output_folder, "motifhits.csv"),
+              row.names=FALSE)
+    mapply(seq, mm, names(seq), FUN=function(.seq, .match, .name){
+      v <- lapply(seq_along(.match), function(i)
+        Views(subject=.seq, start = .match[i]))
+      names(v) <- names(.match)
+      v <- lapply(v, injectHardMask, letter="-")
+      a <- DNAStringSet(.seq)
+      names(a) <- .name
+      v <- c(a, DNAStringSet(v))
+      x <- DNAMultipleAlignment(v)
+      filepath <- file.path(output_folder, paste(.name, format, sep="."))
+      if(format=="txt"){
+        write.phylip(x, filepath = filepath)
+      }else{
+        write.phylip_html(x, filepath = filepath)
+      }
+    })
+    return(invisible(view_list))
+  }else{
+    view_list
+  }
 }

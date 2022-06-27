@@ -284,8 +284,9 @@ setMethod("show",
               cat("This is an object with ",
                   length(object@peaks),
                   " Enhancers for ",
-                  organism(object@genome))
+                  organism(object@genome),
+                  "\n")
             }else{
-              cat("This is an empty object of Enhancers.")
+              cat("This is an empty object of Enhancers.\n")
             }
           })

@@ -39,7 +39,7 @@ write.phylip_html <- function(x, filepath, block=80){
             basename(filepath),
             "</title>",
             "<style>",
-            "#align { margin-left: calc(50% - 50vw); width: 100vw; font-family: monospace;}",
+            "#align { margin-left: 5px; width: 100%; font-family: monospace;}",
             "#seqnames,#sequences,#counts { float: left}",
             "#seqnames { max-width: 20%; }",
             "#sequences {width: auto; min-width: 700px; margin-left: 20px;}",

@@ -38,9 +38,17 @@ guessAssembly <- function(genome){
 # help function to check the query and subject parameters for alignment
 # functions
 checkQuerySubject <- function(query, subject, subjectIsList=FALSE){
+  checkSubject(subject, subjectIsList)
+  stopifnot("query must be an object of DNAStringSet" =
+              is(query, "DNAStringSet"))
+  stopifnot("The length of query must be 1" = length(query)==1)
+}
+
+# help function to check the subject parameters for alignment functions
+checkSubject <- function(subject, subjectIsList=FALSE){
   if(subjectIsList){
     stopifnot("subject must be an list of object of Enhancers" =
-                is(subject, "list"))
+                is.list(subject))
     stopifnot("The length of subject must be more than 0" = length(subject)>0)
     #stopifnot("The length of subject must be less than 3" = length(subject)<3)
     null <- lapply(subject, FUN = function(.ele){
@@ -48,14 +56,13 @@ checkQuerySubject <- function(query, subject, subjectIsList=FALSE){
                   is(.ele, "Enhancers"))
       stopifnot("Enhancers are empty" = length(peaks(.ele))>0)
     })
+    stopifnot("subject must be an named list"=
+                length(names(subject))==length(subject))
   }else{
     stopifnot("subject must be an object of Enhancers" =
                 is(subject, "Enhancers"))
     stopifnot("Enhancers are empty" = length(peaks(subject))>0)
   }
-  stopifnot("query must be an object of DNAStringSet" =
-              is(query, "DNAStringSet"))
-  stopifnot("The length of query must be 1" = length(query)==1)
 }
 
 # help function to check substitutionMatrix

@@ -226,7 +226,8 @@ The selected candidates will be aligned cross human and mouse and then output
 as phylip multiple alignment file in text format.
 
 ```{r}
-al <- alignment(seqEN, list(human=aln_hs, mouse=aln_mm),
+aln_list <- list(human=aln_hs, mouse=aln_mm)
+al <- alignment(seqEN, aln_list,
                 method="ClustalW", order="input")
 al
 library(MotifDb)
@@ -241,8 +242,12 @@ readLines(file.path(tmpfolder, "aln1.phylip.txt"))
 
 ## Step 6, check the conserved motifs in the orthologs
 
+Different form finding motif hits from the consensus of multiple alignment
+results, the `conservedMotifs` function will search the user defined
+motifs form available homologs.
+
 ```{r}
-conservedMotifs(al[[1]], aln_hs, aln_mm, PWMs, Drerio)
+conservedMotifs(al[[1]], aln_list, PWMs, Drerio)
 ```
 ## Session info
 
