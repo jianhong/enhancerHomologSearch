@@ -4,7 +4,12 @@
 \alias{saveAlignments}
 \title{output alignments}
 \usage{
-saveAlignments(al, output_folder = tempdir(), motifConsensus = NULL)
+saveAlignments(
+  al,
+  output_folder = tempdir(),
+  motifConsensus = NULL,
+  format = c("txt", "html")
+)
 }
 \arguments{
 \item{al}{output of \link{alignment}.}
@@ -12,6 +17,9 @@ saveAlignments(al, output_folder = tempdir(), motifConsensus = NULL)
 \item{output_folder}{output folder.}
 
 \item{motifConsensus}{Transcription factor binding consensus.}
+
+\item{format}{The format of output files.
+Available formats are 'txt' and 'html'. Default is 'txt'.}
 }
 \value{
 The I/O status.
