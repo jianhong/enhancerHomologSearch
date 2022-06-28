@@ -11,6 +11,10 @@
 #' Refer \link[motifmatchr]{matchMotifs} for details.
 #' @param \dots Parameters will be passed to \link[motifmatchr]{matchMotifs}
 #' except 'out' and 'genome'.
+#' @param maximalShuffleEnhancers The maximal number of Shuffled enhancers.
+#' If the number of the input enhancer candidates is greater than
+#' maximalShuffleEnhancers, no shuffled enhancer sequences will be included.
+#' The shuffled enhancers will be created by \link{shuffle}.
 #' @return An object of \link{Enhancers}.
 #' @importFrom BiocGenerics score
 #' @importFrom IRanges subject
@@ -23,15 +27,25 @@
 #' subj <- Enhancers(genome=Hsapiens, peaks=peaks)
 #' q <- getSeq(Hsapiens, GRanges("chr1", IRanges(90000, width=1000)))
 #' data(motifs)
-#' ao <- searchTFBPS(q, subj, motifs[["dist60"]], queryGenome=Hsapiens)
+#' ao <- searchTFBPS(q, subj, motifs[["dist60"]], queryGenome=Hsapiens,
+#'                   maximalShuffleEnhancers = 50)
 searchTFBPS <- function(query, subject, PWMs, queryGenome,
-                        background="genome", ...){
+                        background="genome", ...,
+                        maximalShuffleEnhancers=1000){
   checkQuerySubject(query, subject, subjectIsList=FALSE)
   peaks <- subject@peaks
   checkPWMs(PWMs)
   background <- match.arg(background, choices = c("subject", "genome", "even"))
   ## search TFBP in query
   target <- getSeq(subject, peaks)
+  if(length(target)<maximalShuffleEnhancers){
+    shuffled <- shuffle(target[grepl("^fwd", names(target))],
+                        n=ceiling(maximalShuffleEnhancers/length(target)))
+    shuffled <- sample(shuffled,
+                       size = maximalShuffleEnhancers - length(target))
+    target <- c(target, shuffled)
+  }
+
   TFBP_query <- searchTFBP(query, PWMs,
                            genome=queryGenome,
                            bg=background, ...)[1, ]
@@ -39,39 +53,44 @@ searchTFBPS <- function(query, subject, PWMs, queryGenome,
                              genome=genome(subject),
                              bg=background, ...)
   qid <- rownames(TFBP_subject)
+  qid[!grepl("shuffle", qid)] <-
+    paste0(qid[!grepl("shuffle", qid)], "_target_0")
   qid <- do.call(rbind, strsplit(qid, "_"))
-  stopifnot("subject must be output of getENCODEdata."=ncol(qid)==3)
-  cnqid <- c("dire", "peakID", "tileID")
+  stopifnot("subject must be output of getENCODEdata."=ncol(qid)==5)
+  cnqid <- c("dire", "peakID", "tileID", "type", "idx")
   colnames(qid) <- cnqid
   scores <- apply(TFBP_subject, 1, function(.ele){
     TFBPscore(TFBP_query, .ele)
   })
   qid <- as.data.frame(qid)
   qid <- cbind(qid, score=scores)
-  qid <- split(qid, qid$peakID)
-  qid <- lapply(qid, function(.ele){
-    .ele[which.max(.ele$score)[1], ]
-  })
-  qid <- do.call(rbind, qid)
+  qid$order <- seq.int(nrow(qid))
+  qid <- qid[order(qid$score, decreasing = TRUE), , drop=FALSE]
+  qid <- qid[!duplicated(paste(qid$peakID, qid$type, qid$idx)), , drop=FALSE]
+  qid <- qid[order(qid$order), , drop=FALSE]
+  ## get Z-score
+  m <- mean(qid$score)
+  sd <- sd(qid$score)
+  qid$Z <- (qid$score - m)/sd
+
+  S <- nrow(qid)
+  qid$pval <- vapply(qid$score, FUN=function(.ele){
+    sum(qid$score>=.ele)/S
+  }, FUN.VALUE = numeric(1))
+  qid$adjp <- p.adjust(qid$pval, method = "BH")
+  qid <- qid[qid$type=="target", , drop=FALSE]
+
   peaks <- peaks[match(paste(qid$peakID, qid$tileID, sep="_"), peaks$id)]
   strand(peaks) <- ifelse(qid$dire=="fwd",
                            ifelse(strand(peaks)=="-", "-", "+"),
                            ifelse(strand(peaks)=="-", "+", "-"))
-  peaks$score <- qid$score
-  TFBP <-TFBP_subject[apply(qid[, cnqid], 1, paste, collapse = "_"),
+  for(cn in c("score", "Z", "pval", "adjp")){
+    mcols(peaks)[[cn]] <- qid[[cn]]
+  }
+  TFBP <-TFBP_subject[apply(qid[, cnqid[seq.int(3)]], 1,
+                            paste, collapse = "_"),
                        , drop=FALSE]
   rownames(TFBP) <- sub("(fwd|rev)_", "", rownames(TFBP))
-
-  ## get Z-score
-  m <- mean(peaks$score)
-  sd <- sd(peaks$score)
-  peaks$Z <- (peaks$score - m)/sd
-
-  S <- length(peaks)
-  peaks$pval <- vapply(peaks$score, FUN=function(.ele){
-    sum(peaks$score>=.ele)/S
-  }, FUN.VALUE = numeric(1))
-  peaks$adjp <- p.adjust(peaks$pval, method = "BH")
 
   Enhancers(genome = subject@genome, peaks = peaks, TFBP=TFBP, TFBP0=TFBP_query)
 }

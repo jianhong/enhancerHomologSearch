@@ -197,10 +197,15 @@ data(motifs)
 ## In this example, we use motif clusters merged by distance 60, which 
 ## is calculated by matalgin (motifStack implementation)
 PWMs <- motifs[["dist60"]]
+## Here we set maximalShuffleEnhancers = 100 to decrease the computation time.
+## The defaults of maximalShuffleEnhancers is 1000. Increase the shuffle number
+## may help to get accurate P-value.
 aln_hs <- searchTFBPS(seqEN, hs, PWMs = PWMs,
-                      queryGenome = Drerio)
+                      queryGenome = Drerio,
+                      maximalShuffleEnhancers = 100)
 aln_mm <- searchTFBPS(seqEN, mm, PWMs = PWMs,
-                      queryGenome = Drerio)
+                      queryGenome = Drerio,
+                      maximalShuffleEnhancers = 100)
 ## if you want to stick to sequence similarity search, try to use ?alignmentOne
 ```
 

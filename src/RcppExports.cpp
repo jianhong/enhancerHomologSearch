@@ -48,10 +48,24 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// rushuffle
+CharacterVector rushuffle(CharacterVector x, IntegerVector k, IntegerVector n);
+RcppExport SEXP _enhancerHomologSearch_rushuffle(SEXP xSEXP, SEXP kSEXP, SEXP nSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type k(kSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type n(nSEXP);
+    rcpp_result_gen = Rcpp::wrap(rushuffle(x, k, n));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_enhancerHomologSearch_RClustalW", (DL_FUNC) &_enhancerHomologSearch_RClustalW, 9},
     {"_enhancerHomologSearch_RMuscle", (DL_FUNC) &_enhancerHomologSearch_RMuscle, 9},
+    {"_enhancerHomologSearch_rushuffle", (DL_FUNC) &_enhancerHomologSearch_rushuffle, 3},
     {NULL, NULL, 0}
 };
 

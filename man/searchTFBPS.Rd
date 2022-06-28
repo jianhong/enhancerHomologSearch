@@ -4,7 +4,15 @@
 \alias{searchTFBPS}
 \title{Transcription Factor Binding Pattern Similarity (TFBPS) search}
 \usage{
-searchTFBPS(query, subject, PWMs, queryGenome, background = "genome", ...)
+searchTFBPS(
+  query,
+  subject,
+  PWMs,
+  queryGenome,
+  background = "genome",
+  ...,
+  maximalShuffleEnhancers = 1000
+)
 }
 \arguments{
 \item{query}{An object of DNAStringSet to represent enhancer}
@@ -23,6 +31,11 @@ Refer \link[motifmatchr]{matchMotifs} for details.}
 
 \item{\dots}{Parameters will be passed to \link[motifmatchr]{matchMotifs}
 except 'out' and 'genome'.}
+
+\item{maximalShuffleEnhancers}{The maximal number of Shuffled enhancers.
+If the number of the input enhancer candidates is greater than
+maximalShuffleEnhancers, no shuffled enhancer sequences will be included.
+The shuffled enhancers will be created by \link{shuffle}.}
 }
 \value{
 An object of \link{Enhancers}.
@@ -37,5 +50,6 @@ peaks$id <- paste(seq_along(peaks), 1, sep="_")
 subj <- Enhancers(genome=Hsapiens, peaks=peaks)
 q <- getSeq(Hsapiens, GRanges("chr1", IRanges(90000, width=1000)))
 data(motifs)
-ao <- searchTFBPS(q, subj, motifs[["dist60"]], queryGenome=Hsapiens)
+ao <- searchTFBPS(q, subj, motifs[["dist60"]], queryGenome=Hsapiens,
+                  maximalShuffleEnhancers = 50)
 }
