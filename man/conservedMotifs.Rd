@@ -10,6 +10,7 @@ conservedMotifs(
   PWMs,
   queryGenome,
   background = "genome",
+  ...,
   output_folder,
   format = c("txt", "html")
 )
@@ -27,10 +28,13 @@ Object of \link[TFBSTools:XMatrixList]{PWMatrixList} or
 \item{queryGenome}{An object of \link[BSgenome:BSgenome-class]{BSgenome} for
 query enhancer.}
 
-\item{background}{background nucleotide frequencies. Default is "genome".
+\item{background}{Background nucleotide frequencies. Default is "genome".
 Refer \link[motifmatchr]{matchMotifs} for details.}
 
-\item{output_folder}{output folder name.}
+\item{\dots}{Other parameters can be passed to to
+\link[motifmatchr:matchMotifs]{matchMotifs}.}
+
+\item{output_folder}{Output folder name.}
 
 \item{format}{The format of output files with motif match positions.
 Available formats are 'txt' and 'html'. Default is 'txt'.}

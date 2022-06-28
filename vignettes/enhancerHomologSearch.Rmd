@@ -147,8 +147,14 @@ mm <- getENCODEdata(genome=Mmusculus,
 ```
 
 ## Step 3, get alignment score for target enhancer and candidate enhancers.
+Previous methods were get alignment score from the alignment of enhancer and
+candidate enhancers via the function `alignmentOne`. However, most of the
+enhancer evolution are rapid. This package is modified from Wong's methods and
+calculate the alignment score by pairwise Transcription Factors Binding
+Pattern Similarity (TFBPS) between enhancer sequences and candidates. 
 This step is time consuming step. For quick run, users can subset the data
 by given genomic coordinates.
+
 ```{r}
 # subset the data for test run 
 # in human, the homolog LEP gene is located at chromosome 7
@@ -220,16 +226,34 @@ aln_mm <- subset(aln_mm, pval<0.1 & distance >5000)
 aln_mm
 ```
 
-## Step 5, export the multiple alignments in order.
+## Step 5, alignment for the enhancer and the orthologs
 
-The selected candidates will be aligned cross human and mouse and then output
-as phylip multiple alignment file in text format.
+This step will create alignments for all combination of the enhancer and the
+orthologs.
 
 ```{r}
 aln_list <- list(human=aln_hs, mouse=aln_mm)
 al <- alignment(seqEN, aln_list,
                 method="ClustalW", order="input")
 al
+```
+
+
+## Step 6a, for quick evolution enhancers, check the conserved motifs in the orthologs
+
+Different form finding motif hits from the consensus of multiple alignment
+results, the `conservedMotifs` function will search the user defined
+motifs form available homologs.
+
+```{r}
+conservedMotifs(al[[1]], aln_list, PWMs, Drerio)
+```
+## Step 6b, for slow evolution enhancers, export the multiple alignments in order.
+
+The selected candidates will be aligned cross human and mouse and then output
+as phylip multiple alignment file in `text` or `html` format.
+
+```{r}
 library(MotifDb)
 motifs <- query(MotifDb, "JASPAR_CORE")
 consensus <- sapply(motifs, consensusString)
@@ -239,16 +263,6 @@ saveAlignments(al, output_folder = tmpfolder, motifConsensus=consensus)
 readLines(file.path(tmpfolder, "aln1.phylip.txt"))
 ```
 
-
-## Step 6, check the conserved motifs in the orthologs
-
-Different form finding motif hits from the consensus of multiple alignment
-results, the `conservedMotifs` function will search the user defined
-motifs form available homologs.
-
-```{r}
-conservedMotifs(al[[1]], aln_list, PWMs, Drerio)
-```
 ## Session info
 
 ```{r}

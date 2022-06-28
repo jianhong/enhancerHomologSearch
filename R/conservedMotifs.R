@@ -10,13 +10,16 @@
 #' \link[TFBSTools:XMatrixList]{PFMatrixList}.
 #' @param queryGenome An object of \link[BSgenome:BSgenome-class]{BSgenome} for
 #' query enhancer.
-#' @param background background nucleotide frequencies. Default is "genome".
+#' @param background Background nucleotide frequencies. Default is "genome".
 #' Refer \link[motifmatchr]{matchMotifs} for details.
-#' @param output_folder output folder name.
+#' @param \dots Other parameters can be passed to to
+#' \link[motifmatchr:matchMotifs]{matchMotifs}.
+#' @param output_folder Output folder name.
 #' @param format The format of output files with motif match positions.
 #'  Available formats are 'txt' and 'html'. Default is 'txt'.
 #' @importFrom motifmatchr matchMotifs
 #' @importFrom Biostrings unmasked mask getSeq DNAMultipleAlignment
+#' reverseComplement
 #' @importFrom IRanges gaps Views
 #' @importMethodsFrom Matrix t rowSums
 #' @export
@@ -41,26 +44,25 @@
 conservedMotifs <- function(aln, aln_list, PWMs,
                             queryGenome,
                             background="genome",
+                            ...,
                             output_folder,
                             format=c("txt", "html")){
   stopifnot(is(aln, "DNAMultipleAlignment"))
   stopifnot(is(queryGenome, "BSgenome"))
   checkSubject(aln_list, subjectIsList=TRUE)
   background <- match.arg(background, choices = c("subject", "genome", "even"))
-  ## get the matched motifs for query enhancer
-  TFBPS_target <- Reduce(f=function(x, y){
-    if(is(x, "Enhancers")){
-      x <- query_tfbp(x)
-    }
-    x & query_tfbp(y)
-  }, x = aln_list)
   ## get sequences of aligned enhancers
   seq <- unmasked(aln)
+  n <- names(seq)[-1]
+  n2 <- names(aln_list)
+  n <- sub("_.*$", "", n)
+  stopifnot("The aln_list should keep same as input for alignment"=
+              all(n %in% n2) && all(n2 %in% n))
+  seq <- c(seq[1], seq[-1][match(n2, n)])
   n <- names(seq)
-  TFBPS <- TFBPS_target
   genome <- queryGenome
   ### get hiting motifs
-  TFBPS <- mapply(aln_list, names(aln_list), FUN=function(enh, prefix){
+  TFBPS <- mapply(aln_list, n2, FUN=function(enh, prefix){
     h <- n[grepl(prefix, n)]
     tfbps <- tfbp(subsetByOverlaps(enh,
                                    GRanges(sub(paste0(prefix, "_"), "", h)),
@@ -70,7 +72,7 @@ conservedMotifs <- function(aln, aln_list, PWMs,
         return(tfbps)
       }
     }
-    stop("Something not supported.")
+    stop("Something not supported. Please try to run `searchTFBPS`.")
   })
   TFBPS <- do.call(rbind, TFBPS)
   genome <- lapply(aln_list, genome)
@@ -81,13 +83,19 @@ conservedMotifs <- function(aln, aln_list, PWMs,
   }
 
   TFBPS <- t(TFBPS)
-  PWMs <- PWMs[rownames(TFBPS[rowSums(TFBPS)==ncol(TFBPS), , drop=FALSE])]
+  pwms <- rownames(TFBPS[rowSums(TFBPS)==ncol(TFBPS), , drop=FALSE])
+  PWMs <- PWMs[names(PWMs) %in% pwms]
   if(length(PWMs)<1){
     stop("no data available: not cosvered motifs in all inputs.")
   }
+  PWMs_rev <- lapply(PWMs, reverseComplement)
+  names(PWMs_rev) <- paste0("fwd_", names(PWMs))
+  PWMs_rev <- c(PWMs, PWMs_rev)
   seq <- gsub("-", "", seq)
   mm <- mapply(seq, genome, FUN=function(s, g){
-    matchMotifs(PWMs, subject = s, out="positions", genome=g, bg=background)
+    matchMotifs(PWMs_rev, subject = s, out="positions",
+                genome=g, bg=background,
+                ...)
   }, SIMPLIFY = FALSE)
   mm <- swapList(mm)
   mm <- lapply(mm, function(.ele){
@@ -99,6 +107,12 @@ conservedMotifs <- function(aln, aln_list, PWMs,
     stop("no data available: no matched consensus.")
   }
   mm <- swapList(mm)
+  mm <- lapply(mm, function(.ele){
+    names(.ele) <- sub("fwd_", "", names(.ele))
+    .ele <- split(.ele, names(.ele))
+    .ele <- lapply(.ele, IRangesList)
+    .ele <- lapply(.ele, unlist)
+  })
   mm <- lapply(mm, function(.ele) lapply(.ele, reduce))
   mm <- lapply(mm, IRangesList)
   mm <- lapply(mm, unlist)
