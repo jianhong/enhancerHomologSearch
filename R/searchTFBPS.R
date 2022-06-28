@@ -40,7 +40,7 @@ searchTFBPS <- function(query, subject, PWMs, queryGenome,
   target <- getSeq(subject, peaks)
   if(length(target)<maximalShuffleEnhancers){
     shuffled <- shuffle(target[grepl("^fwd", names(target))],
-                        n=ceiling(maximalShuffleEnhancers/length(target)))
+                        n=ceiling(2*maximalShuffleEnhancers/length(target)))
     shuffled <- sample(shuffled,
                        size = maximalShuffleEnhancers - length(target))
     target <- c(target, shuffled)
