@@ -101,18 +101,23 @@ searchTFBPS <- function(query, subject, PWMs, queryGenome,
 searchTFBP <- function(x, pwms, ...){
   stopifnot(is(x, "DNAStringSet"))
   checkPWMs(pwms)
+  ## add reverse complement pwms
+  pwms_rev <- lapply(pwms, reverseComplement)
+  if(length(names(pwms))!=length(pwms)){
+    names(pwms) <- seq_along(pwms)
+  }
+  names(pwms_rev) <- paste0("fwd_", names(pwms))
+  pwms_rev <- c(pwms, pwms_rev)
   ## barcode for data
-  args <- list(subject=x, pwms=pwms, ...)
+  args <- list(subject=x, pwms=pwms_rev, ...)
   args$out <- "matches"
   TFBP <- do.call(matchMotifs, args = args)
   mm <- motifMatches(TFBP)
+  rev <- grepl("fwd_", colnames(mm))
+  stopifnot("Unexpected colnames for matchMotifs" =
+              all(colnames(mm)[!rev]==sub("fwd_", "", colnames(mm)[rev])))
+  mm <- mm[, !rev, drop=FALSE] | mm[, rev, drop=FALSE]
   rownames(mm) <- names(x)
-  args_rev <- args
-  args_rev$subject <- reverseComplement(x)
-  TFBP_rev <- do.call(matchMotifs, args = args_rev)
-  mm_rev <- motifMatches(TFBP_rev)
-  rownames(mm_rev) <- names(x)
-  mm <- mm | mm_rev
   return(mm)
 }
 ## compare TFBP between query and subjects
