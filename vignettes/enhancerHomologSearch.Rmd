@@ -251,7 +251,7 @@ results, the `conservedMotifs` function will search the user defined
 motifs form available homologs.
 
 ```{r}
-conservedMotifs(al[[1]], aln_list, PWMs, Drerio)
+cm <- conservedMotifs(al[[1]], aln_list, PWMs, Drerio)
 ```
 ## Step 6b, for slow evolution enhancers, export the multiple alignments in order.
 

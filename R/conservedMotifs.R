@@ -135,7 +135,12 @@ conservedMotifs <- function(aln, aln_list, PWMs,
       names(a) <- .name
       v <- c(a, DNAStringSet(v))
       x <- DNAMultipleAlignment(v)
-      filepath <- file.path(output_folder, paste(.name, format, sep="."))
+      filepath <- file.path(output_folder,
+                            paste(make.names(
+                              gsub(":", "_",
+                                   sub("[+*]$", "p",
+                                       sub("-$", "n", .name)))),
+                                  format, sep="."))
       if(format=="txt"){
         write.phylip(x, filepath = filepath)
       }else{
