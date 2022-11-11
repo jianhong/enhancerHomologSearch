@@ -1,8 +1,0 @@
-require("enhancerHomologSearch") || stop("unable to load Package:enhancerHomologSearch")
-require("BSgenome.Hsapiens.UCSC.hg38") || stop("unable to load Package:BSgenome.Hsapiens.UCSC.hg38")
-require("BSgenome.Mmusculus.UCSC.mm10") || stop("unable to load Package:BSgenome.Mmusculus.UCSC.mm10")
-require("org.Hs.eg.db") || stop("unable to load Package:org.Hs.eg.db")
-require("TxDb.Hsapiens.UCSC.hg38.knownGene") || stop("unable to load TxDb.Hsapiens.UCSC.hg38.knownGene")
-require("BiocParallel") || stop("unable to load BiocParallel")
-require("testthat") || stop("unable to load testthat")
-test_check("enhancerHomologSearch")
