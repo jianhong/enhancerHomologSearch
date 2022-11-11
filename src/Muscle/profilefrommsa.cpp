@@ -235,6 +235,9 @@ unsigned ResidueGroupFromFCounts(const FCOUNT fcCounts[])
 	case ALPHA_DNA:
 	case ALPHA_RNA:
 		return NucleoGroupFromFCounts(fcCounts);
+
+	default:
+	  break;
 		}
 	Quit("ResidueGroupFromFCounts: bad alpha");
 	return 0;

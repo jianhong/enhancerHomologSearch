@@ -103,8 +103,8 @@ alignmentOne <- function(query, subject, block=1000, bpparam = bpparam(), ...){
 #' library(BSgenome.Hsapiens.UCSC.hg38)
 #' library(BSgenome.Mmusculus.UCSC.mm10)
 #' library(BSgenome.Drerio.UCSC.danRer10)
-#' hbegfEN <- GRanges("chr14", IRanges(6760805,	6761115))
-#' seqEN <- getSeq(BSgenome.Drerio.UCSC.danRer10, hbegfEN)
+#' LEN <- GRanges("chr4", IRanges(19050041, 19051709))
+#' seqEN <- getSeq(BSgenome.Drerio.UCSC.danRer10, LEN)
 #' aln_hs <- readRDS(system.file("extdata", "aln_hs.rds",
 #'                package="enhancerHomologSearch"))
 #' genome(aln_hs) <- Hsapiens
@@ -172,19 +172,38 @@ alignment <- function(query, subject,
     names(aln) <- vapply(cmb, FUN = function(x){
       paste(names(subject)[x], collapse = "___")
     }, FUN.VALUE = character(1))
+    if(length(names(query))<1) names(query) <- "Enhancer"
     if(length(aln)==1){
       q <- unaligned(pattern(aln[[1]]))
       s <- unaligned(subject(aln[[1]]))
       names(q) <- sub("fwd|rev", sub("___.*$", "", names(aln)), names(q))
       names(s) <- sub("fwd|rev", sub("^.*___", "", names(aln)), names(s))
-      if(length(names(query))<1) names(query) <- "Enhancer"
       o <- lapply(seq_along(q), FUN = function(.ele){
         args$inputSeqs <- c(query, q[.ele], s[.ele])
         do.call(msa, args)
       })
     }else{
-      # not support yet.
-      stop("More than two species is not supported yet.")
+      aln <- mapply(aln,
+                    sub("___.*$", "", names(aln)),
+                    sub("^.*___", "", names(aln)),
+                    FUN=function(.ele, .qn, .sn){
+                      q <- unaligned(pattern(.ele))
+                      s <- unaligned(subject(.ele))
+                      names(q) <- sub("fwd|rev", .qn, names(q))
+                      names(s) <- sub("fwd|rev", .sn, names(s))
+                      df <- data.frame(q=names(q), s=names(s))
+                      colnames(df) <- c(.qn, .sn)
+                      list(df=df, seq=c(q, s))
+                    }, SIMPLIFY=FALSE)
+      seqs <- lapply(aln, `[[`, i="seq")
+      seqs <- Reduce(c, seqs)
+      seqs <- unique(seqs)
+      aln <- lapply(aln, `[[`, i="df")
+      aln <- Reduce(merge, aln)
+      o <- apply(aln, 1, FUN = function(.ele){
+        args$inputSeqs <- c(query, seqs[.ele])
+        do.call(msa, args)
+      }, simplify = FALSE)
     }
   }
 }

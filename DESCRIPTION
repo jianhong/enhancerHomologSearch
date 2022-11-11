@@ -1,7 +1,7 @@
 Package: enhancerHomologSearch
 Type: Package
 Title: Identification of putative mammalian orthologs to given enhancer
-Version: 0.99.12
+Version: 1.5.0
 Authors@R: c(person(given="Jianhong", family="Ou", email="jianhong.ou@duke.edu", 
                  role=c("aut", "cre"), comment=c(ORCID="0000-0002-8652-2488")),
             person(given="Valentina", family="Cigliola", role=c("dtc")),
@@ -20,6 +20,8 @@ Imports: BiocGenerics, Biostrings, BSgenome, BiocParallel, BiocFileCache,
          httr,
          IRanges,
          jsonlite,
+         motifmatchr,
+         Matrix,
          rtracklayer, Rcpp,
          S4Vectors, stats,
          utils
@@ -32,10 +34,11 @@ Suggests: knitr, rmarkdown,
   TxDb.Mmusculus.UCSC.mm10.knownGene,
   org.Mm.eg.db,
   MotifDb,
-  testthat
+  testthat,
+  TFBSTools
 biocViews: Sequencing, GeneRegulation, Alignment
 License: GPL (>= 2)
 Encoding: UTF-8
 VignetteBuilder: knitr
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.0
 LinkingTo: Rcpp

@@ -128,6 +128,9 @@ static SCORE ScoreProfPosDimer(const ProfPos &PPA, const ProfPos &PPB)
 	case PPSCORE_SP:
 	case PPSCORE_SV:
 		return ScoreProfPosDimerPSP(PPA, PPB);
+
+	default:
+	  break;
 		}
 	Quit("Invalid g_PPScore");
 	return 0;

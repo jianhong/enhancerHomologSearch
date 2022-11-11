@@ -10,6 +10,8 @@ setClassUnion("BSgenomeOrNULL", c("BSgenome", "NULL"))
 #' @rdname Enhancers-class
 #' @slot genome An object of \link[BSgenome:BSgenome-class]{BSgenome}.
 #' @slot peaks An object of \link[GenomicRanges:GRanges-class]{GRanges}.
+#' @slot TFBP An object of \link[Matrix:lsparseMatrix-classes]{lgCMatrix}.
+#' @slot TFBP0 An vector of logical.
 #' @import methods
 #' @importFrom Biostrings DNAStringSet
 #' @export
@@ -18,7 +20,9 @@ setClassUnion("BSgenomeOrNULL", c("BSgenome", "NULL"))
 #'
 setClass("Enhancers",
          representation(genome = "BSgenomeOrNULL",
-                        peaks = "GRanges"),
+                        peaks = "GRanges",
+                        TFBP = "lgCMatrix",
+                        TFBP0 = "logical"),
          prototype(genome = NULL,
                    peaks = GRanges()),
          validity = function(object){
@@ -26,8 +30,11 @@ setClass("Enhancers",
              if(length(intersect(seqlevels(object@peaks),
                                  seqlevels(object@genome)))<1){
                return(
-                 "Please use getENCODEdata to create Enhancers object.")
+                 "Enhancer seqlevels are not identical.")
              }
+           }
+           if(length(object@TFBP0) != ncol(object@TFBP)){
+             return("TFBPS are not correct.")
            }
            return(TRUE)
          })
@@ -35,13 +42,18 @@ setClass("Enhancers",
 #' @rdname Enhancers-class
 #' @param genome An object of \link[BSgenome:BSgenome-class]{BSgenome}.
 #' @param peaks An object of \link[GenomicRanges:GRanges-class]{GRanges}.
+#' @param TFBP An object of \link[Matrix:lsparseMatrix-classes]{lgCMatrix}.
+#' @param TFBP0 An vector of logical.
 #' \code{"Enhancers"}
+#' @importFrom Matrix Matrix
 #' @export
 #' @return An object of Enhancers.
-Enhancers <- function(genome, peaks){
+Enhancers <- function(genome, peaks, TFBP, TFBP0){
   if(missing(genome)) genome <- NULL
   if(missing(peaks)) peaks <- GRanges()
-  new("Enhancers", genome=genome, peaks=peaks)
+  if(missing(TFBP)) TFBP <- new("lgCMatrix")
+  if(missing(TFBP0)) TFBP0 <- logical()
+  new("Enhancers", genome=genome, peaks=peaks, TFBP=TFBP, TFBP0=TFBP0)
 }
 
 #' @rdname Enhancers-class
@@ -84,6 +96,34 @@ setReplaceMethod("distance",
                    x
                  })
 
+if(!exists("tfbp")){
+  setGeneric("tfbp", function(x) standardGeneric("tfbp"))
+}
+#' @rdname Enhancers-class
+#' @aliases tfbp
+#' @aliases tfbp,Enhancers-method
+#' @aliases tfbp,Enhancers,ANY-method
+#' @exportMethod `tfbp`
+setMethod("tfbp",
+          signature(x="Enhancers"),
+          function(x){
+            slot(x, "TFBP")
+          })
+
+if(!exists("query_tfbp")){
+  setGeneric("query_tfbp", function(x) standardGeneric("query_tfbp"))
+}
+#' @rdname Enhancers-class
+#' @aliases query_tfbp
+#' @aliases query_tfbp,Enhancers-method
+#' @aliases query_tfbp,Enhancers,ANY-method
+#' @exportMethod `query_tfbp`
+setMethod("query_tfbp",
+          signature(x="Enhancers"),
+          function(x){
+            slot(x, "TFBP0")
+          })
+
 #' @rdname Enhancers-class
 #' @aliases getSeq,Enhancers-method
 #' @importMethodsFrom Biostrings getSeq reverseComplement
@@ -115,6 +155,15 @@ setMethod("getSeq",
             names(seq2) <- sub("fwd", "rev", names(seq))
             c(seq, seq2)
           })
+
+subsetTFBP <- function(x){
+  keep <- x@peaks$id
+  if(all(keep %in% rownames(x@TFBP))){
+    x@TFBP <- x@TFBP[keep, , drop=FALSE]
+  }
+  x
+}
+
 #' @rdname Enhancers-class
 #' @aliases subsetByOverlpas,Enhancers-method
 #' @param ranges,maxgap,minoverlap,type,invert parameters used by
@@ -132,6 +181,7 @@ setMethod("subsetByOverlaps",
                                         type = type,
                                         invert = invert,
                                         ...)
+            x <- subsetTFBP(x)
             x
           })
 #' @rdname Enhancers-class
@@ -141,6 +191,7 @@ setMethod("subset",
           signature(x="Enhancers"),
           function(x, ...){
             x@peaks <- subset(x@peaks, ...)
+            x <- subsetTFBP(x)
             x
           })
 
@@ -233,8 +284,9 @@ setMethod("show",
               cat("This is an object with ",
                   length(object@peaks),
                   " Enhancers for ",
-                  organism(object@genome))
+                  organism(object@genome),
+                  "\n")
             }else{
-              cat("This is an empty object of Enhancers.")
+              cat("This is an empty object of Enhancers.\n")
             }
           })

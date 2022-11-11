@@ -45,6 +45,9 @@ SCORE ObjScore(const MSA &msa, const unsigned SeqIndexes1[],
 	// Yuck -- casting away const (design flaw)
 		SetMSAWeightsMuscle((MSA &) msa);
 		break;
+
+	default:
+	  break;
 		}
 
 	SCORE Score = 0;
@@ -69,7 +72,7 @@ SCORE ObjScore(const MSA &msa, const unsigned SeqIndexes1[],
 	case OBJSCORE_SPF:
 		Score = ObjScoreSPDimer(msa);
 		break;
-	
+
 	default:
 		Quit("Invalid g_ObjScore=%d", g_ObjScore);
 		}

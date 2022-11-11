@@ -9,3 +9,7 @@ RMuscle <- function(rInputSeq, rCluster, rGapOpening, rGapExtension, rMaxiters, 
     .Call('_enhancerHomologSearch_RMuscle', PACKAGE = 'enhancerHomologSearch', rInputSeq, rCluster, rGapOpening, rGapExtension, rMaxiters, rSubstitutionMatrix, rType, rVerbose, rParams)
 }
 
+rushuffle <- function(x, k, n) {
+    .Call('_enhancerHomologSearch_rushuffle', PACKAGE = 'enhancerHomologSearch', x, k, n)
+}
+

@@ -310,7 +310,7 @@ static void SetDefaultsSPN_RNA()
 	g_ptrScoreMatrix = &NUC_SP;
 
 	g_scoreGapOpen = -420;
-	g_scoreCenter = -300;	// total center = NUC_EXTEND - 300 
+	g_scoreCenter = -300;	// total center = NUC_EXTEND - 300
 	g_scoreGapExtend = 0.0;
 
 	g_bNormalizeCounts = false;
@@ -450,6 +450,9 @@ void SetPPScore(bool bRespectFlagOpts)
 		if (ALPHA_Amino == g_Alpha)
 			g_PPScore = PPSCORE_LE;
 		break;
+
+	default:
+	  break;
 		}
 
 	SetPPDefaultParams();

@@ -82,10 +82,92 @@ Muscle/tomhydro.cpp Muscle/traceback.cpp Muscle/tracebackopt.cpp \
 Muscle/tracebacksw.cpp Muscle/treefrommsa.cpp Muscle/typetostr.cpp \
 Muscle/upgma2.cpp Muscle/usage.cpp Muscle/validateids.cpp Muscle/vtml2.cpp \
 Muscle/writescorefile.cpp RClustalW.cpp RClustalWMain.cpp RcppExports.cpp \
-RMuscle.cpp
+RMuscle.cpp \
+ushuffle.c \
+ushuffler.cpp
 
 # Obtain the object files
-OBJECTS=$(SOURCES:.cpp=.o)
+OBJECTS=ClustalW/alignment/Alignment.o \
+ClustalW/alignment/AlignmentOutput.o \
+ClustalW/alignment/ObjectiveScore.o ClustalW/alignment/Sequence.o \
+ClustalW/Clustal.o ClustalW/fileInput/ClustalFileParser.o \
+ClustalW/fileInput/EMBLFileParser.o ClustalW/fileInput/FileParser.o \
+ClustalW/fileInput/FileReader.o ClustalW/fileInput/GDEFileParser.o \
+ClustalW/fileInput/InFileStream.o ClustalW/fileInput/MSFFileParser.o \
+ClustalW/fileInput/PearsonFileParser.o ClustalW/fileInput/PIRFileParser.o \
+ClustalW/fileInput/RSFFileParser.o ClustalW/general/ClustalWResources.o \
+ClustalW/general/DebugLog.o ClustalW/general/InvalidCombination.o \
+ClustalW/general/OutputFile.o ClustalW/general/Stats.o \
+ClustalW/general/SymMatrix.o ClustalW/general/UserParameters.o \
+ClustalW/general/Utility.o ClustalW/general/VectorOutOfRange.o \
+ClustalW/Help.o ClustalW/interface/CommandLineParser.o \
+ClustalW/multipleAlign/Iteration.o \
+ClustalW/multipleAlign/LowScoreSegProfile.o ClustalW/multipleAlign/MSA.o \
+ClustalW/multipleAlign/MyersMillerProfileAlign.o \
+ClustalW/multipleAlign/ProfileBase.o \
+ClustalW/multipleAlign/ProfileStandard.o \
+ClustalW/multipleAlign/ProfileWithSub.o \
+ClustalW/pairwise/FastPairwiseAlign.o \
+ClustalW/pairwise/FullPairwiseAlign.o \
+ClustalW/substitutionMatrix/SubMatrix.o ClustalW/tree/AlignmentSteps.o \
+ClustalW/tree/ClusterTree.o ClustalW/tree/ClusterTreeOutput.o \
+ClustalW/tree/NJTree.o ClustalW/tree/RandomGenerator.o \
+ClustalW/tree/Tree.o ClustalW/tree/TreeInterface.o \
+ClustalW/tree/UnRootedClusterTree.o ClustalW/tree/UPGMA/Node.o \
+ClustalW/tree/UPGMA/RootedClusterTree.o \
+ClustalW/tree/UPGMA/RootedGuideTree.o \
+ClustalW/tree/UPGMA/RootedTreeOutput.o \
+ClustalW/tree/UPGMA/UPGMAAlgorithm.o \
+Muscle/aligngivenpath.o Muscle/aligngivenpathsw.o \
+Muscle/aligntwomsas.o Muscle/aligntwoprofs.o Muscle/aln.o \
+Muscle/alpha.o Muscle/anchors.o Muscle/bittraceback.o \
+Muscle/blosum62.o Muscle/blosumla.o Muscle/clust.o Muscle/cluster.o \
+Muscle/clwwt.o Muscle/color.o Muscle/cons.o Muscle/diaglist.o \
+Muscle/diffobjscore.o Muscle/diffpaths.o Muscle/difftrees.o \
+Muscle/difftreese.o Muscle/distcalc.o Muscle/distfunc.o \
+Muscle/distpwkimura.o Muscle/domuscle.o Muscle/dosp.o \
+Muscle/dpreglist.o Muscle/drawtree.o Muscle/edgelist.o \
+Muscle/enumopts.o Muscle/enumtostr.o Muscle/estring.o Muscle/fasta.o \
+Muscle/fasta2.o Muscle/fastclust.o Muscle/fastdist.o \
+Muscle/fastdistjones.o Muscle/fastdistkbit.o Muscle/fastdistkmer.o \
+Muscle/fastdistmafft.o Muscle/fastdistnuc.o Muscle/fastscorepath2.o \
+Muscle/finddiags.o Muscle/finddiagsn.o Muscle/glbalign.o \
+Muscle/glbalign352.o Muscle/glbaligndiag.o Muscle/glbalignla.o \
+Muscle/glbalignle.o Muscle/glbalignns.o Muscle/glbalignsimple.o \
+Muscle/glbalignsp.o Muscle/glbalignspn.o Muscle/glbalignss.o \
+Muscle/glbalndimer.o Muscle/globals.o Muscle/globalslinux.o \
+Muscle/globalsosx.o Muscle/globalsother.o Muscle/globalswin32.o \
+Muscle/gonnet.o Muscle/gotowt.o Muscle/henikoffweight.o \
+Muscle/henikoffweightpb.o Muscle/html.o Muscle/hydro.o \
+Muscle/intmath.o Muscle/local.o Muscle/main.o Muscle/makerootmsa.o \
+Muscle/makerootmsab.o Muscle/maketree.o Muscle/mhack.o \
+Muscle/mpam200.o Muscle/msa.o Muscle/msa2.o Muscle/msadistkimura.o \
+Muscle/msf.o Muscle/muscle.o Muscle/muscleout.o Muscle/nucmx.o \
+Muscle/nwdasimple.o Muscle/nwdasimple2.o Muscle/nwdasmall.o \
+Muscle/nwrec.o Muscle/nwsmall.o Muscle/objscore.o Muscle/objscore2.o \
+Muscle/objscoreda.o Muscle/onexception.o Muscle/options.o \
+Muscle/outweights.o Muscle/pam200mafft.o Muscle/params.o Muscle/phy.o \
+Muscle/phy2.o Muscle/phy3.o Muscle/phy4.o Muscle/phyfromclust.o \
+Muscle/phyfromfile.o Muscle/physeq.o Muscle/phytofile.o \
+Muscle/posgap.o Muscle/ppscore.o Muscle/profdb.o Muscle/profile.o \
+Muscle/profilefrommsa.o Muscle/progalign.o Muscle/progress.o \
+Muscle/progressivealign.o Muscle/pwpath.o Muscle/readmx.o \
+Muscle/realigndiffs.o Muscle/realigndiffse.o Muscle/refine.o \
+Muscle/refinehoriz.o Muscle/refinesubfams.o Muscle/refinetree.o \
+Muscle/refinetreee.o Muscle/refinevert.o \
+Muscle/refinew.o Muscle/savebest.o Muscle/scoredist.o \
+Muscle/scoregaps.o Muscle/scorehistory.o Muscle/scorepp.o Muscle/seq.o \
+Muscle/seqvect.o Muscle/setblosumweights.o Muscle/setgscweights.o \
+Muscle/setnewhandler.o Muscle/spfast.o Muscle/sptest.o \
+Muscle/stabilize.o Muscle/subfam.o Muscle/subfams.o Muscle/sw.o \
+Muscle/termgaps.o Muscle/textfile.o Muscle/threewaywt.o \
+Muscle/tomhydro.o Muscle/traceback.o Muscle/tracebackopt.o \
+Muscle/tracebacksw.o Muscle/treefrommsa.o Muscle/typetostr.o \
+Muscle/upgma2.o Muscle/usage.o Muscle/validateids.o Muscle/vtml2.o \
+Muscle/writescorefile.o RClustalW.o RClustalWMain.o RcppExports.o \
+RMuscle.o \
+ushuffle.o \
+ushuffler.o
 
 .PHONY: all clean
 

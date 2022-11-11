@@ -174,6 +174,8 @@ void Clust::ChooseJoin(unsigned *ptruLeftIndex, unsigned *ptruRightIndex,
 		ChooseJoinNeighborJoining(ptruLeftIndex, ptruRightIndex, ptrdLeftLength,
 		  ptrdRightLength);
 		return;
+	default:
+	  break;
 		}
 	Quit("Clust::ChooseJoin, Invalid join style %u", m_JoinStyle);
 	}
@@ -308,6 +310,9 @@ float Clust::ComputeDist(unsigned uNewNodeIndex, unsigned uNodeIndex)
 
 	case LINKAGE_NeighborJoining:
 		return ComputeDistNeighborJoining(uNewNodeIndex, uNodeIndex);
+
+	default:
+	  break;
 		}
 	Quit("Clust::ComputeDist, invalid centroid style %u", m_CentroidStyle);
 	return (float) g_dNAN;
@@ -615,6 +620,9 @@ float Clust::ComputeMetric(unsigned uIndex1, unsigned uIndex2) const
 
 	case JOIN_NeighborJoining:
 		return ComputeMetricNeighborJoining(uIndex1, uIndex2);
+
+	default:
+	  break;
 		}
 	Quit("Clust::ComputeMetric");
 	return 0;

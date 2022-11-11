@@ -375,10 +375,13 @@ void SetMSAWeightsMuscle(MSA &msa)
 	case SEQWEIGHT_ClustalW:
 		SetClustalWWeightsMuscle(msa);
 		return;
-	
+
 	case SEQWEIGHT_ThreeWay:
 		SetThreeWayWeightsMuscle(msa);
 		return;
+
+	default:
+	  break;
 		}
 	Quit("SetMSAWeightsMuscle, Invalid method=%d", Method);
 	}
