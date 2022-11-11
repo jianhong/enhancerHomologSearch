@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,18 +33,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">enhancerHomologSearch</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.12</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../articles/enhancerHomologSearch.html">Get started</a>
 </li>
@@ -52,7 +48,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/jianhong/enhancerHomologSearch/">
+  <a href="https://github.com/jianhong/enhancerHomologSearch/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -67,526 +63,661 @@
 
       
 
-      </header><script src="enhancerHomologSearch_files/header-attrs-2.10/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>enhancerHomologSearch Guide</h1>
-                        <h4 class="author">Jianhong Ou</h4>
+                        <h4 data-toc-skip class="author">Jianhong
+Ou</h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/jianhong/enhancerHomologSearch/blob/master/vignettes/enhancerHomologSearch.Rmd"><code>vignettes/enhancerHomologSearch.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/jianhong/enhancerHomologSearch/blob/HEAD/vignettes/enhancerHomologSearch.Rmd" class="external-link"><code>vignettes/enhancerHomologSearch.Rmd</code></a></small>
       <div class="hidden name"><code>enhancerHomologSearch.Rmd</code></div>
 
     </div>
 
     
     
-<div id="introduction" class="section level2">
-<h2 class="hasAnchor">
-<a href="#introduction" class="anchor"></a>Introduction</h2>
-<p>There is an increasing requirement for the tools to identify of putative mammalian orthologs to enhancers in species other than human and mouse, such as zebrafish, which is lacking whole genome comparison analysis data. Take zebrafish as an example, there are two major methods to identify the orthologs to enhancers in human and mouse,</p>
+<div class="section level2">
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h2>
+<p>There is an increasing requirement for the tools to identify of
+putative mammalian orthologs to enhancers in species other than human
+and mouse, such as zebrafish, which is lacking whole genome comparison
+analysis data. Take zebrafish as an example, there are two major methods
+to identify the orthologs to enhancers in human and mouse,</p>
 <ol style="list-style-type: decimal">
-<li><p>use the whole genome comparison analysis data and conservation data<span class="citation"><sup>1</sup></span>,</p></li>
-<li><p>use spotted gar genome as bridge genome to search the orthologs<span class="citation"><sup>2</sup></span>.</p></li>
+<li><p>use the whole genome comparison analysis data and conservation
+data<span class="citation"><sup>1</sup></span>,</p></li>
+<li><p>use spotted gar genome as bridge genome to search the
+orthologs<span class="citation"><sup>2</sup></span>.</p></li>
 </ol>
-<p>Both methods will work well in the coding region. However, there is lacking comparative data in distal regulation region such as enhancers and silencers.</p>
-<p>In 2020, Emily S. Wong et. al. provides a new method for identification of putative human orthologs to enhancers of zebrafish<span class="citation"><sup>3</sup></span>. They used the method to interrogate conserved syntenic regions and human and mouse using candidate sponge enhancer sequences. First, they looked for overlap with available functional genomics information. For example, they used mouse ENCODE data to infer enhancer activity based on histone marks in specific tissues. Second, they select the best-aligned region by whole genome alignment from the candidates regions for human and mouse as orthologs. This method provides the possibility to search orthologs for enhancers or silencers even there is not genome comparative data available.</p>
-<p>This package is modified from Wong’s methods and provide the easy-to-use script for researchers to quick search putative mammalian orthologs to enhancers. The modified algorithm is: The candidate regions were determined by ENCODE histone marks (default is H3K4me1) in specific tissue for human and mouse. The mapping score were calculated by pairwise alignment between enhancer sequences and candidates by global sequence alignment<span class="citation"><sup>4</sup></span>. The Z-score were calculated from mapping score and then converted to P-value based on two-side test from a normal distribution. The candidates were filtered by p-value and distance from the TSS of target homologs. And then the top candidates from human and mouse were aligned to each other and exported as multiple alignments with given enhancer.</p>
+<p>Both methods will work well in the coding region. However, there is
+lacking comparative data in distal regulation region such as enhancers
+and silencers.</p>
+<p>In 2020, Emily S. Wong et. al. provides a new method for
+identification of putative human orthologs to enhancers of
+zebrafish<span class="citation"><sup>3</sup></span>. They used the
+method to interrogate conserved syntenic regions and human and mouse
+using candidate sponge enhancer sequences. First, they looked for
+overlap with available functional genomics information. For example,
+they used mouse ENCODE data to infer enhancer activity based on histone
+marks in specific tissues. Second, they select the best-aligned region
+by whole genome alignment from the candidates regions for human and
+mouse as orthologs. This method provides the possibility to search
+orthologs for enhancers or silencers even there is not genome
+comparative data available.</p>
+<p>This package is modified from Wong’s methods and provide the
+easy-to-use script for researchers to quick search putative mammalian
+orthologs to enhancers. The modified algorithm is: The candidate regions
+were determined by ENCODE histone marks (default is H3K4me1) in specific
+tissue for human and mouse. The mapping score were calculated by
+pairwise Transcription Factors Binding Pattern Similarity (TFBPS)
+between enhancer sequences and candidates by fast motif match<span class="citation"><sup>4</sup></span>. The Z-score were calculated from
+mapping score and then converted to P-value based on two-side test from
+a normal distribution. The candidates were filtered by p-value and
+distance from the TSS of target homologs. And then the top candidates
+from human and mouse were aligned to each other and exported as multiple
+alignments with given enhancer.</p>
 </div>
-<div id="installation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h2>
-<p>First install <code>enhancerHomologSearch</code> and other packages required to run the examples. Please note the example dataset used here is from zebrafish. To run analysis with dataset from a different species or different assembly, please install the corresponding Bsgenome and TxDb. For example, to analyze cattle data aligned to bosTau9, please install BSgenome.Btaurus.UCSC.bosTau9, and TxDb.Btaurus.UCSC.bosTau9.refGene. You can also generate a TxDb object by functions makeTxDbFromGFF from a local gff file, or makeTxDbFromUCSC, makeTxDbFromBiomart, and makeTxDbFromEnsembl, from online resources in GenomicFeatures package.</p>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
+<p>First install <code>enhancerHomologSearch</code> and other packages
+required to run the examples. Please note the example dataset used here
+is from zebrafish. To run analysis with dataset from a different species
+or different assembly, please install the corresponding Bsgenome and
+TxDb. For example, to analyze cattle data aligned to bosTau9, please
+install BSgenome.Btaurus.UCSC.bosTau9, and
+TxDb.Btaurus.UCSC.bosTau9.refGene. You can also generate a TxDb object
+by functions makeTxDbFromGFF from a local gff file, or makeTxDbFromUCSC,
+makeTxDbFromBiomart, and makeTxDbFromEnsembl, from online resources in
+GenomicFeatures package.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="st">"BiocManager"</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-     <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">BiocManager</span><span class="op">)</span>
-<span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html">install</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"enhancerHomologSearch"</span>,
-                       <span class="st">"BiocParallel"</span>,
-                       <span class="st">"BSgenome.Drerio.UCSC.danRer10"</span>,
-                       <span class="st">"BSgenome.Hsapiens.UCSC.hg38"</span>,
-                       <span class="st">"BSgenome.Mmusculus.UCSC.mm10"</span>,
-                       <span class="st">"TxDb.Hsapiens.UCSC.hg38.knownGene"</span>,
-                       <span class="st">"TxDb.Mmusculus.UCSC.mm10.knownGene"</span>,
-                       <span class="st">"org.Hs.eg.db"</span>,
-                       <span class="st">"org.Mm.eg.db"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<p>If you have trouble in install ribosomeProfilingQC, please check your R version first. The <code>enhancerHomologSearch</code> package require R &gt;= 4.1.0.</p>
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="st">"BiocManager"</span> <span class="op"><a href="https://rdrr.io/pkg/BiocGenerics/man/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>     <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">BiocManager</span><span class="op">)</span></span>
+<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html" class="external-link">install</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"enhancerHomologSearch"</span>,</span>
+<span>                       <span class="st">"BiocParallel"</span>,</span>
+<span>                       <span class="st">"BSgenome.Drerio.UCSC.danRer10"</span>,</span>
+<span>                       <span class="st">"BSgenome.Hsapiens.UCSC.hg38"</span>,</span>
+<span>                       <span class="st">"BSgenome.Mmusculus.UCSC.mm10"</span>,</span>
+<span>                       <span class="st">"TxDb.Hsapiens.UCSC.hg38.knownGene"</span>,</span>
+<span>                       <span class="st">"TxDb.Mmusculus.UCSC.mm10.knownGene"</span>,</span>
+<span>                       <span class="st">"org.Hs.eg.db"</span>,</span>
+<span>                       <span class="st">"org.Mm.eg.db"</span>,</span>
+<span>                       <span class="st">"MotifDb"</span>,</span>
+<span>                       <span class="st">"motifmatchr"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>If you have trouble in install enhancerHomologSearch, please check
+your R version first. The <code>enhancerHomologSearch</code> package
+require R &gt;= 4.1.0.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">R.version</span></code></pre></div>
-<pre><code>##                _                           
-## platform       x86_64-pc-linux-gnu         
-## arch           x86_64                      
-## os             linux-gnu                   
-## system         x86_64, linux-gnu           
-## status                                     
-## major          4                           
-## minor          1.1                         
-## year           2021                        
-## month          08                          
-## day            10                          
-## svn rev        80725                       
-## language       R                           
-## version.string R version 4.1.1 (2021-08-10)
-## nickname       Kick Things</code></pre>
+<code class="sourceCode R"><span><span class="va">R.version</span></span></code></pre></div>
+<pre><code><span><span class="co">##                _                                                 </span></span>
+<span><span class="co">## platform       x86_64-pc-linux-gnu                               </span></span>
+<span><span class="co">## arch           x86_64                                            </span></span>
+<span><span class="co">## os             linux-gnu                                         </span></span>
+<span><span class="co">## system         x86_64, linux-gnu                                 </span></span>
+<span><span class="co">## status         Under development (unstable)                      </span></span>
+<span><span class="co">## major          4                                                 </span></span>
+<span><span class="co">## minor          3.0                                               </span></span>
+<span><span class="co">## year           2022                                              </span></span>
+<span><span class="co">## month          11                                                </span></span>
+<span><span class="co">## day            07                                                </span></span>
+<span><span class="co">## svn rev        83308                                             </span></span>
+<span><span class="co">## language       R                                                 </span></span>
+<span><span class="co">## version.string R Under development (unstable) (2022-11-07 r83308)</span></span>
+<span><span class="co">## nickname       Unsuffered Consequences</span></span></code></pre>
 </div>
-<div id="step-1-prepare-target-enhancer-sequences-" class="section level2">
-<h2 class="hasAnchor">
-<a href="#step-1-prepare-target-enhancer-sequences-" class="anchor"></a>Step 1, prepare target enhancer sequences.</h2>
-<p>In this example, we will use an enhancer of <code>lepb</code> gene in zebrafish.</p>
+<div class="section level2">
+<h2 id="step-1-prepare-target-enhancer-sequences-">Step 1, prepare target enhancer sequences.<a class="anchor" aria-label="anchor" href="#step-1-prepare-target-enhancer-sequences-"></a>
+</h2>
+<p>In this example, we will use an enhancer of <code>lepb</code> gene in
+zebrafish.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># load genome sequences</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">BSgenome.Drerio.UCSC.danRer10</span><span class="op">)</span>
-<span class="co"># define the enhancer genomic coordinates</span>
-<span class="va">LEN</span> <span class="op">&lt;-</span> <span class="fu">GRanges</span><span class="op">(</span><span class="st">"chr4"</span>, <span class="fu">IRanges</span><span class="op">(</span><span class="fl">19050041</span>, <span class="fl">19051709</span><span class="op">)</span><span class="op">)</span>
-<span class="co"># extract the sequences as Biostrings::DNAStringSet object</span>
-<span class="op">(</span><span class="va">seqEN</span> <span class="op">&lt;-</span> <span class="fu">getSeq</span><span class="op">(</span><span class="va">BSgenome.Drerio.UCSC.danRer10</span>, <span class="va">LEN</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## DNAStringSet object of length 1:
-##     width seq
-## [1]  1669 TGGCATACACAGCAAACATCATGAATTTAATTTA...TAGATAAATAGAAACAGAAGCAAATTGGCGAGT</code></pre>
+<code class="sourceCode R"><span><span class="co"># load genome sequences</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">BSgenome.Drerio.UCSC.danRer10</span><span class="op">)</span></span>
+<span><span class="co"># define the enhancer genomic coordinates</span></span>
+<span><span class="va">LEN</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GenomicRanges/man/GRanges-class.html" class="external-link">GRanges</a></span><span class="op">(</span><span class="st">"chr4"</span>, <span class="fu"><a href="https://rdrr.io/pkg/IRanges/man/IRanges-constructor.html" class="external-link">IRanges</a></span><span class="op">(</span><span class="fl">19050041</span>, <span class="fl">19051709</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co"># extract the sequences as Biostrings::DNAStringSet object</span></span>
+<span><span class="op">(</span><span class="va">seqEN</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Biostrings/man/getSeq.html" class="external-link">getSeq</a></span><span class="op">(</span><span class="va">BSgenome.Drerio.UCSC.danRer10</span>, <span class="va">LEN</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## DNAStringSet object of length 1:</span></span>
+<span><span class="co">##     width seq</span></span>
+<span><span class="co">## [1]  1669 <span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFFF;">GG</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">AAA</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFAFAF;">AA</span><span style="color: #000000; background-color: #FFD7AF;">TTT</span><span style="color: #000000; background-color: #FFAFAF;">AA</span><span style="color: #000000; background-color: #FFD7AF;">TTT</span><span style="color: #000000; background-color: #FFAFAF;">A</span>...<span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #FFAFAF;">AAA</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFAFAF;">AAA</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFAFAF;">AA</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">AAA</span><span style="color: #000000; background-color: #FFD7AF;">TT</span><span style="color: #000000; background-color: #AFFFFF;">GG</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFD7AF;">T</span></span></span></code></pre>
 </div>
-<div id="step-2-download-candidate-regions-of-enhancers-from-encode-by-h3k4me1-marks" class="section level2">
-<h2 class="hasAnchor">
-<a href="#step-2-download-candidate-regions-of-enhancers-from-encode-by-h3k4me1-marks" class="anchor"></a>Step 2, download candidate regions of enhancers from ENCODE by H3K4me1 marks</h2>
-<p>By default, the hisone marker is H3K4me1. Users can also define the markers by <code>markers</code> parameter in the function <code>getENCODEdata</code>. To make sure the markers are tissue specific, we can filter the data by <code>biosample_name</code> and <code>biosample_type</code> parameters. For additional filters, please refer <code><a href="../reference/getENCODEdata.html">?getENCODEdata</a></code>.</p>
+<div class="section level2">
+<h2 id="step-2-download-candidate-regions-of-enhancers-from-encode-by-h3k4me1-marks">Step 2, download candidate regions of enhancers from ENCODE by
+H3K4me1 marks<a class="anchor" aria-label="anchor" href="#step-2-download-candidate-regions-of-enhancers-from-encode-by-h3k4me1-marks"></a>
+</h2>
+<p>By default, the hisone marker is H3K4me1. Users can also define the
+markers by <code>markers</code> parameter in the function
+<code>getENCODEdata</code>. To make sure the markers are tissue
+specific, we can filter the data by <code>biosample_name</code> and
+<code>biosample_type</code> parameters. For additional filters, please
+refer <code><a href="../reference/getENCODEdata.html">?getENCODEdata</a></code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># load library</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://jianhong.github.io/enhancerHomologSearch">enhancerHomologSearch</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">BSgenome.Hsapiens.UCSC.hg38</span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">BSgenome.Mmusculus.UCSC.mm10</span><span class="op">)</span>
-<span class="co"># download enhancer candidates for human heart tissue</span>
-<span class="va">hs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getENCODEdata.html">getENCODEdata</a></span><span class="op">(</span>genome<span class="op">=</span><span class="va">Hsapiens</span>,
-                    partialMatch<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>biosample_summary <span class="op">=</span> <span class="st">"heart"</span><span class="op">)</span><span class="op">)</span>
-<span class="co"># download enhancer candidates for mouse heart tissue</span>
-<span class="va">mm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getENCODEdata.html">getENCODEdata</a></span><span class="op">(</span>genome<span class="op">=</span><span class="va">Mmusculus</span>,
-                    partialMatch<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>biosample_summary <span class="op">=</span> <span class="st">"heart"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># load library</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jianhong.github.io/enhancerHomologSearch" class="external-link">enhancerHomologSearch</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">BSgenome.Hsapiens.UCSC.hg38</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">BSgenome.Mmusculus.UCSC.mm10</span><span class="op">)</span></span>
+<span><span class="co"># download enhancer candidates for human heart tissue</span></span>
+<span><span class="va">hs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getENCODEdata.html">getENCODEdata</a></span><span class="op">(</span>genome<span class="op">=</span><span class="va">Hsapiens</span>,</span>
+<span>                    partialMatch<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>biosample_summary <span class="op">=</span> <span class="st">"heart"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co"># download enhancer candidates for mouse heart tissue</span></span>
+<span><span class="va">mm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getENCODEdata.html">getENCODEdata</a></span><span class="op">(</span>genome<span class="op">=</span><span class="va">Mmusculus</span>,</span>
+<span>                    partialMatch<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>biosample_summary <span class="op">=</span> <span class="st">"heart"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="step-3-get-alignment-score-for-target-enhancer-and-candidate-enhancers-" class="section level2">
-<h2 class="hasAnchor">
-<a href="#step-3-get-alignment-score-for-target-enhancer-and-candidate-enhancers-" class="anchor"></a>Step 3, get alignment score for target enhancer and candidate enhancers.</h2>
-<p>This step is time consuming step. For quick run, users can subset the data by given genomic coordinates.</p>
+<div class="section level2">
+<h2 id="step-3-get-alignment-score-for-target-enhancer-and-candidate-enhancers-">Step 3, get alignment score for target enhancer and candidate
+enhancers.<a class="anchor" aria-label="anchor" href="#step-3-get-alignment-score-for-target-enhancer-and-candidate-enhancers-"></a>
+</h2>
+<p>Previous methods were get alignment score from the alignment of
+enhancer and candidate enhancers via the function
+<code>alignmentOne</code>. However, most of the enhancer evolution are
+rapid. This package is modified from Wong’s methods and calculate the
+alignment score by pairwise Transcription Factors Binding Pattern
+Similarity (TFBPS) between enhancer sequences and candidates. This step
+is time consuming step. For quick run, users can subset the data by
+given genomic coordinates.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># subset the data for test run </span>
-<span class="co"># in human, the homolog HBEGF gene is located at chromosome 5</span>
-<span class="co"># you can try to subset the data by chromosome 5</span>
-<span class="va">gr</span> <span class="op">&lt;-</span> <span class="fu">as</span><span class="op">(</span><span class="fu">seqinfo</span><span class="op">(</span><span class="va">Hsapiens</span><span class="op">)</span>, <span class="st">"GRanges"</span><span class="op">)</span>
-<span class="va">hs</span> <span class="op">&lt;-</span> <span class="fu">subsetByOverlaps</span><span class="op">(</span><span class="va">hs</span>, <span class="va">gr</span><span class="op">[</span><span class="fu">seqnames</span><span class="op">(</span><span class="va">gr</span><span class="op">)</span><span class="op">==</span><span class="st">"chr7"</span><span class="op">]</span><span class="op">)</span>
-<span class="co"># In this test run, we will only use upstream 1M and downstream 1M of homolog</span>
-<span class="co"># gene</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">TxDb.Hsapiens.UCSC.hg38.knownGene</span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">org.Hs.eg.db</span><span class="op">)</span>
-<span class="va">eid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/get.html">mget</a></span><span class="op">(</span><span class="st">"LEP"</span>, <span class="va">org.Hs.egALIAS2EG</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>
-<span class="va">g_hs</span> <span class="op">&lt;-</span> <span class="fu">select</span><span class="op">(</span><span class="va">TxDb.Hsapiens.UCSC.hg38.knownGene</span>,
-               keys<span class="op">=</span><span class="va">eid</span>,
-               columns<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"GENEID"</span>, <span class="st">"TXCHROM"</span>, <span class="st">"TXSTART"</span>, <span class="st">"TXEND"</span>, <span class="st">"TXSTRAND"</span><span class="op">)</span>,
-               keytype<span class="op">=</span><span class="st">"GENEID"</span><span class="op">)</span>
-<span class="va">g_hs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/range.html">range</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">g_hs</span>, <span class="fu">GRanges</span><span class="op">(</span><span class="va">TXCHROM</span>, <span class="fu">IRanges</span><span class="op">(</span><span class="va">TXSTART</span>, <span class="va">TXEND</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="va">expandGR</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">ext</span><span class="op">)</span><span class="op">{</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">==</span><span class="fl">1</span><span class="op">)</span>
-  <span class="fu"><a href="https://rdrr.io/r/stats/start.html">start</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/stats/start.html">start</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">-</span><span class="va">ext</span><span class="op">)</span>
-  <span class="fu"><a href="https://rdrr.io/r/stats/start.html">end</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/start.html">end</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">+</span><span class="va">ext</span>
-  <span class="fu">GenomicRanges</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/GenomicRanges/man/intra-range-methods.html">trim</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
-<span class="op">}</span>
-<span class="va">hs</span> <span class="op">&lt;-</span> <span class="fu">subsetByOverlaps</span><span class="op">(</span><span class="va">hs</span>, <span class="fu">expandGR</span><span class="op">(</span><span class="va">g_hs</span>, ext<span class="op">=</span><span class="fl">1000000</span><span class="op">)</span><span class="op">)</span>
-<span class="co"># in mouse, the homolog Hbegf gene is located at chromosome 18</span>
-<span class="co"># same as above script in human, you can try to subset the data by chromosome.</span>
-<span class="va">gr</span> <span class="op">&lt;-</span> <span class="fu">as</span><span class="op">(</span><span class="fu">seqinfo</span><span class="op">(</span><span class="va">Mmusculus</span><span class="op">)</span>, <span class="st">"GRanges"</span><span class="op">)</span>
-<span class="va">mm</span> <span class="op">&lt;-</span> <span class="fu">subsetByOverlaps</span><span class="op">(</span><span class="va">mm</span>, <span class="va">gr</span><span class="op">[</span><span class="fu">seqnames</span><span class="op">(</span><span class="va">gr</span><span class="op">)</span><span class="op">==</span><span class="st">"chr6"</span><span class="op">]</span><span class="op">)</span>
-<span class="co"># Here we use the subset of 1M upstream and downstream of homolog gene.</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">TxDb.Mmusculus.UCSC.mm10.knownGene</span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">org.Mm.eg.db</span><span class="op">)</span>
-<span class="va">eid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/get.html">mget</a></span><span class="op">(</span><span class="st">"Lep"</span>, <span class="va">org.Mm.egALIAS2EG</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>
-<span class="va">g_mm</span> <span class="op">&lt;-</span> <span class="fu">select</span><span class="op">(</span><span class="va">TxDb.Mmusculus.UCSC.mm10.knownGene</span>,
-               keys<span class="op">=</span><span class="va">eid</span>,
-               columns<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"GENEID"</span>, <span class="st">"TXCHROM"</span>, <span class="st">"TXSTART"</span>, <span class="st">"TXEND"</span>, <span class="st">"TXSTRAND"</span><span class="op">)</span>,
-               keytype<span class="op">=</span><span class="st">"GENEID"</span><span class="op">)</span>
-<span class="va">g_mm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/range.html">range</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">g_mm</span>,
-                   <span class="fu">GRanges</span><span class="op">(</span><span class="va">TXCHROM</span>,
-                           <span class="fu">IRanges</span><span class="op">(</span><span class="va">TXSTART</span>, <span class="va">TXEND</span><span class="op">)</span>,
-                           strand<span class="op">=</span><span class="va">TXSTRAND</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="va">g_mm</span> <span class="op">&lt;-</span> <span class="va">g_mm</span><span class="op">[</span><span class="fu">seqnames</span><span class="op">(</span><span class="va">g_mm</span><span class="op">)</span> <span class="op">%in%</span> <span class="st">"chr6"</span> <span class="op">&amp;</span> <span class="fu">strand</span><span class="op">(</span><span class="va">g_mm</span><span class="op">)</span> <span class="op">%in%</span> <span class="st">"+"</span><span class="op">]</span>
-<span class="va">mm</span> <span class="op">&lt;-</span> <span class="fu">subsetByOverlaps</span><span class="op">(</span><span class="va">mm</span>, <span class="fu">expandGR</span><span class="op">(</span><span class="va">g_mm</span>, ext<span class="op">=</span><span class="fl">1000000</span><span class="op">)</span><span class="op">)</span>
-
-<span class="co"># use parallel computing to speed up.</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Bioconductor/BiocParallel">BiocParallel</a></span><span class="op">)</span>
-<span class="va">bpparam</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocParallel/man/MulticoreParam-class.html">MulticoreParam</a></span><span class="op">(</span>tasks<span class="op">=</span><span class="fl">200</span>, progressbar<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>
-<span class="va">aln_hs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/alignmentOne.html">alignmentOne</a></span><span class="op">(</span><span class="va">seqEN</span>, <span class="va">hs</span>, bpparam<span class="op">=</span><span class="va">bpparam</span><span class="op">)</span></code></pre></div>
-<pre><code>## 
-  |                                                                            
-  |                                                                      |   0%
-  |                                                                            
-  |==================                                                    |  25%
-  |                                                                            
-  |===================================                                   |  50%
-  |                                                                            
-  |====================================================                  |  75%
-  |                                                                            
-  |======================================================================| 100%</code></pre>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">aln_mm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/alignmentOne.html">alignmentOne</a></span><span class="op">(</span><span class="va">seqEN</span>, <span class="va">mm</span>, bpparam<span class="op">=</span><span class="va">bpparam</span><span class="op">)</span></code></pre></div>
-<pre><code>## 
-  |                                                                            
-  |                                                                      |   0%
-  |                                                                            
-  |==============                                                        |  20%
-  |                                                                            
-  |============================                                          |  40%
-  |                                                                            
-  |==========================================                            |  60%
-  |                                                                            
-  |========================================================              |  80%
-  |                                                                            
-  |======================================================================| 100%</code></pre>
+<code class="sourceCode R"><span><span class="co"># subset the data for test run </span></span>
+<span><span class="co"># in human, the homolog LEP gene is located at chromosome 7</span></span>
+<span><span class="co"># In this test run, we will only use upstream 1M and downstream 1M of homolog</span></span>
+<span><span class="co"># gene</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">TxDb.Hsapiens.UCSC.hg38.knownGene</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">org.Hs.eg.db</span><span class="op">)</span></span>
+<span><span class="va">eid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/get.html" class="external-link">mget</a></span><span class="op">(</span><span class="st">"LEP"</span>, <span class="va">org.Hs.egALIAS2EG</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="va">g_hs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/AnnotationDbi/man/AnnotationDb-class.html" class="external-link">select</a></span><span class="op">(</span><span class="va">TxDb.Hsapiens.UCSC.hg38.knownGene</span>,</span>
+<span>               keys<span class="op">=</span><span class="va">eid</span>,</span>
+<span>               columns<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GENEID"</span>, <span class="st">"TXCHROM"</span>, <span class="st">"TXSTART"</span>, <span class="st">"TXEND"</span>, <span class="st">"TXSTRAND"</span><span class="op">)</span>,</span>
+<span>               keytype<span class="op">=</span><span class="st">"GENEID"</span><span class="op">)</span></span>
+<span><span class="va">g_hs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="va">g_hs</span>, <span class="fu"><a href="https://rdrr.io/pkg/GenomicRanges/man/GRanges-class.html" class="external-link">GRanges</a></span><span class="op">(</span><span class="va">TXCHROM</span>, <span class="fu"><a href="https://rdrr.io/pkg/IRanges/man/IRanges-constructor.html" class="external-link">IRanges</a></span><span class="op">(</span><span class="va">TXSTART</span>, <span class="va">TXEND</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">expandGR</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">ext</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">==</span><span class="fl">1</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/start.html" class="external-link">start</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/stats/start.html" class="external-link">start</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">-</span><span class="va">ext</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/start.html" class="external-link">end</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/start.html" class="external-link">end</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">+</span><span class="va">ext</span></span>
+<span>  <span class="fu">GenomicRanges</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/IRanges/man/Views-class.html" class="external-link">trim</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="va">hs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/IRanges/man/findOverlaps-methods.html" class="external-link">subsetByOverlaps</a></span><span class="op">(</span><span class="va">hs</span>, <span class="fu">expandGR</span><span class="op">(</span><span class="va">g_hs</span>, ext<span class="op">=</span><span class="fl">1000000</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co"># in mouse, the homolog Lep gene is located at chromosome 6</span></span>
+<span><span class="co"># Here we use the subset of 1M upstream and downstream of homolog gene.</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">TxDb.Mmusculus.UCSC.mm10.knownGene</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">org.Mm.eg.db</span><span class="op">)</span></span>
+<span><span class="va">eid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/get.html" class="external-link">mget</a></span><span class="op">(</span><span class="st">"Lep"</span>, <span class="va">org.Mm.egALIAS2EG</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="va">g_mm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/AnnotationDbi/man/AnnotationDb-class.html" class="external-link">select</a></span><span class="op">(</span><span class="va">TxDb.Mmusculus.UCSC.mm10.knownGene</span>,</span>
+<span>               keys<span class="op">=</span><span class="va">eid</span>,</span>
+<span>               columns<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GENEID"</span>, <span class="st">"TXCHROM"</span>, <span class="st">"TXSTART"</span>, <span class="st">"TXEND"</span>, <span class="st">"TXSTRAND"</span><span class="op">)</span>,</span>
+<span>               keytype<span class="op">=</span><span class="st">"GENEID"</span><span class="op">)</span></span>
+<span><span class="va">g_mm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="va">g_mm</span>,</span>
+<span>                   <span class="fu"><a href="https://rdrr.io/pkg/GenomicRanges/man/GRanges-class.html" class="external-link">GRanges</a></span><span class="op">(</span><span class="va">TXCHROM</span>,</span>
+<span>                           <span class="fu"><a href="https://rdrr.io/pkg/IRanges/man/IRanges-constructor.html" class="external-link">IRanges</a></span><span class="op">(</span><span class="va">TXSTART</span>, <span class="va">TXEND</span><span class="op">)</span>,</span>
+<span>                           strand<span class="op">=</span><span class="va">TXSTRAND</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">g_mm</span> <span class="op">&lt;-</span> <span class="va">g_mm</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/pkg/GenomeInfoDb/man/seqinfo.html" class="external-link">seqnames</a></span><span class="op">(</span><span class="va">g_mm</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/BiocGenerics/man/match.html" class="external-link">%in%</a></span> <span class="st">"chr6"</span> <span class="op">&amp;</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/strand.html" class="external-link">strand</a></span><span class="op">(</span><span class="va">g_mm</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/BiocGenerics/man/match.html" class="external-link">%in%</a></span> <span class="st">"+"</span><span class="op">]</span></span>
+<span><span class="va">mm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/IRanges/man/findOverlaps-methods.html" class="external-link">subsetByOverlaps</a></span><span class="op">(</span><span class="va">mm</span>, <span class="fu">expandGR</span><span class="op">(</span><span class="va">g_mm</span>, ext<span class="op">=</span><span class="fl">1000000</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># search the binding pattern</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">motifs</span><span class="op">)</span></span>
+<span><span class="co">## In the package, there are 10 sets of motif cluster sets.</span></span>
+<span><span class="co">## In this example, we use motif clusters merged by distance 60, which </span></span>
+<span><span class="co">## is calculated by matalgin (motifStack implementation)</span></span>
+<span><span class="va">PWMs</span> <span class="op">&lt;-</span> <span class="va">motifs</span><span class="op">[[</span><span class="st">"dist60"</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="co">## Here we set maximalShuffleEnhancers = 100 to decrease the computation time.</span></span>
+<span><span class="co">## The defaults of maximalShuffleEnhancers is 1000. Increase the shuffle number</span></span>
+<span><span class="co">## may help to get accurate P-value.</span></span>
+<span><span class="va">aln_hs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/searchTFBPS.html">searchTFBPS</a></span><span class="op">(</span><span class="va">seqEN</span>, <span class="va">hs</span>, PWMs <span class="op">=</span> <span class="va">PWMs</span>,</span>
+<span>                      queryGenome <span class="op">=</span> <span class="va">Drerio</span>,</span>
+<span>                      maximalShuffleEnhancers <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span><span class="va">aln_mm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/searchTFBPS.html">searchTFBPS</a></span><span class="op">(</span><span class="va">seqEN</span>, <span class="va">mm</span>, PWMs <span class="op">=</span> <span class="va">PWMs</span>,</span>
+<span>                      queryGenome <span class="op">=</span> <span class="va">Drerio</span>,</span>
+<span>                      maximalShuffleEnhancers <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span><span class="co">## if you want to stick to sequence similarity search, try to use ?alignmentOne</span></span></code></pre></div>
 </div>
-<div id="step-4-filter-the-candidate-regions-" class="section level2">
-<h2 class="hasAnchor">
-<a href="#step-4-filter-the-candidate-regions-" class="anchor"></a>Step 4, filter the candidate regions.</h2>
-<p>Here we will filter the candidate regions more than 5K from TSS of homolog but within 100K from the gene body. The candidates will be also filtered by p-value.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Step4</span>
-<span class="va">ext</span> <span class="op">&lt;-</span> <span class="fl">100000</span>
-<span class="va">aln_hs</span> <span class="op">&lt;-</span> <span class="fu">subsetByOverlaps</span><span class="op">(</span><span class="va">aln_hs</span>, ranges <span class="op">=</span> <span class="fu">expandGR</span><span class="op">(</span><span class="va">g_hs</span>, ext<span class="op">=</span><span class="va">ext</span><span class="op">)</span><span class="op">)</span>
-<span class="co">## filter by distance</span>
-<span class="fu"><a href="../reference/Enhancers-class.html">distance</a></span><span class="op">(</span><span class="va">aln_hs</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Enhancers-class.html">distance</a></span><span class="op">(</span><span class="fu"><a href="../reference/Enhancers-class.html">peaks</a></span><span class="op">(</span><span class="va">aln_hs</span><span class="op">)</span>, <span class="va">g_hs</span>, ignore.strand<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>
-<span class="va">aln_hs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">aln_hs</span>, <span class="va">pval</span><span class="op">&lt;</span><span class="fl">0.05</span> <span class="op">&amp;</span> <span class="va">distance</span> <span class="op">&gt;</span><span class="fl">5000</span><span class="op">)</span>
-
-
-<span class="va">aln_mm</span> <span class="op">&lt;-</span> <span class="fu">subsetByOverlaps</span><span class="op">(</span><span class="va">aln_mm</span>, ranges <span class="op">=</span> <span class="fu">expandGR</span><span class="op">(</span><span class="va">g_mm</span>, ext<span class="op">=</span><span class="va">ext</span><span class="op">)</span><span class="op">)</span>
-<span class="co">## filter by distance</span>
-<span class="fu"><a href="../reference/Enhancers-class.html">distance</a></span><span class="op">(</span><span class="va">aln_mm</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Enhancers-class.html">distance</a></span><span class="op">(</span><span class="fu"><a href="../reference/Enhancers-class.html">peaks</a></span><span class="op">(</span><span class="va">aln_mm</span><span class="op">)</span>, <span class="va">g_mm</span>, ignore.strand<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>
-<span class="va">aln_mm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">aln_mm</span>, <span class="va">pval</span><span class="op">&lt;</span><span class="fl">0.05</span> <span class="op">&amp;</span> <span class="va">distance</span> <span class="op">&gt;</span><span class="fl">5000</span><span class="op">)</span></code></pre></div>
+<div class="section level2">
+<h2 id="step-4-filter-the-candidate-regions-">Step 4, filter the candidate regions.<a class="anchor" aria-label="anchor" href="#step-4-filter-the-candidate-regions-"></a>
+</h2>
+<p>Here we will filter the candidate regions more than 5K from TSS of
+homolog but within 100K from the gene body. The candidates will be also
+filtered by p-value.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Step4</span></span>
+<span><span class="va">ext</span> <span class="op">&lt;-</span> <span class="fl">100000</span></span>
+<span><span class="va">aln_hs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/IRanges/man/findOverlaps-methods.html" class="external-link">subsetByOverlaps</a></span><span class="op">(</span><span class="va">aln_hs</span>, ranges <span class="op">=</span> <span class="fu">expandGR</span><span class="op">(</span><span class="va">g_hs</span>, ext<span class="op">=</span><span class="va">ext</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">## filter by distance</span></span>
+<span><span class="fu"><a href="../reference/Enhancers-class.html">distance</a></span><span class="op">(</span><span class="va">aln_hs</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Enhancers-class.html">distance</a></span><span class="op">(</span><span class="fu"><a href="../reference/Enhancers-class.html">peaks</a></span><span class="op">(</span><span class="va">aln_hs</span><span class="op">)</span>, <span class="va">g_hs</span>, ignore.strand<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">aln_hs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">aln_hs</span>, <span class="va">pval</span><span class="op">&lt;</span><span class="fl">0.1</span> <span class="op">&amp;</span> <span class="va">distance</span> <span class="op">&gt;</span><span class="fl">5000</span><span class="op">)</span></span>
+<span><span class="va">aln_hs</span></span></code></pre></div>
+<pre><code><span><span class="co">## This is an object with  1  Enhancers for  Homo sapiens</span></span></code></pre>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">aln_mm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/IRanges/man/findOverlaps-methods.html" class="external-link">subsetByOverlaps</a></span><span class="op">(</span><span class="va">aln_mm</span>, ranges <span class="op">=</span> <span class="fu">expandGR</span><span class="op">(</span><span class="va">g_mm</span>, ext<span class="op">=</span><span class="va">ext</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">## filter by distance</span></span>
+<span><span class="fu"><a href="../reference/Enhancers-class.html">distance</a></span><span class="op">(</span><span class="va">aln_mm</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Enhancers-class.html">distance</a></span><span class="op">(</span><span class="fu"><a href="../reference/Enhancers-class.html">peaks</a></span><span class="op">(</span><span class="va">aln_mm</span><span class="op">)</span>, <span class="va">g_mm</span>, ignore.strand<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">aln_mm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">aln_mm</span>, <span class="va">pval</span><span class="op">&lt;</span><span class="fl">0.1</span> <span class="op">&amp;</span> <span class="va">distance</span> <span class="op">&gt;</span><span class="fl">5000</span><span class="op">)</span></span>
+<span><span class="va">aln_mm</span></span></code></pre></div>
+<pre><code><span><span class="co">## This is an object with  3  Enhancers for  Mus musculus</span></span></code></pre>
 </div>
-<div id="step-5-export-the-multiple-alignments-in-order-" class="section level2">
-<h2 class="hasAnchor">
-<a href="#step-5-export-the-multiple-alignments-in-order-" class="anchor"></a>Step 5, export the multiple alignments in order.</h2>
-<p>The selected candidates will be aligned cross human and mouse and then output as phylip multiple alignment file in text format.</p>
+<div class="section level2">
+<h2 id="step-5-alignment-for-the-enhancer-and-the-orthologs">Step 5, alignment for the enhancer and the orthologs<a class="anchor" aria-label="anchor" href="#step-5-alignment-for-the-enhancer-and-the-orthologs"></a>
+</h2>
+<p>This step will create alignments for all combination of the enhancer
+and the orthologs.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">al</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/alignment.html">alignment</a></span><span class="op">(</span><span class="va">seqEN</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>human<span class="op">=</span><span class="va">aln_hs</span>, mouse<span class="op">=</span><span class="va">aln_mm</span><span class="op">)</span>,
-                method<span class="op">=</span><span class="st">"ClustalW"</span>, order<span class="op">=</span><span class="st">"input"</span><span class="op">)</span>
-<span class="va">al</span></code></pre></div>
-<pre><code>## [[1]]
-## DNAMultipleAlignment with 3 rows and 1686 columns
-##      aln                                                    names               
-## [1] TGGCATACACAGCAAACATCATGAAT...TAGAAACAGAAGCAAATTGGCGAGT Enhancer
-## [2] --------------------------...------------------------- human_chr7:128340...
-## [3] --------------------------...------------------------- mouse_chr6:291629...</code></pre>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">MotifDb</span><span class="op">)</span>
-<span class="va">motifs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/MotifDb/man/query.html">query</a></span><span class="op">(</span><span class="va">MotifDb</span>, <span class="st">"JASPAR_CORE"</span><span class="op">)</span>
-<span class="va">consensus</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="va">motifs</span>, <span class="va">consensusString</span><span class="op">)</span>
-<span class="va">consensus</span> <span class="op">&lt;-</span> <span class="fu">DNAStringSet</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html">gsub</a></span><span class="op">(</span><span class="st">"\\?"</span>, <span class="st">"N"</span>, <span class="va">consensus</span><span class="op">)</span><span class="op">)</span>
-<span class="va">tmpfolder</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span><span class="op">(</span><span class="op">)</span>
-<span class="fu"><a href="../reference/saveAlignments.html">saveAlignments</a></span><span class="op">(</span><span class="va">al</span>, output_folder <span class="op">=</span> <span class="va">tmpfolder</span>, motifConsensus<span class="op">=</span><span class="va">consensus</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/readLines.html">readLines</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">tmpfolder</span>, <span class="st">"aln1.phylip.txt"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>##   [1] " 5 1686"                                                                                  
-##   [2] "Enhancer                           TGGCATACAC AGCAAACATC ATGAATTTAA TTTAATTTAA TTTAATTTAA"
-##   [3] "human_chr7:128340906-128341905:-   ---------- ---------- ---------- ---------- ----------"
-##   [4] "mouse_chr6:29162916-29163915:+     ---------- ---------- ---------- ---------- ----------"
-##   [5] "Consensus                          ---------- ---------- ---------- ---------- ----------"
-##   [6] "motifConsensus                     ---------- ---------- ---------- ---------- ----------"
-##   [7] ""                                                                                         
-##   [8] "                                   TTTAATTTTT TTAATTTAAT TTTAATATTT TAAAATAAAA TAAAATAAAA"
-##   [9] "                                   ---------- ---------- ---------- ---------- ----------"
-##  [10] "                                   ---------- ---------- ---------- ---------- ----------"
-##  [11] "                                   ---------- ---------- ---------- ---------- ----------"
-##  [12] "                                   ---------- ---------- ---------- ---------- ----------"
-##  [13] ""                                                                                         
-##  [14] "                                   TAAAATAAAA TAAAAGATAA AGATAAAGAT AAAATAAAAT TCAACTCAAT"
-##  [15] "                                   ---------- ---------- ---------- ---------- ----------"
-##  [16] "                                   ---------- ---------- ---------- ---------- ----------"
-##  [17] "                                   ---------- ---------- ---------- ---------- ----------"
-##  [18] "                                   ---------- ---------- ---------- ---------- ----------"
-##  [19] ""                                                                                         
-##  [20] "                                   TAAATTAAAA CTAAGCTAAA ATAAAAATAC AATAAAATAA ATTTCAATTT"
-##  [21] "                                   ---------- ---------- ---------- -------GGT GTTAGTAGCT"
-##  [22] "                                   ---------- ---------- ---------- ---------- ----------"
-##  [23] "                                   ---------- ---------- ---------- ---------- -TT---A--T"
-##  [24] "                                   ---------- ---------- ---------- ---------- ----------"
-##  [25] ""                                                                                         
-##  [26] "                                   AATGTAATTT AATTTAAAAA GGGACTACGC CGAAAAGAAA ATGAATGAAT"
-##  [27] "                                   GAATTAACTC CTCCTCACCA GCCCCCATGT TCTTCCATAG --GACTCCAC"
-##  [28] "                                   ---------- ---------- ---------- ---------- ----------"
-##  [29] "                                   -A--TAA-T- ----T-A--A G---C-A-G- --------A- --GA-T--A-"
-##  [30] "                                   ---------- ---------- ---------- ---------- ----------"
-##  [31] ""                                                                                         
-##  [32] "                                   GGATGAATAA ATAATTTAAT TTAATTTAAT TTAATTTAAT TTAATTTAAT"
-##  [33] "                                   AAA-GAATAA T--ATTAGGA CCAAGGAGAT GAAAACTACA AATATCAACT"
-##  [34] "                                   ---------- ---ACAACGT CTTATATAAC CCAAGTAGGC CTCAACT-TC"
-##  [35] "                                   --A-GAATAA ---ATT---T -TAAT-TAAT --AA-TTA-- -T-AT-TA-T"
-##  [36] "                                   ---------- ---------- ---------- ---------- ----------"
-##  [37] ""                                                                                         
-##  [38] "                                   TTAATTTAAT TTAATTTAAT TTAATTTAAT TTAATTTAAT TTAATTTAAT"
-##  [39] "                                   GTAACCCACC TTTGCCCTTT TTGGTTTAAC ---ATTTTGT ATAGTAAAAT"
-##  [40] "                                   CTGATCCTCC TGCCTCCACT T--ACTAAGT ---GCTGGGA TTACAGTCAG"
-##  [41] "                                   -TAAT--A-- TT--T--A-T TT-ATTTAAT ---ATTT--T TTA-T-TAAT"
-##  [42] "                                   ---------- ---------- ---------- ---------- ----------"
-##  [43] ""                                                                                         
-##  [44] "                                   TTAATTTAAT TTGTTCGGCA CAGTAT-AAT ATGCTAGCAT CTCAGTTATT"
-##  [45] "                                   TTTAAATAAT TTATT--GCA TCAAAA-AGG AAAAGGACAG ATCAAGAA--"
-##  [46] "                                   ATACCACCAC TCCTG--GCA CAACATTAGT GTTGTAACAT -TTATTTA--"
-##  [47] "                                   TTAA--TAAT TT-TT--GCA CA--AT-A-T AT--TA-CAT -TCA-TTA--"
-##  [48] "                                   ---------- ---------- ---------- ---------- ----------"
-##  [49] ""                                                                                         
-##  [50] "                                   TCACGTGTGT TGTTACTATA AAATAAGCAA AACAGTGATA AAATAAGTTT"
-##  [51] "                                   ----GTCTGC CTTTACCTGA AAAGGAC--- -------ACA TAGTTCATAT"
-##  [52] "                                   ---CTTATGT GTGTGCAAAA GTATGGG--- -------AAA AATCTGGTAG"
-##  [53] "                                   ---CGT-TGT --TTAC-A-A AAAT-AG--- -------A-A AA-T--GT-T"
-##  [54] "                                   ---------- ---------- ---------- ---------- ----------"
-##  [55] ""                                                                                         
-##  [56] "                                   GTGTTGCTTA TCTTATGACT GG--TGGAAT GTAACAGGGA AAAAAAGCAC"
-##  [57] "                                   GCTCTGCTTC TCTTTCCACT GCATTTGAAT CTCCTTCAGG GTATAAGCCC"
-##  [58] "                                   GAGTTGGTTC T-TTCTGTCT AT--CAGGTT GAAGTGGGTC CTGAGATCTC"
-##  [59] "                                   G-GTTGCTT- TCTT-TGACT G---T-GAAT GTA---GGG- --AAAAGC-C"
-##  [60] "                                   ---------- ---------- ---------- ---------- ---AAAGCN-"
-##  [61] ""                                                                                         
-##  [62] "                                   ATACTGTGAC TTTGACAAAA CTGAGTGACT GATGATAATA AACTTCTCTT"
-##  [63] "                                   ---------- TTTGACACAG ----GACACT GATCTACATA AACTGGT---"
-##  [64] "                                   TT-------- CTCGATGTAC TC--GTGAAA GTTGGACATA ATTTATTCTT"
-##  [65] "                                   -T-------- TTTGACA-A- ----GTGACT GATG---ATA AACT--TCTT"
-##  [66] "                                   ---------N TTTGACA--- ---------- ---------- ----------"
-##  [67] ""                                                                                         
-##  [68] "                                   CTCGTAAG-C TGACAGTTCA TAAAACCTCT GCTTGTTTTT TTGTACTTTT"
-##  [69] "                                   ----TAAA-G CAACATAACA TCAA---TTT TTCTCTTCTC TTGAACTCCT"
-##  [70] "                                   CTGCCAAGTC TTTCATTTTA TCTG---TCT CTCAATTAGA TATTACTTTC"
-##  [71] "                                   CT--TAAG-C T-ACA-TTCA T-AA---TCT ---T-TT-T- TTGTACTTTT"
-##  [72] "                                   ---------- ---------- ---------- ---------- ----------"
-##  [73] ""                                                                                         
-##  [74] "                                   AATCTTAAGG TGACGCATGT AGCTTCCTGT CCTTCTCAGT TTACTGACAG"
-##  [75] "                                   TATCATAA-- ------AAGC TGCCCACTCA CCTT-TCAGA AAATGAGCAC"
-##  [76] "                                   AAACATGG-- ------GTGC TTCCTTCTAC AATT----GT TTGGGATTAA"
-##  [77] "                                   AATC-TAA-- ------ATG- -GC-T-CT-- CCTT-TCAGT TTA----CA-"
-##  [78] "                                   ---------- ---------- ---------- ---------- ----------"
-##  [79] ""                                                                                         
-##  [80] "                                   AGGTTAGGGT TTAATCCCAG ATATCCAGTC TGACTGTACA GTAGTTCAGG"
-##  [81] "                                   AAGAAAATTC ATAGCCCTTC ATGATCAGTA CAACCA-AAA GTAAAGCAGC"
-##  [82] "                                   AGGTGTGTGC TGAAGC---- -TGAGCCACA CAACTAGAAA TAGGATTTTC"
-##  [83] "                                   AGGT-AG-G- TTAA-CC--- AT---CAGT- --ACT--A-A GTAG-TCAG-"
-##  [84] "                                   ---------- ---------- ---------- ---------- ----------"
-##  [85] ""                                                                                         
-##  [86] "                                   AGACCGACGC AGATTTATAG CATCATTCGT CAAACCCTGA GGATAATCAT"
-##  [87] "                                   TGA--AATGT AAA-----AG AGTTTGACAC CCAAATGAAA GGACATACAG"
-##  [88] "                                   TAGTAAACAC CAC------- AATCTGAGGA CTCAGTGTGA TCG-AATCTC"
-##  [89] "                                   -GA---ACGC A-A-----AG -ATC---CG- C-AA---TGA GGA-AATCA-"
-##  [90] "                                   ---------- ---------- ---------- ---------- ----------"
-##  [91] ""                                                                                         
-##  [92] "                                   TTGTCACAGC TTCCTTTGGT -CATCATTAC TGTG-CAAAT AAACTGTTAG"
-##  [93] "                                   TAAATACCAC ACATTTTACA -TGTCTGCAT AAAG-CATGC TCAC--ATAC"
-##  [94] "                                   CTGTCACACC TTCATTCACT TCCTCGTCAC CCTGGCCACC AAGCTCTCTT"
-##  [95] "                                   TTGTCACA-C TTC-TTT--T -C-TC-T-AC --TG-CAA-- AAACT-TTA-"
-##  [96] "                                   ---------- ---------- ---------- ---------- ----------"
-##  [97] ""                                                                                         
-##  [98] "                                   AGCATGAGCC AGCAAAAACA GTGGGAAACG CAGCAATTTC CTGTATTTAA"
-##  [99] "                                   ATTTAGAGTC CCTGACAACC CTGTGAAATT A------TTC CCATCTTAAA"
-## [100] "                                   CTCACACAAG GACATACTTG CTTTAATATC CTCAAGGTTG CTGTTTCCTG"
-## [101] "                                   A-CA-GAG-C --CAAAAAC- -TG-GAAA-- C---A--TTC CTGT-TT-AA"
-## [102] "                                   ---------- ---------- ---------- ---------- ----------"
-## [103] ""                                                                                         
-## [104] "                                   TAGTCTGTGA GATATACTTT AATGAGATGA AATTGAAGAA AACTGAGTCA"
-## [105] "                                   GAGGTGAAGT GACATGCACT GCT------- -ATTGAGGAA GACT---TCA"
-## [106] "                                   AATTCAGACT GTTTTATCCC CCC------A GTTCTTAGTT CACT--CTCC"
-## [107] "                                   -AGTC-G-G- GATATAC--T --T------A -ATTGAAGAA -ACT---TCA"
-## [108] "                                   ---------- -ATATA---- ---------- ---------- ----------"
-## [109] ""                                                                                         
-## [110] "                                   TTAGAAAGGC ATTCACATAA ACTTTCCTG- GTGTATATTT CCTAACTCTC"
-## [111] "                                   TTCCACATAC CCTCCCTCCC GTTTCACTGA GTGCAGCACT CTTTCCAGTA"
-## [112] "                                   TCAAACAGGT CTTCCCT--A GCCACCCTAT CTACACACAC ACATTCCCTC"
-## [113] "                                   TTA-A-AGGC -TTC-C---A -CTT-CCTG- GTG-A-A--T CCT--C-CTC"
-## [114] "                                   ---------- ---------- ---------- ---------- ----------"
-## [115] ""                                                                                         
-## [116] "                                   TTCCAGTGTT TTCTACACCA GAAGAGTTCA TTAC-ATCAT TGAAGGACAA"
-## [117] "                                   CATATCAGCT GTCTGGAT-A GGAAAGTGCA TAGT-TTTTT AAAAGGAAG-"
-## [118] "                                   TTT-TGACTT TTCTCCTTAG CATAAATTTA TCACCATTAT CAACATATAG"
-## [119] "                                   TT---G-GTT TTCT-CA--A GAA-AGTTCA T-AC-AT-AT --AAGGA-A-"
-## [120] "                                   ---------- ---------- ---------- ---------- ----------"
-## [121] ""                                                                                         
-## [122] "                                   TGCTGAAAAA TAAGAACGCG TTTGGTTTTT CATAAACCAC ATGGTCTTGT"
-## [123] "                                   ---TAAGAGA TTTTTAAGGA TTTAG----- -ACCAAGTAC ACAAGGTGTA"
-## [124] "                                   T-TTGGCTAT TTGTTGGCTG TCTTT----- --CAAACCAT AAGTGTATGA"
-## [125] "                                   T--TGA-AAA T----A-G-G TTT-G----- -A-AAACCAC A-G---TTG-"
-## [126] "                                   ---------- ---------- ---------- ---------- ----------"
-## [127] ""                                                                                         
-## [128] "                                   GGGTCATGT- TGTTTTGTTT CTTTAGATTT GAGAGACGGG GAATGATGTG"
-## [129] "                                   AGGTAAGAT- TGCATGTAGC CTATATTCTG AGGACTCAAA GGAGAAC---"
-## [130] "                                   GAACAGAATC TGCGTCAGTG ATTTAGTGTC -ACACACCTG TTGTATC---"
-## [131] "                                   GGGT-A--T- TG--T---T- CTTTAG--T- -AGA-AC--G G-AT-A----"
-## [132] "                                   ---------- ---------- ---------- ---------- ----------"
-## [133] ""                                                                                         
-## [134] "                                   ATTTTGCCCA GTCAGCATGG ATATGATTTG GACTTC-CAT CTGTTTAAGA"
-## [135] "                                   -TCCCATTCA AT-GGCCTAT -TCTTCCCTG GAATAC-AAC CACCTGGGTA"
-## [136] "                                   -CTAAGGGCA GCCAGCAATG TTCTAAAATA CAGTTGGCAT CCAACAAGTA"
-## [137] "                                   -TT--G--CA GTCAGCAT-G -T-T-A--TG GA-TTC-CAT C---T-A--A"
-## [138] "                                   ---------- ---------- ---------- ---------- ----------"
-## [139] ""                                                                                         
-## [140] "                                   TTAAATGGTA GACAGAGAGA AATATTTCTG TTTTTTTTAT CCATGATTGC"
-## [141] "                                   CGGAATGCTA CTTACACTGG AACCCAGTAC ATACATATAT TCTTTATTTA"
-## [142] "                                   ATAAATAA-A TAAACAGATG AATGCATAGG ATGTGCTAAC GTGCTAATCA"
-## [143] "                                   -TAAATG-TA -A-A-AGAG- AAT---T--G -T-T-TTTAT -C-T-ATT--"
-## [144] "                                   ---------- ---------- ---------- ---------- ----------"
-## [145] ""                                                                                         
-## [146] "                                   AAATCTGTGG GTT---CAA- -AGTCTGCTT TTGTTCCAAA TAATCATTC-"
-## [147] "                                   AAACTTAAAA GTTTTACAA- -ATACTTATC CTTTACCATA TATGGACGT-"
-## [148] "                                   AACTGAGTCC TCTCACTAGC CAGATCAACT CCAGACCATT TAATGTCTTT"
-## [149] "                                   AAAT-TGT-- GTT---CAA- -AG-CT--TT -T-T-CCA-A TAAT-A-T--"
-## [150] "                                   ---------- ---------- ---------- ---------- ----------"
-## [151] ""                                                                                         
-## [152] "                                   -AAACCTGCC GTACTGTGTG GGGTGGGAAG TGAAGGAGGA TCTTATCTGG"
-## [153] "                                   -ACTCCTATA CTATTTAATT TTTTAAGAAC TCTAGGCCAG GCGTGGTGGC"
-## [154] "                                   AAAGATTATA TTCCTTTATT TAA-AAAAAA TGGGGTTAAG GCTCTTTGTC"
-## [155] "                                   -AA-CCT--- -TACT-T-T- ---T--GAA- TG-AGG---- -CTT-T--G-"
-## [156] "                                   ---------- ---------- ---------- ---------- ----------"
-## [157] ""                                                                                         
-## [158] "                                   AAATCATGTG CTGTATGATG AAGGCAGGAT ATGGAAAACT CCAAATATGG"
-## [159] "                                   A--------- ---------- ---------- ---------- ----------"
-## [160] "                                   CTATAAGATT GTTGAGAACA TTAAGTAAGT TAACCCATGT CAAACTAAGC"
-## [161] "                                   A-AT-A--T- -T--A--A-- ---------T ------A--T C-AA-TA-G-"
-## [162] "                                   ---------- ---------- ---------- ---------- ----------"
-## [163] ""                                                                                         
-## [164] "                                   ACACCTTTAT GTGTGCAAGG GAGAAAGTCT GAAGGATGCA ACCTGTTCAT"
-## [165] "                                   ---------- ---------- ---------- ---------- ----------"
-## [166] "                                   ACTC------ ---------- ---------- ---------- ----------"
-## [167] "                                   AC-C------ ---------- ---------- ---------- ----------"
-## [168] "                                   ---------- ---------- ---------- ---------- ----------"
-## [169] ""                                                                                         
-## [170] "                                   AACATTTTCA TTCAAATTTA AACTAGTTTG ATTAATTCCA AATGCACATT"
-## [171] "                                   ---------- ---------- ---------- ---------- ----------"
-## [172] "                                   ---------- ---------- ---------- ---------- ----------"
-## [173] "                                   ---------- ---------- ---------- ---------- ----------"
-## [174] "                                   ---------- ---------- ---------- ---------- ----------"
-## [175] ""                                                                                         
-## [176] "                                   TGATTTGTTG TGTTTTTATG ATGTATTTCA CAATACTGTT GCATAAAATA"
-## [177] "                                   ---------- ---------- ---------- ---------- ----------"
-## [178] "                                   ---------- ---------- ---------- ---------- ----------"
-## [179] "                                   ---------- ---------- ---------- ---------- ----------"
-## [180] "                                   ---------- ---------- ---------- ---------- ----------"
-## [181] ""                                                                                         
-## [182] "                                   TCTAAAAAAA ACATTTAGTT ATATGGAAGA CACTTGGACA ACTGGTTGTT"
-## [183] "                                   ---------- ---------- ---------- ---------- ----------"
-## [184] "                                   ---------- ---------- ---------- ---------- ----------"
-## [185] "                                   ---------- ---------- ---------- ---------- ----------"
-## [186] "                                   ---------- ---------- ---------- ---------- ----------"
-## [187] ""                                                                                         
-## [188] "                                   ATTTGTTTGT CTATTTTTAT GAATGCCTCA AAGATCAAAT AGTTACACAC"
-## [189] "                                   ---------- ---------- ---------- ---------- ----------"
-## [190] "                                   ---------- ---------- ---------- ---------- ----------"
-## [191] "                                   ---------- ---------- ---------- ---------- ----------"
-## [192] "                                   ---------- ---------- ---------- ---------- ----------"
-## [193] ""                                                                                         
-## [194] "                                   TTAATGCAAT CGAGCTTAGA GAGAGAAATT AAAAGTCTTA AATAAATTGT"
-## [195] "                                   ---------- ---------- ---------- ---------- ----------"
-## [196] "                                   ---------- ---------- ---------- ---------- ----------"
-## [197] "                                   ---------- ---------- ---------- ---------- ----------"
-## [198] "                                   ---------- ---------- ---------- ---------- ----------"
-## [199] ""                                                                                         
-## [200] "                                   GATTAGATAA ATAGAAACAG AAGCAAATTG GCGAGT"               
-## [201] "                                   ---------- ---------- ---------- ------"               
-## [202] "                                   ---------- ---------- ---------- ------"               
-## [203] "                                   ---------- ---------- ---------- ------"               
-## [204] "                                   ---------- ---------- ---------- ------"</code></pre>
+<code class="sourceCode R"><span><span class="va">aln_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>human<span class="op">=</span><span class="va">aln_hs</span>, mouse<span class="op">=</span><span class="va">aln_mm</span><span class="op">)</span></span>
+<span><span class="va">al</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/alignment.html">alignment</a></span><span class="op">(</span><span class="va">seqEN</span>, <span class="va">aln_list</span>,</span>
+<span>                method<span class="op">=</span><span class="st">"ClustalW"</span>, order<span class="op">=</span><span class="st">"input"</span><span class="op">)</span></span>
+<span><span class="va">al</span></span></code></pre></div>
+<pre><code><span><span class="co">## [[1]]</span></span>
+<span><span class="co">## DNAMultipleAlignment with 3 rows and 1676 columns</span></span>
+<span><span class="co">##      aln                                                    names               </span></span>
+<span><span class="co">## [1] <span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFFF;">GG</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">AAA</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFAFAF;">AA</span><span style="color: #000000; background-color: #FFD7AF;">T</span>...<span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFAFAF;">AAA</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFAFAF;">AA</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">AAA</span><span style="color: #000000; background-color: #FFD7AF;">TT</span><span style="color: #000000; background-color: #AFFFFF;">GG</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFD7AF;">T</span> Enhancer</span></span>
+<span><span class="co">## [2] --------------------------...------------------------- human_chr7:128264...</span></span>
+<span><span class="co">## [3] --------------------------...------------------------- mouse_chr6:290320...</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## [[2]]</span></span>
+<span><span class="co">## DNAMultipleAlignment with 3 rows and 1707 columns</span></span>
+<span><span class="co">##      aln                                                    names               </span></span>
+<span><span class="co">## [1] <span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFFF;">GG</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">AAA</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFAFAF;">AA</span><span style="color: #000000; background-color: #FFD7AF;">T</span>...<span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFAFAF;">AAA</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFAFAF;">AA</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">AAA</span><span style="color: #000000; background-color: #FFD7AF;">TT</span><span style="color: #000000; background-color: #AFFFFF;">GG</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFD7AF;">T</span> Enhancer</span></span>
+<span><span class="co">## [2] --------------------------...------------------------- human_chr7:128264...</span></span>
+<span><span class="co">## [3] --------------------------...------------------------- mouse_chr6:291474...</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## [[3]]</span></span>
+<span><span class="co">## DNAMultipleAlignment with 3 rows and 1683 columns</span></span>
+<span><span class="co">##      aln                                                    names               </span></span>
+<span><span class="co">## [1] <span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFFF;">GG</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">AAA</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFAFAF;">AA</span><span style="color: #000000; background-color: #FFD7AF;">T</span>...<span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFAFAF;">AAA</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFAFAF;">AA</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">AAA</span><span style="color: #000000; background-color: #FFD7AF;">TT</span><span style="color: #000000; background-color: #AFFFFF;">GG</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFD7AF;">T</span> Enhancer</span></span>
+<span><span class="co">## [2] --------------------------...------------------------- human_chr7:128264...</span></span>
+<span><span class="co">## [3] --------------------------...------------------------- mouse_chr6:290312...</span></span></code></pre>
 </div>
-<div id="session-info" class="section level2">
-<h2 class="hasAnchor">
-<a href="#session-info" class="anchor"></a>Session info</h2>
+<div class="section level2">
+<h2 id="step-6a-for-quick-evolution-enhancers-check-the-conserved-motifs-in-the-orthologs">Step 6a, for quick evolution enhancers, check the conserved motifs
+in the orthologs<a class="anchor" aria-label="anchor" href="#step-6a-for-quick-evolution-enhancers-check-the-conserved-motifs-in-the-orthologs"></a>
+</h2>
+<p>Different form finding motif hits from the consensus of multiple
+alignment results, the <code>conservedMotifs</code> function will search
+the user defined motifs form available homologs.</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/conservedMotifs.html">conservedMotifs</a></span><span class="op">(</span><span class="va">al</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">aln_list</span>, <span class="va">PWMs</span>, <span class="va">Drerio</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## $Enhancer</span></span>
+<span><span class="co">## Views on a 1669-letter DNAString subject</span></span>
+<span><span class="co">## subject: <span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFFF;">GG</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">AAA</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFAFAF;">AA</span><span style="color: #000000; background-color: #FFD7AF;">TTT</span><span style="color: #000000; background-color: #FFAFAF;">AA</span><span style="color: #000000; background-color: #FFD7AF;">TTT</span><span style="color: #000000; background-color: #FFAFAF;">A</span>...<span style="color: #000000; background-color: #FFD7AF;">TT</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #FFAFAF;">AAA</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFAFAF;">AAA</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFAFAF;">AA</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">AAA</span><span style="color: #000000; background-color: #FFD7AF;">TT</span><span style="color: #000000; background-color: #AFFFFF;">GG</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFD7AF;">T</span></span></span>
+<span><span class="co">## views:</span></span>
+<span><span class="co">##       start  end width</span></span>
+<span><span class="co">##   [1]  1563 1577    15 [<span style="color: #000000; background-color: #FFAFAF;">AAA</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">AAA</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFD7AF;">TT</span>]</span></span>
+<span><span class="co">##   [2]  1616 1635    20 [<span style="color: #000000; background-color: #FFAFAF;">AA</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFD7AF;">TT</span><span style="color: #000000; background-color: #FFAFAF;">AAA</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #FFAFAF;">AAA</span><span style="color: #000000; background-color: #FFD7AF;">TT</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFAFAF;">A</span>]</span></span>
+<span><span class="co">##   [3]   399  406     8 [<span style="color: #000000; background-color: #FFD7AF;">TT</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFFF;">G</span>]</span></span>
+<span><span class="co">##   [4]   469  481    13 [<span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFFF;">GG</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFFF;">GG</span><span style="color: #000000; background-color: #FFAFAF;">AA</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #FFAFAF;">AA</span>]</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $`human_chr7:128264261-128265260:+`</span></span>
+<span><span class="co">## Views on a 1000-letter DNAString subject</span></span>
+<span><span class="co">## subject: <span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFAFAF;">AA</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFFF;">GG</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #FFD7AF;">TT</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #AFFFAF;">CC</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFFF;">GG</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFFF;">GG</span><span style="color: #000000; background-color: #FFD7AF;">TT</span><span style="color: #000000; background-color: #AFFFAF;">CC</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFFF;">GG</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFAF;">CC</span>...<span style="color: #000000; background-color: #FFD7AF;">TT</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFD7AF;">TTTTT</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #FFAFAF;">AAA</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">AA</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFAFAF;">AA</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #AFFFAF;">CC</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFAF;">C</span></span></span>
+<span><span class="co">## views:</span></span>
+<span><span class="co">##       start end width</span></span>
+<span><span class="co">##   [1]   886 900    15 [<span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">AAA</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #FFAFAF;">AA</span>]</span></span>
+<span><span class="co">##   [2]   893 912    20 [<span style="color: #000000; background-color: #FFAFAF;">AAA</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #FFAFAF;">AA</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #FFAFAF;">AA</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFAFAF;">A</span>]</span></span>
+<span><span class="co">##   [3]   187 194     8 [<span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFAF;">C</span>]</span></span>
+<span><span class="co">##   [4]   275 287    13 [<span style="color: #000000; background-color: #AFFFFF;">GG</span><span style="color: #000000; background-color: #FFAFAF;">AA</span><span style="color: #000000; background-color: #AFFFFF;">GG</span><span style="color: #000000; background-color: #FFAFAF;">AA</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFAF;">CC</span>]</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $`mouse_chr6:29032045-29033044:+`</span></span>
+<span><span class="co">## Views on a 1000-letter DNAString subject</span></span>
+<span><span class="co">## subject: <span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFAFAF;">AA</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #AFFFAF;">CC</span><span style="color: #000000; background-color: #FFD7AF;">TT</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFD7AF;">TTT</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFAF;">CC</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFD7AF;">TT</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #FFAFAF;">AA</span>...<span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFD7AF;">TT</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFD7AF;">TTT</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFAF;">CC</span><span style="color: #000000; background-color: #FFAFAF;">AA</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #AFFFFF;">GG</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFFF;">GG</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFFF;">GG</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFD7AF;">T</span></span></span>
+<span><span class="co">## views:</span></span>
+<span><span class="co">##       start end width</span></span>
+<span><span class="co">##   [1]    80  94    15 [<span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFD7AF;">TT</span><span style="color: #000000; background-color: #AFFFFF;">GG</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFD7AF;">TTT</span>]</span></span>
+<span><span class="co">##   [2]   816 835    20 [<span style="color: #000000; background-color: #AFFFAF;">CC</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #FFD7AF;">TTTTT</span><span style="color: #000000; background-color: #FFAFAF;">AA</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #FFD7AF;">TTT</span>]</span></span>
+<span><span class="co">##   [3]   179 186     8 [<span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFAF;">C</span>]</span></span>
+<span><span class="co">##   [4]   628 640    13 [<span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFAF;">C</span><span style="color: #000000; background-color: #FFAFAF;">A</span><span style="color: #000000; background-color: #AFFFFF;">GG</span><span style="color: #000000; background-color: #FFAFAF;">AA</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFFF;">G</span><span style="color: #000000; background-color: #FFD7AF;">T</span><span style="color: #000000; background-color: #AFFFFF;">GG</span>]</span></span></code></pre>
+</div>
+<div class="section level2">
+<h2 id="step-6b-for-slow-evolution-enhancers-export-the-multiple-alignments-in-order-">Step 6b, for slow evolution enhancers, export the multiple
+alignments in order.<a class="anchor" aria-label="anchor" href="#step-6b-for-slow-evolution-enhancers-export-the-multiple-alignments-in-order-"></a>
+</h2>
+<p>The selected candidates will be aligned cross human and mouse and
+then output as phylip multiple alignment file in <code>text</code> or
+<code>html</code> format.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<pre><code>## R version 4.1.1 (2021-08-10)
-## Platform: x86_64-pc-linux-gnu (64-bit)
-## Running under: Ubuntu 20.04.3 LTS
-## 
-## Matrix products: default
-## BLAS/LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.8.so
-## 
-## locale:
-##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
-##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
-##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=C             
-##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
-##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
-## 
-## attached base packages:
-## [1] stats4    stats     graphics  grDevices utils     datasets  methods  
-## [8] base     
-## 
-## other attached packages:
-##  [1] MotifDb_1.35.5                           
-##  [2] org.Mm.eg.db_3.13.0                      
-##  [3] TxDb.Mmusculus.UCSC.mm10.knownGene_3.10.0
-##  [4] org.Hs.eg.db_3.13.0                      
-##  [5] TxDb.Hsapiens.UCSC.hg38.knownGene_3.13.0 
-##  [6] GenomicFeatures_1.45.2                   
-##  [7] AnnotationDbi_1.55.1                     
-##  [8] Biobase_2.53.0                           
-##  [9] BSgenome.Mmusculus.UCSC.mm10_1.4.3       
-## [10] BSgenome.Hsapiens.UCSC.hg38_1.4.3        
-## [11] BSgenome.Drerio.UCSC.danRer10_1.4.2      
-## [12] BSgenome_1.61.0                          
-## [13] rtracklayer_1.53.1                       
-## [14] Biostrings_2.61.2                        
-## [15] XVector_0.33.0                           
-## [16] GenomicRanges_1.45.0                     
-## [17] GenomeInfoDb_1.29.8                      
-## [18] IRanges_2.27.2                           
-## [19] S4Vectors_0.31.3                         
-## [20] BiocGenerics_0.39.2                      
-## [21] BiocParallel_1.27.7                      
-## [22] enhancerHomologSearch_0.99.12            
-## 
-## loaded via a namespace (and not attached):
-##  [1] bitops_1.0-7                matrixStats_0.60.1         
-##  [3] fs_1.5.0                    bit64_4.0.5                
-##  [5] filelock_1.0.2              progress_1.2.2             
-##  [7] httr_1.4.2                  rprojroot_2.0.2            
-##  [9] tools_4.1.1                 utf8_1.2.2                 
-## [11] R6_2.5.1                    DBI_1.1.1                  
-## [13] splitstackshape_1.4.8       withr_2.4.2                
-## [15] tidyselect_1.1.1            prettyunits_1.1.1          
-## [17] bit_4.0.4                   curl_4.3.2                 
-## [19] compiler_4.1.1              textshaping_0.3.5          
-## [21] xml2_1.3.2                  desc_1.3.0                 
-## [23] DelayedArray_0.19.2         rappdirs_0.3.3             
-## [25] pkgdown_1.6.1               systemfonts_1.0.2          
-## [27] stringr_1.4.0               digest_0.6.27              
-## [29] Rsamtools_2.9.1             rmarkdown_2.10             
-## [31] pkgconfig_2.0.3             htmltools_0.5.2            
-## [33] MatrixGenerics_1.5.4        dbplyr_2.1.1               
-## [35] fastmap_1.1.0               rlang_0.4.11               
-## [37] RSQLite_2.2.8               BiocIO_1.3.0               
-## [39] generics_0.1.0              jsonlite_1.7.2             
-## [41] dplyr_1.0.7                 RCurl_1.98-1.4             
-## [43] magrittr_2.0.1              GenomeInfoDbData_1.2.6     
-## [45] Matrix_1.3-4                Rcpp_1.0.7                 
-## [47] fansi_0.5.0                 lifecycle_1.0.0            
-## [49] stringi_1.7.4               yaml_2.2.1                 
-## [51] SummarizedExperiment_1.23.4 zlibbioc_1.39.0            
-## [53] BiocFileCache_2.1.1         grid_4.1.1                 
-## [55] blob_1.2.2                  parallel_4.1.1             
-## [57] crayon_1.4.1                lattice_0.20-44            
-## [59] hms_1.1.0                   KEGGREST_1.33.0            
-## [61] knitr_1.34                  pillar_1.6.2               
-## [63] rjson_0.2.20                biomaRt_2.49.4             
-## [65] XML_3.99-0.7                glue_1.4.2                 
-## [67] evaluate_0.14               data.table_1.14.0          
-## [69] vctrs_0.3.8                 png_0.1-7                  
-## [71] purrr_0.3.4                 assertthat_0.2.1           
-## [73] cachem_1.0.6                xfun_0.25                  
-## [75] restfulr_0.0.13             ragg_1.1.3                 
-## [77] tibble_3.1.4                GenomicAlignments_1.29.0   
-## [79] memoise_2.0.0               ellipsis_0.3.2</code></pre>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">MotifDb</span><span class="op">)</span></span>
+<span><span class="va">motifs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/MotifDb/man/query.html" class="external-link">query</a></span><span class="op">(</span><span class="va">MotifDb</span>, <span class="st">"JASPAR_CORE"</span><span class="op">)</span></span>
+<span><span class="va">consensus</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">motifs</span>, <span class="va">consensusString</span><span class="op">)</span></span>
+<span><span class="va">consensus</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Biostrings/man/XStringSet-class.html" class="external-link">DNAStringSet</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"\\?"</span>, <span class="st">"N"</span>, <span class="va">consensus</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">tmpfolder</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/saveAlignments.html">saveAlignments</a></span><span class="op">(</span><span class="va">al</span>, output_folder <span class="op">=</span> <span class="va">tmpfolder</span>, motifConsensus<span class="op">=</span><span class="va">consensus</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">tmpfolder</span>, <span class="st">"aln1.phylip.txt"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##   [1] " 5 1676"                                                                                  </span></span>
+<span><span class="co">##   [2] "Enhancer                           TGGCATACAC AGCAAACATC ATGAATTTAA TTTAATTTAA TTTAATTTAA"</span></span>
+<span><span class="co">##   [3] "human_chr7:128264261-128265260:+   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##   [4] "mouse_chr6:29032045-29033044:+     ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##   [5] "Consensus                          ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##   [6] "motifConsensus                     ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##   [7] ""                                                                                         </span></span>
+<span><span class="co">##   [8] "                                   TTTAATTTTT TTAATTTAAT TTTAATATTT TAAAATAAAA TAAAATAAAA"</span></span>
+<span><span class="co">##   [9] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##  [10] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##  [11] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##  [12] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##  [13] ""                                                                                         </span></span>
+<span><span class="co">##  [14] "                                   TAAAATAAAA TAAAAGATAA AGATAAAGAT AAAATAAAAT TCAACTCAAT"</span></span>
+<span><span class="co">##  [15] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##  [16] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##  [17] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##  [18] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##  [19] ""                                                                                         </span></span>
+<span><span class="co">##  [20] "                                   TAAATTAAAA CTAAGCTAAA ATAAAAATAC AATAAAATAA ATTTCAATTT"</span></span>
+<span><span class="co">##  [21] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##  [22] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##  [23] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##  [24] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##  [25] ""                                                                                         </span></span>
+<span><span class="co">##  [26] "                                   AATGTAATTT AATTTAAAAA GGGACTACGC CGAAAAGAAA ATGAATGAAT"</span></span>
+<span><span class="co">##  [27] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##  [28] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##  [29] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##  [30] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##  [31] ""                                                                                         </span></span>
+<span><span class="co">##  [32] "                                   GGATGAATAA ATAATTTAAT TTAATTTAAT TTAATTTAAT TTAATTTAAT"</span></span>
+<span><span class="co">##  [33] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##  [34] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##  [35] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##  [36] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##  [37] ""                                                                                         </span></span>
+<span><span class="co">##  [38] "                                   TTAATTTAAT TTAATTTAAT TTAATTTAAT TTAATTTAAT TTAATTTAAT"</span></span>
+<span><span class="co">##  [39] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##  [40] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##  [41] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##  [42] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##  [43] ""                                                                                         </span></span>
+<span><span class="co">##  [44] "                                   TTAATTTAAT TTGTTCGGCA CAGTATAATA TGCTAGCATC TCAGTTATTT"</span></span>
+<span><span class="co">##  [45] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##  [46] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##  [47] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##  [48] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##  [49] ""                                                                                         </span></span>
+<span><span class="co">##  [50] "                                   CACGTGTGTT GTTACTATAA AATAAGCAAA ACAGTGATAA AATAAGTTTG"</span></span>
+<span><span class="co">##  [51] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##  [52] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##  [53] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##  [54] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##  [55] ""                                                                                         </span></span>
+<span><span class="co">##  [56] "                                   TGTTGCTTAT CTTATGACTG GTGGAATGTA ACAGGGAAAA AAAGCACATA"</span></span>
+<span><span class="co">##  [57] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##  [58] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##  [59] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##  [60] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##  [61] ""                                                                                         </span></span>
+<span><span class="co">##  [62] "                                   CTGTGACTTT GACAAAACTG AGTGACTGAT GATAATAAAC TTCTCTTCTC"</span></span>
+<span><span class="co">##  [63] "                                   ---------- ---------- ---------- ------GAAC AGAGAGGATT"</span></span>
+<span><span class="co">##  [64] "                                   ---------- ---------- ---------- ---TCTGAAC TGCCTTGTTT"</span></span>
+<span><span class="co">##  [65] "                                   ---------- ---------- ---------- -----T-AAC T-C--T--T-"</span></span>
+<span><span class="co">##  [66] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##  [67] ""                                                                                         </span></span>
+<span><span class="co">##  [68] "                                   GTAAGCTGAC AGTTCATAAA ACCTCTGCTT GTTTTTTTGT ACTTTTAATC"</span></span>
+<span><span class="co">##  [69] "                                   GCCTGGAG-- -GTTCCTAGG ACCACAGCAA GAGGTGTT-- GTGGGGGGCT"</span></span>
+<span><span class="co">##  [70] "                                   ACCAGCTG-- -TCTTGCTAA ACCTCAGCCT ATGCCGGTA- GCAGGCTGTT"</span></span>
+<span><span class="co">##  [71] "                                   G--AGCTG-- -GTTC-TAAA ACCTC-GC-T GT--T-TT-- -C------T-"</span></span>
+<span><span class="co">##  [72] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##  [73] ""                                                                                         </span></span>
+<span><span class="co">##  [74] "                                   TTAAGGTGAC GCATGTAGCT TCCTGTCCTT CT-CAGTTTA CTGACAGAGG"</span></span>
+<span><span class="co">##  [75] "                                   T---CCCGGC T-TCCCGGAG GCCCTTCTTC CCATGACAGG AGG---GACA"</span></span>
+<span><span class="co">##  [76] "                                   TAGGCCGGGT TATTCTAGAG CTTGGATCTT TAGTGGTTTA ATGTTTAAGG"</span></span>
+<span><span class="co">##  [77] "                                   T------G-C ---T-TAG-- -CC-GTCCTT C----GTTTA -TG---GAGG"</span></span>
+<span><span class="co">##  [78] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##  [79] ""                                                                                         </span></span>
+<span><span class="co">##  [80] "                                   TTAGGGTTTA -ATCCCAGAT ATCCAGTCTG ACTGTACAGT AGTTCAGGAG"</span></span>
+<span><span class="co">##  [81] "                                   GTGGAGATAG CACCTACTCT GGTGACCTTG C--TCTCTGC TTTT---GTC"</span></span>
+<span><span class="co">##  [82] "                                   ATGCATCAGG GGCTTCCGAT GGCCAGCCTG CGGCTGCTTC CGAT---GAC"</span></span>
+<span><span class="co">##  [83] "                                   -T-G-G-T-- -A-C-C-GAT --CCAG-CTG ----T-C-G- -GTT---GA-"</span></span>
+<span><span class="co">##  [84] "                                   ---------- ------NGAT N--------- ---------- ----------"</span></span>
+<span><span class="co">##  [85] ""                                                                                         </span></span>
+<span><span class="co">##  [86] "                                   ACCGACGCAG ATTTATAGCA TCATTCGTCA AACCCTGAGG ATAATCATTT"</span></span>
+<span><span class="co">##  [87] "                                   TTGTGACC-T GCTTGTGG-- --GTGAGCCC TACCCCTTGG -TTTCCACGT"</span></span>
+<span><span class="co">##  [88] "                                   AGATATCCAT GCGTATGGC- TCGTGACACT CTTCCCGTGG -CATCCAGCA"</span></span>
+<span><span class="co">##  [89] "                                   A---A--CA- --TTAT-GC- TC-T--G-C- -ACCC-G-GG -TA--CA--T"</span></span>
+<span><span class="co">##  [90] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##  [91] ""                                                                                         </span></span>
+<span><span class="co">##  [92] "                                   GTCACAGCTT CCTTTGGTCA TCATTACTGT GCAAATAAAC TGTTAGAGCA"</span></span>
+<span><span class="co">##  [93] "                                   GACCCAT-AA AGTCTACTCA TTTTCTGTCC AG-GGTTCA- -GGCACAGAG"</span></span>
+<span><span class="co">##  [94] "                                   GAATTG--GA GCTCCAAGCA GACCTGGTCT GCCAGTTGC- -AAAACGTCT"</span></span>
+<span><span class="co">##  [95] "                                   G-C-CA---- -CT-T--TCA T--TT--T-T GC-A-T--A- -G--A-AGC-"</span></span>
+<span><span class="co">##  [96] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">##  [97] ""                                                                                         </span></span>
+<span><span class="co">##  [98] "                                   TGAGCCAGCA AAAACAGTGG GAAACGCAGC AATTTCCTGT ATTTAATAGT"</span></span>
+<span><span class="co">##  [99] "                                   AGAAAAGGCA AGGATGTGGA GGGAGAGGAG AGTC-CCTGG AAGGAATGTC"</span></span>
+<span><span class="co">## [100] "                                   TCCATACAAA GAGGCATGTC AGAATGCAAG CAAC-CGTCT GGGCATCATT"</span></span>
+<span><span class="co">## [101] "                                   TGA----GCA AA-ACA--G- G-AA-GCA-- AAT--CCTGT A---AATA-T"</span></span>
+<span><span class="co">## [102] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">## [103] ""                                                                                         </span></span>
+<span><span class="co">## [104] "                                   CTGTGAGATA TACTTTAATG AGATGAAATT GAAGAAAACT GAGTCATTAG"</span></span>
+<span><span class="co">## [105] "                                   CCC-AGCATA T-CAGCCTGG AGTTTCCATT CAGGAAATTT CCCCAGCTCC"</span></span>
+<span><span class="co">## [106] "                                   ACG-GGGTTA T-GTGGAATC TGTTCTAATT GATTAAAACC AGGAAGATCA"</span></span>
+<span><span class="co">## [107] "                                   C-G-G-GATA T-CT--AATG AG-T--AATT GA-GAAAACT --G----T--"</span></span>
+<span><span class="co">## [108] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">## [109] ""                                                                                         </span></span>
+<span><span class="co">## [110] "                                   AAAGGCATTC ACATAAACTT TCCTGGTGTA TATTTCCTAA CTCTCTTCCA"</span></span>
+<span><span class="co">## [111] "                                   CCAGACCCTC CCA--GACTT GCCTCCTCCC TCCTGACAAA GCCCCAGCCC"</span></span>
+<span><span class="co">## [112] "                                   TCAATCATTC GAA--AGCCT CGACAGTTTG TTATTAGGTA GCCACTTGCC"</span></span>
+<span><span class="co">## [113] "                                   --AG-CATTC -CA--AACTT -CCT-GT-T- T--TT-C-AA --C-CTTCC-"</span></span>
+<span><span class="co">## [114] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">## [115] ""                                                                                         </span></span>
+<span><span class="co">## [116] "                                   GTGTTTTCTA CACCAGAAGA GTTCATTACA TCATTGAAGG ACAATGCTGA"</span></span>
+<span><span class="co">## [117] "                                   -TACC-CATA GCCCCAGCCA CCACCCCCTT T-GAGGAGAG AAGGTGCTGG"</span></span>
+<span><span class="co">## [118] "                                   -TATGACACA CCTCAAAACT GCTCCAGGCA T-GCAGCATG TTAGGACACC"</span></span>
+<span><span class="co">## [119] "                                   -T-T----TA C-CCA-AA-A G-TC----CA T----GAA-G A-A-TGCTG-"</span></span>
+<span><span class="co">## [120] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">## [121] ""                                                                                         </span></span>
+<span><span class="co">## [122] "                                   AAAATAAGAA CGCGTTTGGT TTTTCATAAA CCACATGGTC TTGTGGGTCA"</span></span>
+<span><span class="co">## [123] "                                   GTTGGGTGAG GAGCTCTGCG GGAGGACTGA AC-CA-AGCT --GTGGGCTC"</span></span>
+<span><span class="co">## [124] "                                   GCTGTGGGAA AAACCGCTGG TCACGATGAT GC-CAGAGCC --GCCAGTTG"</span></span>
+<span><span class="co">## [125] "                                   ----T--GAA ----T-TGG- T----AT-AA -C-CA--G-C --GTGGGT--"</span></span>
+<span><span class="co">## [126] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">## [127] ""                                                                                         </span></span>
+<span><span class="co">## [128] "                                   TGTTGTTTTG TTTCTTTAGA TTTGAGAGAC GGGGAATGAT GTGATTTTGC"</span></span>
+<span><span class="co">## [129] "                                   CTGGGC---A CCTGCCCA-- --TG--AGCC AGGCCTGCAT CTCCCAGACC"</span></span>
+<span><span class="co">## [130] "                                   TGAAAT---G AAAACCAA-- --TGCCAGCT AACTAATTGT TTCAACTACC"</span></span>
+<span><span class="co">## [131] "                                   TG--GT---G --T----A-- --TG--AG-C -GG-AAT-AT -T-A--T--C"</span></span>
+<span><span class="co">## [132] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">## [133] ""                                                                                         </span></span>
+<span><span class="co">## [134] "                                   CCAGTCAGCA TGGATATGAT TTGGACTTCC ATCTGTTTAA GATTAAATGG"</span></span>
+<span><span class="co">## [135] "                                   TGCTTGTGGG TGAGCCTGCA TGCTGACATG CTTGGCTGGG CTCTAGCC--"</span></span>
+<span><span class="co">## [136] "                                   C-TGTGCCAA AGAATCGATT GGGGAGAACA TTTTGTCCAC ACTCACCCGA"</span></span>
+<span><span class="co">## [137] "                                   C--GT--G-A TG-AT-TG-T T-GGA---C- -T-TGTT-A- --TTA---G-"</span></span>
+<span><span class="co">## [138] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">## [139] ""                                                                                         </span></span>
+<span><span class="co">## [140] "                                   TAGACAGAGA GAAATATTTC TGTTTTTTTT ATCCATGATT GCAAATCTGT"</span></span>
+<span><span class="co">## [141] "                                   TTGGCTATTG GTGGC--CCA GGGTGTGTGT GTGTGTGCGT GCATGTGTGT"</span></span>
+<span><span class="co">## [142] "                                   TTGGC--TTG GTGGT--CTT GGTCCTGTAG AGATGCAGCC GGAGTATCAG"</span></span>
+<span><span class="co">## [143] "                                   T-G-C----- G---T---T- -GTT-T-T-T AT---TG--T GCA--T-TGT"</span></span>
+<span><span class="co">## [144] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">## [145] ""                                                                                         </span></span>
+<span><span class="co">## [146] "                                   GGGTTCAAAG TCTGCTTTTG TTCCAAATAA TCATTCAAAC CTGCCGTACT"</span></span>
+<span><span class="co">## [147] "                                   GTGTGTCC-C TTTGGAGCTA TGTAGTTTGT GTACCAAAAT AAGAAGGGAG"</span></span>
+<span><span class="co">## [148] "                                   GAATGTGG-G CCTAGTGTCA GGTA--TCAG AATTCGAGGC TGGAAGGAGC"</span></span>
+<span><span class="co">## [149] "                                   G-GT-----G TCTG-T-TT- T------TA- --AT--AAAC --G--G-A--"</span></span>
+<span><span class="co">## [150] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">## [151] ""                                                                                         </span></span>
+<span><span class="co">## [152] "                                   GTGTGGGGTG GGAAGTGAAG GAGGATCTTA TCTGGAA--A TCATGTGCTG"</span></span>
+<span><span class="co">## [153] "                                   CTGGGGAGTT GAGCCCTGAT GAACTTTGTA ACAATAA--A GCCTTATCTT"</span></span>
+<span><span class="co">## [154] "                                   CTCCAGAGAG AGAGTTTCAT GCATTCCCTT CATGTCACCA ACAAGGATCA"</span></span>
+<span><span class="co">## [155] "                                   -TG-GG-GTG GGA--T--A- GA---TC-TA -CTG-AA--A -CATG--CT-"</span></span>
+<span><span class="co">## [156] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">## [157] ""                                                                                         </span></span>
+<span><span class="co">## [158] "                                   TATGATGAAG GCAGGATATG GAAAACTCC- AAATATGGAC ACC-TTTATG"</span></span>
+<span><span class="co">## [159] "                                   GTTAAATAAA TCAAGCCTTG AATAAATGC- CTGCTTATTC CTTGCCAATA"</span></span>
+<span><span class="co">## [160] "                                   GAGGGAGCAG CCAGGCTGCT GAAGGGCGCG CCACACAATT GTGGACTATT"</span></span>
+<span><span class="co">## [161] "                                   -ATGA-GAAG -CAGG-T-TG GAAAA-T-C- --A-AT---C ------TAT-"</span></span>
+<span><span class="co">## [162] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">## [163] ""                                                                                         </span></span>
+<span><span class="co">## [164] "                                   TGTGCAAGGG AGAAAGTCTG AAGGATGCAA CCTGTTCATA ACATTTTCAT"</span></span>
+<span><span class="co">## [165] "                                   TTTTCCTGCT ACCTAAGGCA ACATAGCTCT GTGACCTGTA ACCAGTCACT"</span></span>
+<span><span class="co">## [166] "                                   GTTTTCAGAA A--GAGGTCA ATGAGGGCAC ATCTTTGCCC ACAGCATTTT"</span></span>
+<span><span class="co">## [167] "                                   T-T-C-AG-- A---AG---- A-G-A-GCA- ----TT--TA ACA--TT--T"</span></span>
+<span><span class="co">## [168] "                                   ---------- ---------- ---------- --------TA ACA-------"</span></span>
+<span><span class="co">## [169] ""                                                                                         </span></span>
+<span><span class="co">## [170] "                                   TCAAATTTAA ACTAGTTTGA TTAATTCCAA ATGCACATTT GATTTGTTGT"</span></span>
+<span><span class="co">## [171] "                                   TAACCTCTCT GG------GT CTATTTCCAT ATCTATAGAA AGTGGATATA"</span></span>
+<span><span class="co">## [172] "                                   TAACATTTTC GC------AG CTATTTCAGA ATC---ACGG TGCCCACTGA"</span></span>
+<span><span class="co">## [173] "                                   T-A-ATTT-- -C------G- -TA-TTCCAA AT--A-A--- --T---TTG-"</span></span>
+<span><span class="co">## [174] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">## [175] ""                                                                                         </span></span>
+<span><span class="co">## [176] "                                   GTTTTTATGA TGTATTTCAC AATACTGTTG CATAAAATAT CTAAAAAAAA"</span></span>
+<span><span class="co">## [177] "                                   ATACT-ATT- TGTTCTCCTC AATGCTGCTT ATTGTAGAGA TCAAATGTAA"</span></span>
+<span><span class="co">## [178] "                                   ATGGC-ATTG CGTACTTTCT AAAAGTAGAC A----AGAAT TTGAGAAACA"</span></span>
+<span><span class="co">## [179] "                                   -T--T-AT-- TGTA-TTC-C AATACTG-T- --T--A--AT -TAAAAAAAA"</span></span>
+<span><span class="co">## [180] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">## [181] ""                                                                                         </span></span>
+<span><span class="co">## [182] "                                   CATTTAGTTA TATGGAAGAC ACTTGGACAA CTGGTTGTTA TTTGTTTGTC"</span></span>
+<span><span class="co">## [183] "                                   TAACG---TG TGTGAAAG-- ---TGCTTTA TAGATGGCAA GGTGCTGTTC"</span></span>
+<span><span class="co">## [184] "                                   CCCCG---TG -GTGCAAC-- ---TG-TTCA TTGCTTA-AA CCTACTGCTG"</span></span>
+<span><span class="co">## [185] "                                   CA------T- T-TG-AAG-- ---TG----A -TG-TTG--A --TG-T--TC"</span></span>
+<span><span class="co">## [186] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">## [187] ""                                                                                         </span></span>
+<span><span class="co">## [188] "                                   TATTTTTATG AATGCCTCAA AGATCAAATA GTTACACAC- TTAATGCAAT"</span></span>
+<span><span class="co">## [189] "                                   TGCTGTAAGG AATCCTTCTG ATCATTACGC TTTTTGTAAA GCAATCAGAA"</span></span>
+<span><span class="co">## [190] "                                   ACTCATTTG- ---CCCTTCG ATACTT---C TTTACCAACA TCGGTGGTGG"</span></span>
+<span><span class="co">## [191] "                                   T-TT-TTA-G AAT-CCTC-- A-A---A--- -TTAC--AC- T-AATG--A-"</span></span>
+<span><span class="co">## [192] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">## [193] ""                                                                                         </span></span>
+<span><span class="co">## [194] "                                   CGAGCTTAGA GAGAGAAATT AAAAGTCTTA AATAAATTGT GATTAGATAA"</span></span>
+<span><span class="co">## [195] "                                   CAGCCATC-- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">## [196] "                                   CATCT----- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">## [197] "                                   C---C-T--- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">## [198] "                                   ---------- ---------- ---------- ---------- ----------"</span></span>
+<span><span class="co">## [199] ""                                                                                         </span></span>
+<span><span class="co">## [200] "                                   ATAGAAACAG AAGCAAATTG GCGAGT"                          </span></span>
+<span><span class="co">## [201] "                                   ---------- ---------- ------"                          </span></span>
+<span><span class="co">## [202] "                                   ---------- ---------- ------"                          </span></span>
+<span><span class="co">## [203] "                                   ---------- ---------- ------"                          </span></span>
+<span><span class="co">## [204] "                                   ---------- ---------- ------"</span></span></code></pre>
+</div>
+<div class="section level2">
+<h2 id="session-info">Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
+</h2>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## R Under development (unstable) (2022-11-07 r83308)</span></span>
+<span><span class="co">## Platform: x86_64-pc-linux-gnu (64-bit)</span></span>
+<span><span class="co">## Running under: Ubuntu 22.04.1 LTS</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Matrix products: default</span></span>
+<span><span class="co">## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3</span></span>
+<span><span class="co">## LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.20.so</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## locale:</span></span>
+<span><span class="co">##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              </span></span>
+<span><span class="co">##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    </span></span>
+<span><span class="co">##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   </span></span>
+<span><span class="co">##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 </span></span>
+<span><span class="co">##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            </span></span>
+<span><span class="co">## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## time zone: Etc/UTC</span></span>
+<span><span class="co">## tzcode source: system (glibc)</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## attached base packages:</span></span>
+<span><span class="co">## [1] stats4    stats     graphics  grDevices utils     datasets  methods  </span></span>
+<span><span class="co">## [8] base     </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## other attached packages:</span></span>
+<span><span class="co">##  [1] motifmatchr_1.21.0                       </span></span>
+<span><span class="co">##  [2] MotifDb_1.41.0                           </span></span>
+<span><span class="co">##  [3] org.Mm.eg.db_3.16.0                      </span></span>
+<span><span class="co">##  [4] TxDb.Mmusculus.UCSC.mm10.knownGene_3.10.0</span></span>
+<span><span class="co">##  [5] org.Hs.eg.db_3.16.0                      </span></span>
+<span><span class="co">##  [6] TxDb.Hsapiens.UCSC.hg38.knownGene_3.16.0 </span></span>
+<span><span class="co">##  [7] GenomicFeatures_1.51.2                   </span></span>
+<span><span class="co">##  [8] AnnotationDbi_1.61.0                     </span></span>
+<span><span class="co">##  [9] Biobase_2.59.0                           </span></span>
+<span><span class="co">## [10] BSgenome.Mmusculus.UCSC.mm10_1.4.3       </span></span>
+<span><span class="co">## [11] BSgenome.Hsapiens.UCSC.hg38_1.4.4        </span></span>
+<span><span class="co">## [12] BSgenome.Drerio.UCSC.danRer10_1.4.2      </span></span>
+<span><span class="co">## [13] BSgenome_1.67.1                          </span></span>
+<span><span class="co">## [14] rtracklayer_1.59.0                       </span></span>
+<span><span class="co">## [15] Biostrings_2.67.0                        </span></span>
+<span><span class="co">## [16] XVector_0.39.0                           </span></span>
+<span><span class="co">## [17] GenomicRanges_1.51.1                     </span></span>
+<span><span class="co">## [18] GenomeInfoDb_1.35.2                      </span></span>
+<span><span class="co">## [19] IRanges_2.33.0                           </span></span>
+<span><span class="co">## [20] S4Vectors_0.37.0                         </span></span>
+<span><span class="co">## [21] BiocGenerics_0.45.0                      </span></span>
+<span><span class="co">## [22] enhancerHomologSearch_1.5.0              </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## loaded via a namespace (and not attached):</span></span>
+<span><span class="co">##   [1] jsonlite_1.8.3              magrittr_2.0.3             </span></span>
+<span><span class="co">##   [3] rmarkdown_2.18              fs_1.5.2                   </span></span>
+<span><span class="co">##   [5] BiocIO_1.9.0                zlibbioc_1.45.0            </span></span>
+<span><span class="co">##   [7] ragg_1.2.4                  vctrs_0.5.0                </span></span>
+<span><span class="co">##   [9] memoise_2.0.1               Rsamtools_2.15.0           </span></span>
+<span><span class="co">##  [11] RCurl_1.98-1.9              htmltools_0.5.3            </span></span>
+<span><span class="co">##  [13] progress_1.2.2              curl_4.3.3                 </span></span>
+<span><span class="co">##  [15] CNEr_1.35.0                 sass_0.4.2                 </span></span>
+<span><span class="co">##  [17] pracma_2.4.2                bslib_0.4.1                </span></span>
+<span><span class="co">##  [19] desc_1.4.2                  plyr_1.8.7                 </span></span>
+<span><span class="co">##  [21] cachem_1.0.6                GenomicAlignments_1.35.0   </span></span>
+<span><span class="co">##  [23] lifecycle_1.0.3             pkgconfig_2.0.3            </span></span>
+<span><span class="co">##  [25] Matrix_1.5-1                R6_2.5.1                   </span></span>
+<span><span class="co">##  [27] fastmap_1.1.0               GenomeInfoDbData_1.2.9     </span></span>
+<span><span class="co">##  [29] MatrixGenerics_1.11.0       digest_0.6.30              </span></span>
+<span><span class="co">##  [31] colorspace_2.0-3            TFMPvalue_0.0.9            </span></span>
+<span><span class="co">##  [33] rprojroot_2.0.3             textshaping_0.3.6          </span></span>
+<span><span class="co">##  [35] RSQLite_2.2.18              seqLogo_1.65.0             </span></span>
+<span><span class="co">##  [37] filelock_1.0.2              fansi_1.0.3                </span></span>
+<span><span class="co">##  [39] httr_1.4.4                  compiler_4.3.0             </span></span>
+<span><span class="co">##  [41] bit64_4.0.5                 withr_2.5.0                </span></span>
+<span><span class="co">##  [43] BiocParallel_1.33.0         DBI_1.1.3                  </span></span>
+<span><span class="co">##  [45] R.utils_2.12.1              biomaRt_2.55.0             </span></span>
+<span><span class="co">##  [47] rappdirs_0.3.3              poweRlaw_0.70.6            </span></span>
+<span><span class="co">##  [49] DelayedArray_0.25.0         rjson_0.2.21               </span></span>
+<span><span class="co">##  [51] gtools_3.9.3                caTools_1.18.2             </span></span>
+<span><span class="co">##  [53] tools_4.3.0                 splitstackshape_1.4.8      </span></span>
+<span><span class="co">##  [55] R.oo_1.25.0                 glue_1.6.2                 </span></span>
+<span><span class="co">##  [57] restfulr_0.0.15             grid_4.3.0                 </span></span>
+<span><span class="co">##  [59] reshape2_1.4.4              TFBSTools_1.37.0           </span></span>
+<span><span class="co">##  [61] generics_0.1.3              gtable_0.3.1               </span></span>
+<span><span class="co">##  [63] tzdb_0.3.0                  R.methodsS3_1.8.2          </span></span>
+<span><span class="co">##  [65] data.table_1.14.4           hms_1.1.2                  </span></span>
+<span><span class="co">##  [67] xml2_1.3.3                  utf8_1.2.2                 </span></span>
+<span><span class="co">##  [69] pillar_1.8.1                stringr_1.4.1              </span></span>
+<span><span class="co">##  [71] dplyr_1.0.10                BiocFileCache_2.7.0        </span></span>
+<span><span class="co">##  [73] lattice_0.20-45             bit_4.0.4                  </span></span>
+<span><span class="co">##  [75] annotate_1.77.0             tidyselect_1.2.0           </span></span>
+<span><span class="co">##  [77] DirichletMultinomial_1.41.0 GO.db_3.16.0               </span></span>
+<span><span class="co">##  [79] knitr_1.40                  SummarizedExperiment_1.29.1</span></span>
+<span><span class="co">##  [81] xfun_0.34                   matrixStats_0.62.0         </span></span>
+<span><span class="co">##  [83] stringi_1.7.8               yaml_2.3.6                 </span></span>
+<span><span class="co">##  [85] evaluate_0.18               codetools_0.2-18           </span></span>
+<span><span class="co">##  [87] tibble_3.1.8                cli_3.4.1                  </span></span>
+<span><span class="co">##  [89] xtable_1.8-4                systemfonts_1.0.4          </span></span>
+<span><span class="co">##  [91] munsell_0.5.0               jquerylib_0.1.4            </span></span>
+<span><span class="co">##  [93] Rcpp_1.0.9                  dbplyr_2.2.1               </span></span>
+<span><span class="co">##  [95] png_0.1-7                   XML_3.99-0.12              </span></span>
+<span><span class="co">##  [97] parallel_4.3.0              ellipsis_0.3.2             </span></span>
+<span><span class="co">##  [99] pkgdown_2.0.6               ggplot2_3.4.0              </span></span>
+<span><span class="co">## [101] readr_2.1.3                 assertthat_0.2.1           </span></span>
+<span><span class="co">## [103] blob_1.2.3                  prettyunits_1.1.1          </span></span>
+<span><span class="co">## [105] bitops_1.0-7                scales_1.2.1               </span></span>
+<span><span class="co">## [107] purrr_0.3.5                 crayon_1.5.2               </span></span>
+<span><span class="co">## [109] rlang_1.0.6                 KEGGREST_1.39.0</span></span></code></pre>
 <div id="refs" class="references csl-bib-body" line-spacing="2">
 <div id="ref-howe2013zebrafish" class="csl-entry">
 <div class="csl-left-margin">1. </div>
-<div class="csl-right-inline">Howe, K. <em>et al.</em> The zebrafish reference genome sequence and its relationship to the human genome. <em>Nature</em> <strong>496,</strong> 498–503 (2013).</div>
+<div class="csl-right-inline">Howe, K. <em>et al.</em> The zebrafish
+reference genome sequence and its relationship to the human genome.
+<em>Nature</em> <strong>496,</strong> 498–503 (2013).</div>
 </div>
 <div id="ref-braasch2016spotted" class="csl-entry">
 <div class="csl-left-margin">2. </div>
-<div class="csl-right-inline">Braasch, I. <em>et al.</em> The spotted gar genome illuminates vertebrate evolution and facilitates human-teleost comparisons. <em>Nature genetics</em> <strong>48,</strong> 427–437 (2016).</div>
+<div class="csl-right-inline">Braasch, I. <em>et al.</em> The spotted gar
+genome illuminates vertebrate evolution and facilitates human-teleost
+comparisons. <em>Nature genetics</em> <strong>48,</strong> 427–437
+(2016).</div>
 </div>
 <div id="ref-wong2020deep" class="csl-entry">
 <div class="csl-left-margin">3. </div>
-<div class="csl-right-inline">Wong, E. S. <em>et al.</em> Deep conservation of the enhancer regulatory code in animals. <em>Science</em> <strong>370,</strong> (2020).</div>
+<div class="csl-right-inline">Wong, E. S. <em>et al.</em> Deep conservation
+of the enhancer regulatory code in animals. <em>Science</em>
+<strong>370,</strong> (2020).</div>
 </div>
-<div id="ref-pages2013package" class="csl-entry">
+<div id="ref-schep2021package" class="csl-entry">
 <div class="csl-left-margin">4. </div>
-<div class="csl-right-inline">Pages, H., Aboyoun, P., Gentleman, R. &amp; DebRoy, S. Package <span>“biostrings”</span>. <em>R package version</em>
+<div class="csl-right-inline">A,
+S. Motifmatchr: Fast motif matching in r. <em>R package
+version</em>
 </div>
 </div>
 </div>
@@ -604,11 +735,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Jianhong Ou, Kenneth Poss.</p>
+  <p></p>
+<p>Developed by Jianhong Ou, Kenneth Poss.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
@@ -616,6 +749,8 @@
 
   
 
+
+  
 
   </body>
 </html>
