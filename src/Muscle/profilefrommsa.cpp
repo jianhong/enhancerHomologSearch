@@ -17,7 +17,7 @@ static const char *LocalScoreToStr(SCORE s)
 	static char str[16];
 	if (s < -1e10 || s > 1e10)
 		return "    *";
-	sprintf(str, "%5.1f", s);
+	snprintf(str, 16, "%5.1f", s);
 	return str;
 	}
 

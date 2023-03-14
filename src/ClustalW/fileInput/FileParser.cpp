@@ -1,7 +1,7 @@
 /**
  * Author: Mark Larkin
- * 
- * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.  
+ *
+ * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.
  */
 /**
  * 10-02-07,Nigel Brown(EMBL): Removed delimiter and findDelimiter()
@@ -71,7 +71,7 @@ void FileParser::freeFileResources(InFileStream* filePtr)
     {
         filePtr->close();
         delete filePtr;
-        filePtr = 0;    
+        filePtr = 0;
     }
 }
 
@@ -101,19 +101,19 @@ char FileParser::getDelimiter(string filename)
 
     switch (type) {
         case 1:
-            //cout << "file is Mac System 9" << endl;
+            //Rcpp::Rcout << "file is Mac System 9" << endl;
             delim = '\r';
             break;
         case 2:
-            //cout << "file is UNIX" << endl;
+            //Rcpp::Rcout << "file is UNIX" << endl;
             delim = '\n';
             break;
         case 3:
-            //cout << "file is DOS" << endl;
+            //Rcpp::Rcout << "file is DOS" << endl;
             delim = '\n';
             break;
         default: //short or empty file
-            //cout << "file is UNIX (default)" << endl;
+            //Rcpp::Rcout << "file is UNIX (default)" << endl;
             delim = '\n';
     }
     return delim;

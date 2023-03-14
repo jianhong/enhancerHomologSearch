@@ -113,8 +113,8 @@ string Utility::blankToUnderscore(string str)
  */
 char Utility::getChoice(string instr)
 {
-    cout << instr << ": ";
-    cout.flush();
+    Rcpp::Rcout << instr << ": ";
+    //cout.flush();
     char choice;
     cin.get(choice);
     // We only want one character, so we ignore the rest.
@@ -154,8 +154,8 @@ bool Utility::isNumeric(char ch)
  */
 void Utility::getStr(string instr, string& outstr)
 {
-    cout << instr << ": ";
-    cout.flush();
+    Rcpp::Rcout << instr << ": ";
+    //cout.flush();
     string temp;
     getline(cin, temp, '\n');
     outstr = temp;
@@ -359,7 +359,7 @@ void Utility::getPath(string str, string *path)
  */
 char Utility::promptForYesNo(char *title, const char *prompt)
 {
-    cout << "\n" << title << "\n";
+    Rcpp::Rcout << "\n" << title << "\n";
     string promptMessage = string(prompt) + "(y/n) ? [y]";
 
     string answer;
@@ -384,7 +384,7 @@ char Utility::promptForYesNo(char *title, const char *prompt)
  */
 char Utility::promptForYesNo(const char *title, const char *prompt)
 {
-    cout << "\n" << title << "\n";
+    Rcpp::Rcout << "\n" << title << "\n";
     string promptMessage = string(prompt) + "(y/n) ? [y]";
 
     string answer;
@@ -409,9 +409,10 @@ void Utility::error( char *msg,...)
     va_list ap;
 
     va_start(ap, msg);
-    fprintf(stderr, "\n\nERROR: ");
-    vfprintf(stderr, msg, ap);
-    fprintf(stderr, "\n\n");
+    char errMsg[4096];
+    Rcpp::Rcerr << "nERROR: ";
+    snprintf(errMsg, 4096, msg, ap);
+    Rcpp::Rcerr << errMsg << std::endl << std::endl;
     va_end(ap);
 }
 
@@ -424,9 +425,10 @@ void Utility::warning( char *msg,...)
     va_list ap;
 
     va_start(ap, msg);
-    fprintf(stderr, "\n\nWARNING: ");
-    vfprintf(stderr, msg, ap);
-    fprintf(stderr, "\n\n");
+    char wng[4096];
+    Rcpp::Rcout << "WARNING: ";
+    snprintf(wng, 4096, msg, ap);
+    Rcpp::Rcout << wng << std::endl << std::endl;
     va_end(ap);
 }
 
@@ -439,9 +441,10 @@ void Utility::error( const char *msg,...)
     va_list ap;
 
     va_start(ap, msg);
-    fprintf(stderr, "\n\nERROR: ");
-    vfprintf(stderr, msg, ap);
-    fprintf(stderr, "\n\n");
+    char errMsg[4096];
+    Rcpp::Rcerr << "nERROR: ";
+    snprintf(errMsg, 4096, msg, ap);
+    Rcpp::Rcerr << errMsg << std::endl << std::endl;
     va_end(ap);
 }
 
@@ -454,9 +457,10 @@ void Utility::warning( const char *msg,...)
     va_list ap;
 
     va_start(ap, msg);
-    fprintf(stderr, "\n\nWARNING: ");
-    vfprintf(stderr, msg, ap);
-    fprintf(stderr, "\n\n");
+    char wng[4096];
+    Rcpp::Rcout << "WARNING: ";
+    snprintf(wng, 4096, msg, ap);
+    Rcpp::Rcout << wng << std::endl << std::endl;
     va_end(ap);
 }
 
@@ -468,11 +472,13 @@ void Utility::info( char *msg,...)
 {
     va_list ap;
     va_start(ap, msg);
+    char stdMsg[4096];
 
     if(! quiet)
     {
-        fprintf(stdout, "\n");
-        vfprintf(stdout, msg, ap);
+        Rcpp::Rcout << std::endl;
+        snprintf(stdMsg, 4096, msg, ap);
+        Rcpp::Rcout << stdMsg;
         va_end(ap);
     }
 }
@@ -487,8 +493,10 @@ void Utility::info(const char *msg,...)
     if(! quiet)
     {
         va_start(ap, msg);
-        fprintf(stdout, "\n");
-        vfprintf(stdout, msg, ap);
+        char stdMsg[4096];
+        Rcpp::Rcout << std::endl;
+        snprintf(stdMsg, 4096, msg, ap);
+        Rcpp::Rcout << stdMsg;
         va_end(ap);
     }
 }

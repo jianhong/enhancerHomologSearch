@@ -1,7 +1,7 @@
 /**
  * Author: Mark Larkin
- * 
- * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.  
+ *
+ * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.
  * Changes: Mark 20-6-07, I added a call to calculateMaxlengths
  */
 #ifdef HAVE_CONFIG_H
@@ -15,8 +15,8 @@ namespace clustalw
 {
 
 /**
- * 
- * @return 
+ *
+ * @return
  */
 MyersMillerProfileAlign::MyersMillerProfileAlign()
  : _gapPos1(userParameters->getGapPos1()),
@@ -26,12 +26,12 @@ MyersMillerProfileAlign::MyersMillerProfileAlign()
 }
 
 /**
- * 
- * @param alnPtr 
- * @param distMat 
- * @param group 
- * @param aligned 
- * @return 
+ *
+ * @param alnPtr
+ * @param distMat
+ * @param group
+ * @param aligned
+ * @return
  */
 int MyersMillerProfileAlign::profileAlign(Alignment* alnPtr, DistMatrix* distMat,
                                           vector<int>* group, int* aligned)
@@ -57,11 +57,11 @@ int MyersMillerProfileAlign::profileAlign(Alignment* alnPtr, DistMatrix* distMat
             matrix[i][j] = 0;
         }
     }
-    
+
     numSeq = alnPtr->getNumSeqs();
     seqArray.resize(numSeq);
     alnWeight.resize(numSeq);
-    
+
     for (i = 0; i < numSeq; i++)
     {
         if (aligned[i + 1] == 0)
@@ -89,7 +89,7 @@ int MyersMillerProfileAlign::profileAlign(Alignment* alnPtr, DistMatrix* distMat
     }
     numSeqsProf1 = nseqs1;
     numSeqsProf2 = nseqs2;
-    
+
     if (nseqs2 > nseqs1)
     {
         switchProfiles = true;
@@ -109,13 +109,13 @@ int MyersMillerProfileAlign::profileAlign(Alignment* alnPtr, DistMatrix* distMat
     {
         switchProfiles = false;
     }
-    
+
     // calculate the mean of the sequence pc identities between the two groups
-    
+
     count = 0;
     pcid = 0.0;
     negative = userParameters->getUseNegMatrix();
-    
+
     for (i = 0; i < numSeq; i++)
     {
         if ((*group)[i + 1] == 1)
@@ -134,12 +134,12 @@ int MyersMillerProfileAlign::profileAlign(Alignment* alnPtr, DistMatrix* distMat
     pcid = pcid / (float)count;
 
     // Make the first profile.
-    
+
     prfLength1 = 0;
     for (i = 0; i < numSeq; i++)
     {
         if ((*group)[i + 1] == 1)
-        {    
+        {
             if (alnPtr->getSeqLength(i + 1) > prfLength1)
             {
                 prfLength1 = alnPtr->getSeqLength(i + 1);
@@ -153,7 +153,7 @@ int MyersMillerProfileAlign::profileAlign(Alignment* alnPtr, DistMatrix* distMat
         if ((*group)[i + 1] == 1)
         {
             len = alnPtr->getSeqLength(i + 1);
-            
+
             // initialise with the other vector!
             seqArray[nseqs1] = vector<int>(alnPtr->getSequence(i + 1)->begin() + 1,
                                             alnPtr->getSequence(i + 1)->end());
@@ -170,7 +170,7 @@ int MyersMillerProfileAlign::profileAlign(Alignment* alnPtr, DistMatrix* distMat
 
 
     // Make the second profile.
-    
+
     prfLength2 = 0;
     for (i = 0; i < numSeq; i++)
     {
@@ -193,24 +193,24 @@ int MyersMillerProfileAlign::profileAlign(Alignment* alnPtr, DistMatrix* distMat
             seqArray[nseqs1 + nseqs2] = vector<int>(alnPtr->getSequence(i + 1)->begin() + 1,
                                                      alnPtr->getSequence(i + 1)->end());
             seqArray[nseqs1 + nseqs2].resize(prfLength2 + extraEndElemNum);
-                        
+
             for (j = len; j < prfLength2; j++)
             {
                 seqArray[nseqs1 + nseqs2][j] = userParameters->getGapPos1();
             }
-            
+
             seqArray[nseqs1 + nseqs2][j] = ENDALN;
             alnWeight[nseqs1 + nseqs2] = alnPtr->getSeqWeight(i);
-            //cout << "weight " << nseqs1 + nseqs2 << alnWeight[nseqs1 + nseqs2] << "\n";
+            //Rcpp::Rcout << "weight " << nseqs1 + nseqs2 << alnWeight[nseqs1 + nseqs2] << "\n";
             nseqs2++;
         }
     }
-    
-    // Change the Max alignment length in the Alignment Object! 
+
+    // Change the Max alignment length in the Alignment Object!
     alnPtr->setMaxAlnLength(prfLength1 + prfLength2 + 2);
 
     // calculate real length of profiles - removing gaps!
-    
+
     len1 = 0;
     for (i = 0; i < nseqs1; i++)
     {
@@ -247,7 +247,7 @@ int MyersMillerProfileAlign::profileAlign(Alignment* alnPtr, DistMatrix* distMat
     PrfScaleValues scaleVals;
     scaleVals.scale = 1.0;
     scaleVals.intScale = 100.0;
-    
+
     int matAvgScore = 0;
     minLen = utilityObject->MIN(len1, len2);
     maxRes = 0;
@@ -258,7 +258,7 @@ int MyersMillerProfileAlign::profileAlign(Alignment* alnPtr, DistMatrix* distMat
     if (maxRes == 0 || maxRes == -1)
     {
         return -1;
-    }    
+    }
     if (userParameters->getDNAFlag())
     {
         gapcoef1 = gapcoef2 = static_cast<int>(100.0 * userParameters->getGapOpen() * scaleVals.scale);
@@ -306,7 +306,7 @@ int MyersMillerProfileAlign::profileAlign(Alignment* alnPtr, DistMatrix* distMat
             }
             else
             {
-                gapcoef1 = gapcoef2 = static_cast<int>(scaleVals.scale * matAvgScore * 
+                gapcoef1 = gapcoef2 = static_cast<int>(scaleVals.scale * matAvgScore *
                             (float)(userParameters->getGapOpen() / (logdiff * logmin)));
             }
             lencoef1 = lencoef2 = static_cast<int>(100.0 * userParameters->getGapExtend());
@@ -317,12 +317,12 @@ int MyersMillerProfileAlign::profileAlign(Alignment* alnPtr, DistMatrix* distMat
     profileWithSub = new ProfileWithSub(prfLength1, 0, nseqs1);
     profileStandard = new ProfileStandard(prfLength2, nseqs1, nseqs1 + nseqs2);
 
-    // Calculate the profile array with Substitution matrix info 
+    // Calculate the profile array with Substitution matrix info
     // calculate the Gap Coefficients.
-    
+
     gaps.resize(alnPtr->getMaxAlnLength() + 1);
-    
-    bool profile1Pen; 
+
+    bool profile1Pen;
     if (switchProfiles == false)
     {
         profile1Pen = userParameters->getStructPenalties1() && userParameters->getUseSS1();
@@ -338,28 +338,28 @@ int MyersMillerProfileAlign::profileAlign(Alignment* alnPtr, DistMatrix* distMat
     // calculate the profile matrix.
     profileWithSub->calcProfileWithSub(&seqArray, &gaps, matrix, &alnWeight);
     profile1 = profileWithSub->getProfilePtr();
-    
+
     if (userParameters->getDebug() > 4)
     {
         string aminoAcidCodes = userParameters->getAminoAcidCodes();
         for (j = 0; j <= userParameters->getMaxAA(); j++)
         {
-            cout << aminoAcidCodes[j] << "    ";
+            Rcpp::Rcout << aminoAcidCodes[j] << "    ";
         }
-        cout << "\n";
+        Rcpp::Rcout << "\n";
         for (i = 0; i < prfLength1; i++)
         {
             for (j = 0; j <= userParameters->getMaxAA(); j++)
             {
-                cout << (*profile1)[i + 1][j] << " ";
+                Rcpp::Rcout << (*profile1)[i + 1][j] << " ";
             }
-            cout << (*profile1)[i + 1][_gapPos1]<< " ";
-            cout << (*profile1)[i + 1][_gapPos2]<< " ";
-            cout << (*profile1)[i + 1][GAPCOL] << " " << (*profile1)[i + 1][LENCOL]
+            Rcpp::Rcout << (*profile1)[i + 1][_gapPos1]<< " ";
+            Rcpp::Rcout << (*profile1)[i + 1][_gapPos2]<< " ";
+            Rcpp::Rcout << (*profile1)[i + 1][GAPCOL] << " " << (*profile1)[i + 1][LENCOL]
                  << "\n";
         }
-    }    
-    // Calculate the standard profile array 
+    }
+    // Calculate the standard profile array
     // calculate the Gap Coefficients.
     bool profile2Pen;
     if (switchProfiles == false)
@@ -376,40 +376,40 @@ int MyersMillerProfileAlign::profileAlign(Alignment* alnPtr, DistMatrix* distMat
     }
 
     // calculate the profile matrix.
-    
+
     profileStandard->calcStandardProfile(&seqArray, &alnWeight);
     profile2 = profileStandard->getProfilePtr();
-    
+
     if (userParameters->getDebug() > 4)
     {
         string aminoAcidCodes = userParameters->getAminoAcidCodes();
         for (j = 0; j <= userParameters->getMaxAA(); j++)
         {
-            cout << aminoAcidCodes[j] << "    ";
+            Rcpp::Rcout << aminoAcidCodes[j] << "    ";
         }
-        cout << "\n";
+        Rcpp::Rcout << "\n";
         for (i = 0; i < prfLength2; i++)
         {
             for (j = 0; j <= userParameters->getMaxAA(); j++)
             {
-                cout << (*profile2)[i + 1][j] << " ";
+                Rcpp::Rcout << (*profile2)[i + 1][j] << " ";
             }
-            cout << (*profile2)[i + 1][_gapPos1]<< " ";
-            cout << (*profile2)[i + 1][_gapPos2]<< " ";
-            cout << (*profile2)[i + 1][GAPCOL] << " " << (*profile2)[i + 1][LENCOL]
+            Rcpp::Rcout << (*profile2)[i + 1][_gapPos1]<< " ";
+            Rcpp::Rcout << (*profile2)[i + 1][_gapPos2]<< " ";
+            Rcpp::Rcout << (*profile2)[i + 1][GAPCOL] << " " << (*profile2)[i + 1][LENCOL]
                  << "\n";
         }
     }
     alnWeight.clear();
 
     int _maxAlnLength = alnPtr->getMaxAlnLength();
-    
+
     alnPath1.resize(_maxAlnLength + 1);
     alnPath2.resize(_maxAlnLength + 1);
 
     //align the profiles
-    
-    // use Myers and Miller to align two sequences 
+
+    // use Myers and Miller to align two sequences
 
     lastPrint = 0;
     printPtr = 1;
@@ -443,22 +443,22 @@ int MyersMillerProfileAlign::profileAlign(Alignment* alnPtr, DistMatrix* distMat
 
     profileStandard->resetProfile();
     profileWithSub->resetProfile();
-    
+
     prfLength1 = alignmentLength;
 
     alnPath1.clear();
     alnPath2.clear();
-    
+
     if(userParameters->getDoRemoveFirstIteration() == TREE)
     {
         Iteration iterateObj;
         iterateObj.iterationOnTreeNode(numSeqsProf1, numSeqsProf2, prfLength1, prfLength2,
-                                       &seqArray);           
+                                       &seqArray);
     }
-        
+
     //  Now we resize the SeqArray that holds the sequences in the alignment class
-    //    and also update it with the new aligned sequences 
-         
+    //    and also update it with the new aligned sequences
+
     SeqArray* newSequences = alnPtr->getSeqArrayForRealloc();
     seqNum = 0;
     for (j = 0; j < numSeq; j++)
@@ -487,19 +487,19 @@ int MyersMillerProfileAlign::profileAlign(Alignment* alnPtr, DistMatrix* distMat
             seqNum++;
         }
     }
-    
+
     alnPtr->calculateMaxLengths(); // Mark change 20-6-07
-    
+
     gaps.clear();
     seqArray.clear();
-    
+
     delete profileWithSub;
     delete profileStandard;
 
     int retScore = (score / 100);
 
     return retScore;
-    
+
 }
 
 /** ****************************************************************************************
@@ -507,14 +507,14 @@ int MyersMillerProfileAlign::profileAlign(Alignment* alnPtr, DistMatrix* distMat
  *******************************************************************************************/
 
 /**
- * 
- * @param A 
- * @param B 
- * @param M 
- * @param N 
- * @param go1 
- * @param go2 
- * @return 
+ *
+ * @param A
+ * @param B
+ * @param M
+ * @param N
+ * @param go1
+ * @param go2
+ * @return
  */
 int MyersMillerProfileAlign::progDiff(int A, int B, int M, int N, int go1, int go2)
 {
@@ -530,7 +530,7 @@ int MyersMillerProfileAlign::progDiff(int A, int B, int M, int N, int go1, int g
         /* Boundary cases: M <= 1 or N == 0 */
         if (userParameters->getDebug() > 2)
         {
-            cout << "A " << A << " B " << B << " M " << M << " N " << N 
+            Rcpp::Rcout << "A " << A << " B " << B << " M " << M << " N " << N
                  << " midi " << M / 2 << " go1 " << go1 << " go2 " << go2<< "\n";
         }
 
@@ -546,7 +546,7 @@ int MyersMillerProfileAlign::progDiff(int A, int B, int M, int N, int go1, int g
 
                 /* delete residues A[1] to A[M]                                          */
 
-                progDel(M); 
+                progDel(M);
             }
             return ( - gapPenalty1(A, B, M));
         }
@@ -781,12 +781,12 @@ int MyersMillerProfileAlign::progDiff(int A, int B, int M, int N, int go1, int g
          /* Type 1 gaps  */
         if (userParameters->getDebug() > 2)
         {
-            cout << "Type 1,1: midj " << midj << "\n";
+            Rcpp::Rcout << "Type 1,1: midj " << midj << "\n";
         }
         progDiff(A, B, midi, midj, go1, 1);
         if (userParameters->getDebug() > 2)
         {
-            cout << "Type 1,2: midj " << midj << "\n";
+            Rcpp::Rcout << "Type 1,2: midj " << midj << "\n";
         }
         progDiff(A + midi, B + midj, M - midi, N - midj, 1, go2);
     }
@@ -794,24 +794,24 @@ int MyersMillerProfileAlign::progDiff(int A, int B, int M, int N, int go1, int g
     {
         if (userParameters->getDebug() > 2)
         {
-            cout << "Type 2,1: midj " << midj << "\n";
+            Rcpp::Rcout << "Type 2,1: midj " << midj << "\n";
         }
         progDiff(A, B, midi - 1, midj, go1, 0);
         progDel(2);
         if (userParameters->getDebug() > 2)
         {
-            cout << "Type 2,2: midj " << midj << "\n";
+            Rcpp::Rcout << "Type 2,2: midj " << midj << "\n";
         }
         progDiff(A + midi + 1, B + midj, M - midi - 1, N - midj, 0, go2);
     }
 
     return midh; /* Return the score of the best alignment */
-} 
- 
+}
+
 /**
- * 
- * @param alnPtr 
- * @param seqArray 
+ *
+ * @param alnPtr
+ * @param seqArray
  */
 void MyersMillerProfileAlign::addGGaps(Alignment* alnPtr, SeqArray* seqArray)
 {
@@ -848,7 +848,7 @@ void MyersMillerProfileAlign::addGGaps(Alignment* alnPtr, SeqArray* seqArray)
             }
             else
             {
-                cerr << "Error in aln_path\n";
+                Rcpp::Rcerr << "Error in aln_path\n";
             }
         }
         ta[i] = ENDALN;
@@ -856,7 +856,7 @@ void MyersMillerProfileAlign::addGGaps(Alignment* alnPtr, SeqArray* seqArray)
         len = alignmentLength;
 
         (*seqArray)[j].resize(len + 2);
-        
+
         for (i = 0; i < len; i++)
         {
             (*seqArray)[j][i] = ta[i];
@@ -891,7 +891,7 @@ void MyersMillerProfileAlign::addGGaps(Alignment* alnPtr, SeqArray* seqArray)
             }
             else
             {
-                cerr << "Error in alnPath\n";
+                Rcpp::Rcerr << "Error in alnPath\n";
             }
         }
         ta[i] = ENDALN;
@@ -899,7 +899,7 @@ void MyersMillerProfileAlign::addGGaps(Alignment* alnPtr, SeqArray* seqArray)
         len = alignmentLength;
 
         (*seqArray)[j].resize(len + 2);
-        
+
         for (i = 0; i < len; i++)
         {
             (*seqArray)[j][i] = ta[i];
@@ -933,11 +933,11 @@ void MyersMillerProfileAlign::addGGaps(Alignment* alnPtr, SeqArray* seqArray)
 
 
 /**
- * 
- * @param mask 
- * @param len 
- * @param path1 
- * @param path2 
+ *
+ * @param mask
+ * @param len
+ * @param path1
+ * @param path2
  */
 void MyersMillerProfileAlign::addGGapsMask(vector<char>* mask, int len, vector<int>* path1,
                                            vector<int>* path2)
@@ -979,7 +979,7 @@ void MyersMillerProfileAlign::addGGapsMask(vector<char>* mask, int len, vector<i
         }
     }
     mask->resize(len + 2);
-    
+
     for (i = 0; i < len; i++)
     {
         (*mask)[i] = ta[i];
@@ -992,10 +992,10 @@ void MyersMillerProfileAlign::addGGapsMask(vector<char>* mask, int len, vector<i
 
 
 /**
- * 
- * @param n 
- * @param m 
- * @return 
+ *
+ * @param n
+ * @param m
+ * @return
  */
 inline int MyersMillerProfileAlign::prfScore(int n, int m)
 {
@@ -1015,8 +1015,8 @@ inline int MyersMillerProfileAlign::prfScore(int n, int m)
 
 
 /**
- * 
- * @return 
+ *
+ * @return
  */
 int MyersMillerProfileAlign::progTracepath()
 {
@@ -1030,7 +1030,7 @@ int MyersMillerProfileAlign::progTracepath()
     {
         if (userParameters->getDebug() > 1)
         {
-            cout << displ[i] << " ";
+            Rcpp::Rcout << displ[i] << " ";
         }
         if (displ[i] == 0)
         {
@@ -1063,7 +1063,7 @@ int MyersMillerProfileAlign::progTracepath()
     }
     if (userParameters->getDebug() > 1)
     {
-        cout << "\n";
+        Rcpp::Rcout << "\n";
     }
 
     alignLen = pos;
@@ -1072,8 +1072,8 @@ int MyersMillerProfileAlign::progTracepath()
 
 
 /**
- * 
- * @param k 
+ *
+ * @param k
  */
 void MyersMillerProfileAlign::progDel(int k)
 {
@@ -1089,8 +1089,8 @@ void MyersMillerProfileAlign::progDel(int k)
 
 
 /**
- * 
- * @param k 
+ *
+ * @param k
  */
 void MyersMillerProfileAlign::progAdd(int k)
 {
@@ -1107,7 +1107,7 @@ void MyersMillerProfileAlign::progAdd(int k)
 
 
 /**
- * 
+ *
  */
 void MyersMillerProfileAlign::progAlign()
 {
@@ -1116,10 +1116,10 @@ void MyersMillerProfileAlign::progAlign()
 
 
 /**
- * 
- * @param i 
- * @param j 
- * @return 
+ *
+ * @param i
+ * @param j
+ * @return
  */
 inline int MyersMillerProfileAlign::openPenalty1(int i, int j) // NOTE Change here!
 {
@@ -1135,10 +1135,10 @@ inline int MyersMillerProfileAlign::openPenalty1(int i, int j) // NOTE Change he
 
 
 /**
- * 
- * @param i 
- * @param j 
- * @return 
+ *
+ * @param i
+ * @param j
+ * @return
  */
 inline int MyersMillerProfileAlign::extPenalty1(int i, int j) // NOTE Change here!
 {
@@ -1155,11 +1155,11 @@ inline int MyersMillerProfileAlign::extPenalty1(int i, int j) // NOTE Change her
 
 
 /**
- * 
- * @param i 
- * @param j 
- * @param k 
- * @return 
+ *
+ * @param i
+ * @param j
+ * @param k
+ * @return
  */
 int MyersMillerProfileAlign::gapPenalty1(int i, int j, int k)
 {
@@ -1188,10 +1188,10 @@ int MyersMillerProfileAlign::gapPenalty1(int i, int j, int k)
 
 
 /**
- * 
- * @param i 
- * @param j 
- * @return 
+ *
+ * @param i
+ * @param j
+ * @return
  */
 inline int MyersMillerProfileAlign::openPenalty2(int i, int j) // NOTE Change here!
 {
@@ -1208,10 +1208,10 @@ inline int MyersMillerProfileAlign::openPenalty2(int i, int j) // NOTE Change he
 
 
 /**
- * 
- * @param i 
- * @param j 
- * @return 
+ *
+ * @param i
+ * @param j
+ * @return
  */
 inline int MyersMillerProfileAlign::extPenalty2(int i, int j) // NOTE Change here!
 {
@@ -1228,11 +1228,11 @@ inline int MyersMillerProfileAlign::extPenalty2(int i, int j) // NOTE Change her
 
 
 /**
- * 
- * @param i 
- * @param j 
- * @param k 
- * @return 
+ *
+ * @param i
+ * @param j
+ * @param k
+ * @return
  */
 int MyersMillerProfileAlign::gapPenalty2(int i, int j, int k)
 {
@@ -1258,5 +1258,5 @@ int MyersMillerProfileAlign::gapPenalty2(int i, int j, int k)
     gp = g + h;
     return (gp);
 }
-                     
+
 }

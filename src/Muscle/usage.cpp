@@ -1,5 +1,6 @@
 #include "muscle.h"
 #include <stdio.h>
+#include <Rcpp.h>
 
 void Credits()
 	{
@@ -7,17 +8,17 @@ void Credits()
 	if (Displayed)
 		return;
 
-	fprintf(stderr, "\n%s\n\n", MUSCLE_LONG_VERSION);
-	fprintf(stderr, "http://www.drive5.com/muscle\n");
-	fprintf(stderr, "This software is donated to the public domain.\n");
-	fprintf(stderr, "Please cite: Edgar, R.C. Nucleic Acids Res 32(5), 1792-97.\n\n");
+	Rcpp::Rcerr << std::endl << MUSCLE_LONG_VERSION << std::endl << std::endl;
+	Rcpp::Rcerr << "http://www.drive5.com/muscle\n";
+	Rcpp::Rcerr << "This software is donated to the public domain.\n";
+	Rcpp::Rcerr << "Please cite: Edgar, R.C. Nucleic Acids Res 32(5), 1792-97.\n\n";
 	Displayed = true;
 	}
 
 void Usage()
 	{
 	Credits();
-	fprintf(stderr,
+  Rcpp::Rcerr <<
 "\n"
 "Basic usage\n"
 "\n"
@@ -40,5 +41,5 @@ void Usage()
 "\n"
 "Without refinement (very fast, avg accuracy similar to T-Coffee): -maxiters 2\n"
 "Fastest possible (amino acids): -maxiters 1 -diags -sv -distance1 kbit20_3\n"
-"Fastest possible (nucleotides): -maxiters 1 -diags\n");
+"Fastest possible (nucleotides): -maxiters 1 -diags\n";
 	}

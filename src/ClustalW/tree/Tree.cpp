@@ -705,7 +705,7 @@ void Tree::debugPrintAllNodes(int nseqs)
   int i;
    float diff, maxDist;
 
-    cerr << "\nDEBUG: reportAllNodes\n";
+    Rcpp::Rcerr << "\nDEBUG: reportAllNodes\n";
     for (i = 0; i < ntotal; i++) {
         p = ptrs[i];
         //        ios::sync_with_stdio();
@@ -715,8 +715,7 @@ void Tree::debugPrintAllNodes(int nseqs)
             diff = calcRootMean(p, &maxDist);
         else
             diff = calcMean(p, &maxDist, nseqs);
-        fprintf(stdout,
-                "i=%d p=%p: parent=%p left=%p right=%p dist=%f diff=%f\n",
+        Rprintf("i=%d p=%p: parent=%p left=%p right=%p dist=%f diff=%f\n",
                 i, (void*)p, (void*)p->parent, (void*)p->left, (void*)p->right,
 		p->dist, diff);
     }
@@ -807,8 +806,8 @@ clustalw::TreeNode* Tree::insertRoot(clustalw::TreeNode* p, float diff)
 
     if (p->parent==NULL) {
         // AW bug 94: question remains if access here should be handled differently
-        cerr << "\n\n*** INTERNAL ERROR: Tree::insertRoot: TreeNode p->parent is NULL\n";
-        cerr << "To help us fix this bug, please send sequence file and used options to clustalw@ucd.ie\n";
+        Rcpp::Rcerr << "\n\n*** INTERNAL ERROR: Tree::insertRoot: TreeNode p->parent is NULL\n";
+        Rcpp::Rcerr << "To help us fix this bug, please send sequence file and used options to clustalw@ucd.ie\n";
         throw 1;
     }
 

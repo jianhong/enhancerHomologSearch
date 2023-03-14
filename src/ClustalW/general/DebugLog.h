@@ -1,22 +1,23 @@
 /**
  * Author: Mark Larkin
- * 
- * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.  
+ *
+ * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.
  */
 /**
- * This class is used to log messages to a file that is specified when the object 
+ * This class is used to log messages to a file that is specified when the object
  * is created.
- * The file is closed when the object is destroyed. The user simply needs to 
+ * The file is closed when the object is destroyed. The user simply needs to
  * create a DebugLog
  * object, and then call the logMsg function whenever they wish to write something to the
- * file. 
+ * file.
  */
- 
+
 #ifndef DEBUGLOG_H
 #define DEBUGLOG_H
 
 #include <string>
 #include <fstream>
+#include <Rcpp.h>
 
 namespace clustalw
 {
@@ -42,7 +43,7 @@ class DebugLog
         float maxScore;
         /* Functions */
         DebugLog();
-        
+
 };
 
 }

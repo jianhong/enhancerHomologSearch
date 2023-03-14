@@ -2,6 +2,7 @@
 #include "msa.h"
 #include "textfile.h"
 #include <time.h>
+#include <Rcpp.h>
 
 MSA *ptrBestMSA;
 static const char *pstrOutputFileName;
@@ -21,30 +22,30 @@ void SaveCurrentAlignment()
 	static bool bCalled = false;
 	if (bCalled)
 		{
-		fprintf(stderr,
-		  "\nRecursive call to SaveCurrentAlignment, giving up attempt to save.\n");
+		Rcpp::Rcerr <<
+		  "\nRecursive call to SaveCurrentAlignment, giving up attempt to save.\n";
 		throw EXIT_FatalError;
 		}
 
 	if (0 == ptrBestMSA)
 		{
-		fprintf(stderr, "\nAlignment not completed, cannot save.\n");
+	  Rcpp::Rcerr << "\nAlignment not completed, cannot save.\n";
 		Log("Alignment not completed, cannot save.\n");
 		throw EXIT_FatalError;
 		}
 
 	if (0 == pstrOutputFileName)
 		{
-		fprintf(stderr, "\nOutput file name not specified, cannot save.\n");
+	  Rcpp::Rcerr << "\nOutput file name not specified, cannot save.\n";
 		throw EXIT_FatalError;
 		}
 
-	fprintf(stderr, "\nSaving current alignment ...\n");
+	Rcpp::Rcerr << "\nSaving current alignment ...\n";
 
 	TextFile fileOut(pstrOutputFileName, true);
 	ptrBestMSA->ToFASTAFile(fileOut);
 
-	fprintf(stderr, "Current alignment saved to \"%s\".\n", pstrOutputFileName);
+	Rcpp::Rcerr << "Current alignment saved to \""<< pstrOutputFileName <<"\".\n";
 	Log("Current alignment saved to \"%s\".\n", pstrOutputFileName);
 	}
 

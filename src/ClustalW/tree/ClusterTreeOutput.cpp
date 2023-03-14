@@ -1,7 +1,7 @@
 /**
  * Author: Mark Larkin
- * 
- * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.  
+ *
+ * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.
  */
 #ifdef HAVE_CONFIG_H
     #include "config.h"
@@ -25,9 +25,9 @@ void ClusterTreeOutput::printTreeDesc(PhyloTree* phyloTree)
     {
         for(int j = 1; j <= numSeqs; j++)
         {
-            cout << " " << phyloTree->treeDesc[i][j];
+            Rcpp::Rcout << " " << phyloTree->treeDesc[i][j];
         }
-        cout << "\n";
+        Rcpp::Rcout << "\n";
     }
 }
 
@@ -36,10 +36,10 @@ void ClusterTreeOutput::printTreeDesc(PhyloTree* phyloTree)
  * The function printPhylipTree is used to print out the unrooted clustered tree in
  * phylip format.
  * @param phyloTree A pointer to the PhyloTree struct that contains the description of the
- *                  tree. 
+ *                  tree.
  * @param tree The file to print the phylip tree to. Must be open!
- * @param alignPtr The alignment object. Needed for the names. 
- * @param distMat The distance matrix that was used for the generation of the cluster. 
+ * @param alignPtr The alignment object. Needed for the names.
+ * @param distMat The distance matrix that was used for the generation of the cluster.
  * @param bootTotals Holds the bootstrap values. Only used if the tree has been bootstrapped
  */
 void ClusterTreeOutput::printPhylipTree(PhyloTree* phyloTree, ofstream* tree,
@@ -48,8 +48,8 @@ void ClusterTreeOutput::printPhylipTree(PhyloTree* phyloTree, ofstream* tree,
     int oldRow;
     if (lastSeq - firstSeq + 1 == 2)
     {
-        (*tree) << "(" << alignPtr->getName(firstSeq) << ":" << fixed <<setprecision(5) 
-                << (*distMat)(firstSeq, firstSeq + 1) << "," << alignPtr->getName(firstSeq + 1) 
+        (*tree) << "(" << alignPtr->getName(firstSeq) << ":" << fixed <<setprecision(5)
+                << (*distMat)(firstSeq, firstSeq + 1) << "," << alignPtr->getName(firstSeq + 1)
                 << ":" << fixed << setprecision(5)  << (*distMat)(firstSeq, firstSeq + 1)
                 << ");";
         return ;
@@ -59,10 +59,10 @@ void ClusterTreeOutput::printPhylipTree(PhyloTree* phyloTree, ofstream* tree,
 
     oldRow = twoWaySplit(phyloTree, tree, lastSeq - firstSeq + 1 - 2,
         1, alignPtr, bootTotals);
-        
-    (*tree) << ":" << fixed << setprecision(5) 
+
+    (*tree) << ":" << fixed << setprecision(5)
             << phyloTree->leftBranch[lastSeq - firstSeq + 1 - 2];
-    
+
     if ((bootstrap == BS_BRANCH_LABELS) && (oldRow > 0) &&
         ((*bootTotals)[oldRow] > 0))
     {
@@ -72,10 +72,10 @@ void ClusterTreeOutput::printPhylipTree(PhyloTree* phyloTree, ofstream* tree,
 
     oldRow = twoWaySplit(phyloTree, tree, lastSeq - firstSeq + 1 - 2,
                          2, alignPtr, bootTotals);
-    
-    (*tree) << ":" << fixed << setprecision(5) 
+
+    (*tree) << ":" << fixed << setprecision(5)
             << phyloTree->leftBranch[lastSeq - firstSeq + 1 - 1];
-    
+
     if ((bootstrap == BS_BRANCH_LABELS) && (oldRow > 0) &&
         ((*bootTotals)[oldRow] > 0))
     {
@@ -85,17 +85,17 @@ void ClusterTreeOutput::printPhylipTree(PhyloTree* phyloTree, ofstream* tree,
 
     oldRow = twoWaySplit(phyloTree, tree, lastSeq - firstSeq + 1 - 2,
                          3, alignPtr, bootTotals);
-        
-    (*tree) << ":" << fixed << setprecision(5) 
+
+    (*tree) << ":" << fixed << setprecision(5)
             << phyloTree->leftBranch[lastSeq - firstSeq + 1];
-    
+
     if ((bootstrap == BS_BRANCH_LABELS) && (oldRow > 0) &&
         ((*bootTotals)[oldRow] > 0))
     {
         (*tree) << "[" << (*bootTotals)[oldRow] << "]";
     }
     (*tree) << ")";
-    
+
     if (bootstrap == BS_NODE_LABELS)
     {
         (*tree) << "TRICHOTOMY";
@@ -103,7 +103,7 @@ void ClusterTreeOutput::printPhylipTree(PhyloTree* phyloTree, ofstream* tree,
     (*tree) << ";\n";
 }
 
-int ClusterTreeOutput::twoWaySplit(PhyloTree* phyloTree, ofstream* tree, 
+int ClusterTreeOutput::twoWaySplit(PhyloTree* phyloTree, ofstream* tree,
         int startRow, int flag, Alignment *alignPtr, vector<int>* bootTotals)
 {
     int row, newRow = 0, oldRow, col, testCol = 0;
@@ -141,8 +141,8 @@ int ClusterTreeOutput::twoWaySplit(PhyloTree* phyloTree, ofstream* tree,
             return (0);
         }
 
-        (*tree) << ":" << fixed << setprecision(5) << phyloTree->leftBranch[startRow] 
-                << ",\n"; 
+        (*tree) << ":" << fixed << setprecision(5) << phyloTree->leftBranch[startRow]
+                << ",\n";
     }
     else
     {
@@ -155,14 +155,14 @@ int ClusterTreeOutput::twoWaySplit(PhyloTree* phyloTree, ofstream* tree,
             }
         }
         oldRow = twoWaySplit(phyloTree, tree, newRow, 1, alignPtr, bootTotals);
-        
+
         if (startRow == lastSeq - firstSeq + 1-2)
         {
             return (newRow);
         }
 
         (*tree) << ":" << fixed << setprecision(5) << phyloTree->leftBranch[startRow];
-        
+
         if ((bootstrap == BS_BRANCH_LABELS) && ((*bootTotals)[oldRow] > 0))
         {
             (*tree) << "[" << (*bootTotals)[oldRow] << "]";
@@ -208,7 +208,7 @@ int ClusterTreeOutput::twoWaySplit(PhyloTree* phyloTree, ofstream* tree,
         }
         oldRow = twoWaySplit(phyloTree, tree, newRow, 1, alignPtr, bootTotals);
         (*tree) << ":" << fixed << setprecision(5)  << phyloTree->rightBranch[startRow];
-        
+
         if ((bootstrap == BS_BRANCH_LABELS) && ((*bootTotals)[oldRow] > 0))
         {
             (*tree) << "[" << (*bootTotals)[oldRow] << "]";
@@ -234,8 +234,8 @@ void ClusterTreeOutput::printNexusTree(PhyloTree* phyloTree, ofstream* tree,
 
     (*tree) << "BEGIN TREES;\n\n";
     (*tree) << "\tTRANSLATE\n";
-    
-    for(i = 1; i < numSeqs; i++) 
+
+    for(i = 1; i < numSeqs; i++)
     {
         (*tree) << "\t\t" << i << "\t" << alignPtr->getName(i) <<",\n";
     }
@@ -244,21 +244,21 @@ void ClusterTreeOutput::printNexusTree(PhyloTree* phyloTree, ofstream* tree,
 
     (*tree) << "\tUTREE PAUP_1= ";
 
-    if(lastSeq - firstSeq + 1 == 2) 
+    if(lastSeq - firstSeq + 1 == 2)
     {
-        (*tree) << "(" << firstSeq << ":" << fixed << setprecision(5) 
-        << (*distMat)(firstSeq, firstSeq + 1) << "," << firstSeq + 1 << ":" 
+        (*tree) << "(" << firstSeq << ":" << fixed << setprecision(5)
+        << (*distMat)(firstSeq, firstSeq + 1) << "," << firstSeq + 1 << ":"
         << fixed << setprecision(5) << (*distMat)(firstSeq, firstSeq + 1) << ")";
     }
-    else 
+    else
     {
 
         (*tree) << "(";
- 
+
         oldRow = twoWaySplitNexus(phyloTree, tree,
                        lastSeq - firstSeq + 1 - 2, 1, alignPtr, bootTotals);
-        
-        (*tree) << ":" << fixed << setprecision(5) 
+
+        (*tree) << ":" << fixed << setprecision(5)
                 << phyloTree->leftBranch[lastSeq-firstSeq+1-2];
 
         if ((bootstrap == BS_BRANCH_LABELS) && (oldRow > 0) && ((*bootTotals)[oldRow]>0))
@@ -268,33 +268,33 @@ void ClusterTreeOutput::printNexusTree(PhyloTree* phyloTree, ofstream* tree,
 
         (*tree) << ",";
 
-        oldRow = twoWaySplitNexus(phyloTree, tree, lastSeq - firstSeq + 1 - 2, 2, 
+        oldRow = twoWaySplitNexus(phyloTree, tree, lastSeq - firstSeq + 1 - 2, 2,
                                   alignPtr, bootTotals);
-        (*tree) << ":" << fixed << setprecision(5) 
+        (*tree) << ":" << fixed << setprecision(5)
                        << phyloTree->leftBranch[lastSeq-firstSeq+1-1];
 
         if ((bootstrap==BS_BRANCH_LABELS) && (oldRow>0) && ((*bootTotals)[oldRow]>0))
         {
             (*tree) << "[" << (*bootTotals)[oldRow] << "]";
         }
-        
+
         (*tree) << ",";
 
         oldRow = twoWaySplitNexus(phyloTree, tree,
                  lastSeq-firstSeq+1-2, 3, alignPtr, bootTotals);
-                 
-        (*tree) << ":" << fixed << setprecision(5) 
+
+        (*tree) << ":" << fixed << setprecision(5)
                 << phyloTree->leftBranch[lastSeq-firstSeq+1];
-        
+
         if ((bootstrap==BS_BRANCH_LABELS) && (oldRow>0) && ((*bootTotals)[oldRow]>0))
         {
             (*tree) << "[" << (*bootTotals)[oldRow] << "]";
         }
-        
+
         (*tree) << ")";
-        
+
         if (bootstrap == BS_NODE_LABELS)
-        { 
+        {
             (*tree) << "TRICHOTOMY";
         }
         (*tree) << ";";
@@ -302,7 +302,7 @@ void ClusterTreeOutput::printNexusTree(PhyloTree* phyloTree, ofstream* tree,
     (*tree) << "\nENDBLOCK;\n";
 }
 
-int ClusterTreeOutput::twoWaySplitNexus(PhyloTree* phyloTree, ofstream* tree, 
+int ClusterTreeOutput::twoWaySplitNexus(PhyloTree* phyloTree, ofstream* tree,
                 int startRow, int flag, Alignment *alignPtr, vector<int>* bootTotals)
 {
     int row, newRow = 0, oldRow, col, testCol = 0;
@@ -353,7 +353,7 @@ int ClusterTreeOutput::twoWaySplitNexus(PhyloTree* phyloTree, ofstream* tree,
             }
         }
         oldRow = twoWaySplitNexus(phyloTree, tree, newRow, 1, alignPtr, bootTotals);
-        
+
         if (startRow == lastSeq - firstSeq + 1-2)
         {
             return (newRow);
@@ -403,7 +403,7 @@ int ClusterTreeOutput::twoWaySplitNexus(PhyloTree* phyloTree, ofstream* tree,
             }
         }
         oldRow = twoWaySplitNexus(phyloTree, tree, newRow, 1, alignPtr, bootTotals);
-        
+
         (*tree) << ":" << fixed << setprecision(5) << phyloTree->rightBranch[startRow];
         if ((bootstrap == BS_BRANCH_LABELS) && ((*bootTotals)[oldRow] > 0))
         {

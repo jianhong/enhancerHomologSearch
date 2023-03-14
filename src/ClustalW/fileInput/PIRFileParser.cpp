@@ -1,7 +1,7 @@
 /**
  * Author: Mark Larkin
- * 
- * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.  
+ *
+ * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.
  */
 /**
  * Changes:
@@ -20,11 +20,11 @@ namespace clustalw
 
 /**
  * PIRFileParser contructor sets up the chartab array.
- * @param filePath 
+ * @param filePath
  */
 PIRFileParser::PIRFileParser(string filePath)
 {
-    fileName = filePath; 
+    fileName = filePath;
     fillCharTab();
 }
 
@@ -38,7 +38,7 @@ PIRFileParser::PIRFileParser(string filePath)
     int i;
 
     for (i=0; i<no; i++)
-    { 
+    {
         Sequence tempSeq = getSeq(firstSeq + i, offendingSeq);
         if (parseExitCode!=OK) {
             seqRangeVector.clear();
@@ -65,18 +65,18 @@ PIRFileParser::PIRFileParser(string filePath)
     string name = "";
     string title = "";
     string blank = "";
-    
+
     _line[0] = EOS;
     int i;
     unsigned char c;
     int _currentSeqNum = 0;
-    
+
     try
     {
         _fileIn = new InFileStream;  //nige
         _fileIn->open(fileName.c_str());  //nige
         _fileIn->seekg(0, std::ios::beg);
-        
+
         // Read in lines until we get to the begining of sequence seqNum.
         while (_currentSeqNum != seqNum)
         {
@@ -95,8 +95,8 @@ PIRFileParser::PIRFileParser(string filePath)
             }
             // Get next line so that we are past the '>' line
             _fileIn->getline(_line, MAXLINE + 1);
-        }        
-        
+        }
+
         // line contains the name of the sequence
         for (i = 4; i <= (int)strlen(_line); i++)
         {
@@ -105,13 +105,13 @@ PIRFileParser::PIRFileParser(string filePath)
                 break;
             }
         }
-        
-        strncpy(_sname, _line + i, MAXNAMES); // remember entryname 
+
+        strncpy(_sname, _line + i, MAXNAMES); // remember entryname
         _sname[MAXNAMES] = EOS;
         utilityObject->rTrim(_sname);
         utilityObject->blankToUnderscore(_sname); // replace blanks with '_'
         name = string(_sname);
-        
+
         _fileIn->getline(_line, MAXLINE + 1);
         strncpy(_title, _line, MAXTITLES);
         _title[MAXTITLES] = EOS;
@@ -121,7 +121,7 @@ PIRFileParser::PIRFileParser(string filePath)
             _title[i - 1] = EOS;
         }
         title = string(_title);
-        
+
         while (_fileIn->getline(_line, MAXLINE + 1))
         {
             for (i = 0; i <= MAXLINE; i++)
@@ -158,7 +158,7 @@ PIRFileParser::PIRFileParser(string filePath)
     catch(...)
     {
         _fileIn->close();
-        cerr << "There was an exception in the PIRFileParser::getSeq function.\n"
+        Rcpp::Rcerr << "There was an exception in the PIRFileParser::getSeq function.\n"
              << "Need to end program\n";
         throw 1;
     }
@@ -174,17 +174,17 @@ int PIRFileParser::countSeqs()
     line[0] = EOS;
     int numSeqs, i;
     bool seqOk;
-    
+
     try
     {
         _fileIn = new InFileStream;  //nige
         _fileIn->open(fileName.c_str());  //nige
-    
+
         if(!_fileIn->is_open())
         {
             return 0; // No sequences found!
         }
-    
+
         // Get to begining of sequences!
         while (_fileIn->getline(line, MAXLINE + 1))
         {
@@ -193,7 +193,7 @@ int PIRFileParser::countSeqs()
                 break;
             }
         }
-    
+
         // Now check the 1st sequence to make sure it ends with *
         seqOk = false;
         while (_fileIn->getline(line, MAXLINE + 1))
@@ -210,7 +210,7 @@ int PIRFileParser::countSeqs()
                 {
                     seqOk = true; // ok - end of sequence found
                     break;
-                } // EOL 
+                } // EOL
                 if (c == '\n' || c == EOS)
                 {
                     break;
@@ -225,17 +225,17 @@ int PIRFileParser::countSeqs()
         if (seqOk == false)
         {
             _fileIn->close();
-            utilityObject->error("PIR format sequence end marker '*'\nmissing for one or more sequences.\n");     
+            utilityObject->error("PIR format sequence end marker '*'\nmissing for one or more sequences.\n");
             return 0; // funny format
         }
 
         numSeqs = 1;
-    
+
         while (_fileIn->getline(line, MAXLINE + 1))
         {
             if (*line == '>')
             {
-                // Look for start of next seq 
+                // Look for start of next seq
                 seqOk = false;
                 while (_fileIn->getline(line, MAXLINE + 1))
                 {
@@ -243,7 +243,7 @@ int PIRFileParser::countSeqs()
                     if (*line == '>')
                     {
                         _fileIn->close();
-                        utilityObject->error("PIR format sequence end marker '*'\nmissing for one or more sequences.\n");     
+                        utilityObject->error("PIR format sequence end marker '*'\nmissing for one or more sequences.\n");
                         return 0; // funny format
                     }
                     for (i = 0; seqOk == false; i++)
@@ -267,15 +267,15 @@ int PIRFileParser::countSeqs()
                 }
             }
         }
-    
+
         _fileIn->close();
-    
+
         return numSeqs;
     }
     catch(...)
     {
         _fileIn->close();
-        cerr << "An exception has occured in the function PIRFileParser::countSeqs()\n"
+        Rcpp::Rcerr << "An exception has occured in the function PIRFileParser::countSeqs()\n"
              << "Program needs to terminate.\nPlease contact the Clustal developers\n";
         throw 1;
     }
@@ -283,11 +283,11 @@ int PIRFileParser::countSeqs()
 
 /**
  * There is no secondary structure information in PIR files!
- * @param gapPenaltyMask 
- * @param secStructMask 
- * @param secStructName 
- * @param structPenalties 
- * @param length 
+ * @param gapPenaltyMask
+ * @param secStructMask
+ * @param secStructName
+ * @param structPenalties
+ * @param length
  */
 void PIRFileParser::getSecStructure(vector<char>& gapPenaltyMask, vector<char>& secStructMask,
                                     string& secStructName, int &structPenalties, int length)

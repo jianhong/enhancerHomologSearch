@@ -24,7 +24,7 @@ shared_ptr<AlignmentSteps> RootedClusterTree::treeFromDistMatrix(RootedGuideTree
         // Test to see if the inputs are valid
         if(seq1 < 1 || nSeqs < 1)
         {
-            cerr << "Invalid inputs into treeFromDistMatrix \n"
+            Rcpp::Rcerr << "Invalid inputs into treeFromDistMatrix \n"
                  << "seq1 = " << seq1 << " nSeqs = " << nSeqs << "\n"
                  << "Need to end program!\n";
             throw 1;
@@ -90,14 +90,14 @@ shared_ptr<AlignmentSteps> RootedClusterTree::treeFromDistMatrix(RootedGuideTree
     }
     catch(const exception &ex)
     {
-        cerr << "ERROR: Error has occured in treeFromDistMatrix. "
+        Rcpp::Rcerr << "ERROR: Error has occured in treeFromDistMatrix. "
              << "Need to terminate program.\n"
              << ex.what();
         throw 1;
     }
     catch(...)
     {
-        cerr << "ERROR: Error has occured in treeFromDistMatrix. "
+        Rcpp::Rcerr << "ERROR: Error has occured in treeFromDistMatrix. "
              << "Need to terminate program.\n";
         throw 1;
     }
@@ -213,7 +213,7 @@ void RootedClusterTree::treeFromAlignment(TreeNames* treeNames, Alignment *align
     }
     catch(const exception& ex)
     {
-        cerr << ex.what() << endl;
+        Rcpp::Rcerr << ex.what() << endl;
         utilityObject->error("Terminating program. Cannot continue\n");
         throw 1;
     }

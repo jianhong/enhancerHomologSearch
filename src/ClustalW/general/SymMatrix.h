@@ -20,6 +20,7 @@
 #include <stdexcept>
 #include <new>
 #include <cstdlib>
+#include <Rcpp.h>
 
 namespace clustalw
 {
@@ -46,7 +47,7 @@ class SymMatrix
             }
             catch(bad_alloc& e)
             {
-                cout << "Could not allocate a distance matrix for " << numSeqs
+                Rcpp::Rcout << "Could not allocate a distance matrix for " << numSeqs
                      << " seqs.\n";
                 throw e;
             }
@@ -91,7 +92,7 @@ class SymMatrix
             }
             catch(bad_alloc& e)
             {
-                cout << "Could not allocate a distance matrix for " << numSeqs
+                Rcpp::Rcout << "Could not allocate a distance matrix for " << numSeqs
                      << " seqs. Need to terminate program.\n";
                 throw e;
             }
@@ -151,16 +152,16 @@ class SymMatrix
 
                 if(numSoFar == numThisTime)
                 {
-                    cout << " " << setw(4) << array[i] << "\n";
+                    Rcpp::Rcout << " " << setw(4) << array[i] << "\n";
                     numSoFar = 0;
                     numThisTime++;
                 }
                 else
                 {
-                    cout << " " << setw(4) << array[i];
+                    Rcpp::Rcout << " " << setw(4) << array[i];
                 }
             }
-            cout << "\n";
+            Rcpp::Rcout << "\n";
         }
 
         inline int getIndex(const int &i, const int &j, const int &nSeqs) const
@@ -250,7 +251,7 @@ class SymMatrix
                 }
                 catch(bad_alloc& e)
                 {
-                    cout << "Out of Memory!\n";
+                    Rcpp::Rcout << "Out of Memory!\n";
                     throw e;
                 }
             }

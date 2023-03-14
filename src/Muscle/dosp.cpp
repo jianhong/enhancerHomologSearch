@@ -4,6 +4,7 @@
 #include "objscore.h"
 #include "tree.h"
 #include "profile.h"
+#include <Rcpp.h>
 
 void DoSP()
 	{
@@ -56,5 +57,7 @@ void DoSP()
 	SCORE SP = ObjScoreSP(a);
 
 	Log("File=%s;SP=%.4g\n", g_pstrSPFileName, SP);
-	fprintf(stderr, "File=%s;SP=%.4g\n", g_pstrSPFileName, SP);
+	char errMsg[4096];
+	snprintf(errMsg, 4096, "File=%s;SP=%.4g\n", g_pstrSPFileName, SP);
+	Rcpp::Rcerr << errMsg;
 	}

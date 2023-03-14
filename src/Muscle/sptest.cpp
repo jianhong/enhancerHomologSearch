@@ -3,6 +3,7 @@
 #include "msa.h"
 #include "textfile.h"
 #include "pwpath.h"
+#include <Rcpp.h>
 
 const unsigned INDELS = 1;
 
@@ -11,14 +12,14 @@ static void GetPos(const char Str[], unsigned L, int *pi1, int *pi2)
 	int i1;
 	for (;;)
 		{
-		i1 = rand()%(L-2) + 1;
+		i1 = (int)R::runif(0, L)%(L-2) + 1;
 		if (Str[i1] == 'M')
 			break;
 		}
 	int i2;
 	for (;;)
 		{
-		i2 = rand()%(L-2) + 1;
+		i2 = (int)R::runif(0, L)%(L-2) + 1;
 		if (i1 != i2 && Str[i2] == 'M')
 			break;
 		}

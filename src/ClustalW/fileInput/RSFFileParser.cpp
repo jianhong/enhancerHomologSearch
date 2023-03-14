@@ -1,7 +1,7 @@
 /**
  * Author: Mark Larkin
- * 
- * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.  
+ *
+ * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.
  */
 /**
  * Changes:
@@ -20,11 +20,11 @@ namespace clustalw
 
 /**
  * Constructor sets up the chartab array.
- * @param filePath 
+ * @param filePath
  */
 RSFFileParser::RSFFileParser(string filePath)
 {
-    fileName = filePath; 
+    fileName = filePath;
     fillCharTab();
 }
 
@@ -34,7 +34,7 @@ RSFFileParser::RSFFileParser(string filePath)
     int i;
 
     for (i=0; i<no; i++)
-    { 
+    {
         Sequence tempSeq = getSeq(firstSeq + i, offendingSeq);
         if (parseExitCode!=OK) {
             seqRangeVector.clear();
@@ -45,7 +45,7 @@ RSFFileParser::RSFFileParser(string filePath)
     return seqRangeVector;
 }
 
-    
+
 /**
  * get the sequence seqNum from the file.
  * @param seqNum The number of the sequence to get.
@@ -60,17 +60,17 @@ RSFFileParser::RSFFileParser(string filePath)
     string title = "";
     string blank = "";
     _line[0] = EOS;
-    
+
     int i;
     unsigned char c;
     int _currentSeqNum = 0; // Not at any sequence yet!
-    
+
     try
     {
         _fileIn = new InFileStream;  //nige
         _fileIn->open(fileName.c_str());  //nige
         _fileIn->seekg(0, std::ios::beg); // start at the beginning
-        
+
         // Need to get the cursor to the begining of the correct sequence.
         // This will be the case when we get to the seqNum {
         while (_currentSeqNum != seqNum)
@@ -131,7 +131,7 @@ RSFFileParser::RSFFileParser(string filePath)
                 return Sequence(blank, blank, blank);
             }
         }
-            
+
         while (_fileIn->getline(_line, MAXLINE + 1))
         {
             for (i = 0; i <= MAXLINE; i++)
@@ -158,7 +158,7 @@ RSFFileParser::RSFFileParser(string filePath)
             }
         }
         _fileIn->close();
-        
+
         if ((int)characterSeq.length() > userParameters->getMaxAllowedSeqLength())
         {
             parseExitCode=SEQUENCETOOBIG;
@@ -172,14 +172,14 @@ RSFFileParser::RSFFileParser(string filePath)
     catch(...)
     {
         _fileIn->close();
-        cerr << "There was an exception in the RSFFileParser::getSeq function.\n"
+        Rcpp::Rcerr << "There was an exception in the RSFFileParser::getSeq function.\n"
              << "Need to end program\n";
         throw 1;
-    }            
+    }
 }
 
 /**
- * count the number of sequences in a GCG RSF alignment file 
+ * count the number of sequences in a GCG RSF alignment file
  * @return The number of sequences in the file.
  */
 int RSFFileParser::countSeqs()
@@ -193,13 +193,13 @@ int RSFFileParser::countSeqs()
         _fileIn = new InFileStream;  //nige
         _fileIn->open(fileName.c_str());  //nige
         _fileIn->seekg(0, std::ios::beg); // start at the beginning
-                
+
         if(!_fileIn->is_open())
         {
             return 0; // No sequences found!
         }
-                        
-        // skip the comments 
+
+        // skip the comments
         while (_fileIn->getline(_line, MAXLINE + 1))
         {
             // NOTE needed to change to -1 and -2 (it was -2 and -3)
@@ -223,19 +223,19 @@ int RSFFileParser::countSeqs()
     catch(...)
     {
         _fileIn->close();
-        cerr << "An exception has occured in the function RSFFileParser::countSeqs()\n"
+        Rcpp::Rcerr << "An exception has occured in the function RSFFileParser::countSeqs()\n"
              << "Program needs to terminate.\nPlease contact the Clustal developers\n";
         throw 1;
-    }    
+    }
 }
 
 /**
  * Get the secondary structure information from the file.
- * @param gapPenaltyMask 
- * @param secStructMask 
- * @param secStructName 
- * @param structPenalties 
- * @param length 
+ * @param gapPenaltyMask
+ * @param secStructMask
+ * @param secStructName
+ * @param structPenalties
+ * @param length
  */
 void RSFFileParser::getSecStructure(vector<char>& gapPenaltyMask, vector<char>& secStructMask,
                      string& secStructName, int &structPenalties, int length)
@@ -252,16 +252,16 @@ void RSFFileParser::getSecStructure(vector<char>& gapPenaltyMask, vector<char>& 
     char _sname[MAXNAMES + 1];
     int i;
     _line[0] = EOS;
-    
+
     try
     {
         secStructMask.clear();
-        secStructMask.assign(length, '.');        
+        secStructMask.assign(length, '.');
         _fileIn = new InFileStream;  //nige
         _fileIn->open(fileName.c_str());  //nige
         _fileIn->seekg(0, std::ios::beg); // Need to start at begining
-                
-        // skip the comments 
+
+        // skip the comments
         while (_fileIn->getline(_line, MAXLINE + 1))
         {
             if (_line[strlen(_line) - 1] == '.' && _line[strlen(_line) - 2] == '.')
@@ -270,7 +270,7 @@ void RSFFileParser::getSecStructure(vector<char>& gapPenaltyMask, vector<char>& 
             }
         }
 
-        // find the start of the sequence entry 
+        // find the start of the sequence entry
         for (;;)
         {
             while (_fileIn->getline(_line, MAXLINE + 1))
@@ -287,7 +287,7 @@ void RSFFileParser::getSecStructure(vector<char>& gapPenaltyMask, vector<char>& 
                     return;
                 }
             }
-        
+
             for (i = 5; i <= (int)strlen(_line); i++)
             {
                 if (_line[i] != ' ')
@@ -364,17 +364,17 @@ void RSFFileParser::getSecStructure(vector<char>& gapPenaltyMask, vector<char>& 
     catch(...)
     {
         _fileIn->close();
-        cerr << "An exception has occured in the function RSFFileParser::getSecStructure()\n"
+        Rcpp::Rcerr << "An exception has occured in the function RSFFileParser::getSecStructure()\n"
              << "Program needs to terminate.\nPlease contact the Clustal developers\n";
         throw 1;
-    }    
+    }
 }
 
 /**
  * get a feature from the file. Called by getSecStructure
- * @param line 
- * @param secStructMask 
- * @param length 
+ * @param line
+ * @param secStructMask
+ * @param length
  */
 void RSFFileParser::getRSFFeature(char* line, vector<char>& secStructMask, int length)
 {
@@ -418,7 +418,7 @@ void RSFFileParser::getRSFFeature(char* line, vector<char>& secStructMask, int l
     }
     catch(...)
     {
-        cerr << "An exception has occured in the function RSFFileParser::getRSFFeature()\n"
+        Rcpp::Rcerr << "An exception has occured in the function RSFFileParser::getRSFFeature()\n"
              << "Program needs to terminate.\nPlease contact the Clustal developers\n";
         throw 1;
     }
@@ -426,9 +426,9 @@ void RSFFileParser::getRSFFeature(char* line, vector<char>& secStructMask, int l
 
 /**
  * keyword checks if code is on the line!
- * @param line 
- * @param code 
- * @return 
+ * @param line
+ * @param code
+ * @return
  */
 bool RSFFileParser::keyword(char *line, const char *code)
 {

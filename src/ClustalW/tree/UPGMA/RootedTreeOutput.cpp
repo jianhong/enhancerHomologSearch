@@ -1,7 +1,7 @@
 /**
  * Author: Mark Larkin
- * 
- * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.  
+ *
+ * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.
  */
 #ifdef HAVE_CONFIG_H
     #include "config.h"
@@ -15,7 +15,7 @@ RootedTreeOutput::RootedTreeOutput(SeqInfo* seqInfo)
 {
     firstSeq = seqInfo->firstSeq;
     lastSeq = seqInfo->lastSeq;
-    numSeqs = seqInfo->numSeqs;  
+    numSeqs = seqInfo->numSeqs;
 }
 
 void RootedTreeOutput::printPhylipTree(RootedGuideTree* tree, ofstream* ptrToFile, Alignment *alignPtr,
@@ -25,15 +25,15 @@ void RootedTreeOutput::printPhylipTree(RootedGuideTree* tree, ofstream* ptrToFil
     {
         return;
     }
-    
-    //cerr << "\n******************* DEBUG AW RootedTreeOutput::printPhylipTree: we only get here when using UPGMA with >2 seqs. Why?\n";
 
-    
+    //Rcpp::Rcerr << "\n******************* DEBUG AW RootedTreeOutput::printPhylipTree: we only get here when using UPGMA with >2 seqs. Why?\n";
+
+
     // If we have only 2 sequences, use the distances in the distMat
     if (lastSeq - firstSeq + 1 == 2)
     {
-        (*ptrToFile) << "(" << alignPtr->getName(firstSeq) << ":" << fixed << setprecision(5) 
-        << (*distMat)(firstSeq, firstSeq + 1) << "," << alignPtr->getName(firstSeq + 1) 
+        (*ptrToFile) << "(" << alignPtr->getName(firstSeq) << ":" << fixed << setprecision(5)
+        << (*distMat)(firstSeq, firstSeq + 1) << "," << alignPtr->getName(firstSeq + 1)
                      << ":" << fixed << setprecision(5)  << (*distMat)(firstSeq, firstSeq + 1)
             ;
         // << ")";
@@ -50,20 +50,20 @@ void RootedTreeOutput::printPhylipTree(RootedGuideTree* tree, ofstream* ptrToFil
     (*ptrToFile) << ";\n";
 }
 
-void RootedTreeOutput::printNexusTree(RootedGuideTree* tree, ofstream* ptrToFile, 
+void RootedTreeOutput::printNexusTree(RootedGuideTree* tree, ofstream* ptrToFile,
                                       Alignment *alignPtr, DistMatrix* distMat)
 {
     if(!ptrToFile || !ptrToFile->is_open())
     {
         return;
     }
-        
+
     (*ptrToFile) << "#NEXUS\n\n";
 
     (*ptrToFile) << "BEGIN TREES;\n\n";
     (*ptrToFile) << "\tTRANSLATE\n";
-            
-    for(int j = 1; j < numSeqs; j++) 
+
+    for(int j = 1; j < numSeqs; j++)
     {
         (*ptrToFile) << "\t\t" << j << "\t" << alignPtr->getName(j) <<",\n";
     }
@@ -71,16 +71,16 @@ void RootedTreeOutput::printNexusTree(RootedGuideTree* tree, ofstream* ptrToFile
     (*ptrToFile) << "\t\t;\n";
 
     (*ptrToFile) << "\tUTREE PAUP_1= ";
-    
+
     // IF we have only 2 seqs
     if (lastSeq - firstSeq + 1 == 2)
     {
-        (*ptrToFile) << "(" << alignPtr->getName(firstSeq) << ":" << fixed << setprecision(5) 
-                     << (*distMat)(firstSeq, firstSeq + 1) << "," << alignPtr->getName(firstSeq + 1) 
+        (*ptrToFile) << "(" << alignPtr->getName(firstSeq) << ":" << fixed << setprecision(5)
+                     << (*distMat)(firstSeq, firstSeq + 1) << "," << alignPtr->getName(firstSeq + 1)
                      << ":" << fixed << setprecision(5)  << (*distMat)(firstSeq, firstSeq + 1);
     }
     else
-    {                        
+    {
         (*ptrToFile) << "(";
         nexusTraverse(ptrToFile, alignPtr, tree->getRoot());
     }
@@ -90,14 +90,14 @@ void RootedTreeOutput::printNexusTree(RootedGuideTree* tree, ofstream* ptrToFile
 
 /**
  * PRIVATE FUNCTIONS
- */ 
- 
+ */
+
 void RootedTreeOutput::phylipTraverse(ofstream* ptrToFile, Alignment *alignPtr, Node* t)
 {
     if(!ptrToFile)
     {
         return;
-    }    
+    }
     if(t != 0)
     {
         if(t->isLeafNode())
@@ -132,7 +132,7 @@ void RootedTreeOutput::nexusTraverse(ofstream* ptrToFile, Alignment *alignPtr, N
             nexusTraverse(ptrToFile, alignPtr, t->getLeft());
             (*ptrToFile) << ",";
             nexusTraverse(ptrToFile, alignPtr, t->getRight());
-            (*ptrToFile) << "):" << t->getHeight();                    
+            (*ptrToFile) << "):" << t->getHeight();
         }
         else // Leaf node
         {

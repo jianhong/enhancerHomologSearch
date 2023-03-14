@@ -101,11 +101,11 @@ void UPGMAAlgorithm::printAllNodes(Node** nodes)
     for(Node* nodeIter = *nodes; nodeIter; nodeIter = nodeIter->next)
     {
         numNodes++;
-        cout << "Node " << numNodes << "\n";
+        Rcpp::Rcout << "Node " << numNodes << "\n";
         nodeIter->printElements();
-        cout << "\n\n";
+        Rcpp::Rcout << "\n\n";
     }
-    cout << "There are " << numNodes << " nodes\n";
+    Rcpp::Rcout << "There are " << numNodes << " nodes\n";
 }
 
 Node* UPGMAAlgorithm::doUPGMA(Node** nodes, ofstream* tree)

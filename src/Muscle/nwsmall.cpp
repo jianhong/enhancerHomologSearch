@@ -190,7 +190,7 @@ static bool DPEq(char c, SCORE *g_DP, SCORE *DPD_,
 	return true;
 	}
 
-static bool CompareTB(char **TB, char *TBM_, char *TBD_, char *TBI_, 
+static bool CompareTB(char **TB, char *TBM_, char *TBD_, char *TBI_,
   unsigned uPrefixCountA, unsigned uPrefixCountB)
 	{
 	SCORE *DPM_ = g_DPM;
@@ -247,7 +247,7 @@ static const char *LocalScoreToStr(SCORE s)
 	static char str[16];
 	if (s < -100000)
 		return "     *";
-	sprintf(str, "%6.1f", s);
+	snprintf(str, 16, "%6.1f", s);
 	return str;
 	}
 
@@ -366,7 +366,7 @@ static const char *BitsToStr(char Bits)
 	{
 	static char Str[9];
 
-	sprintf(Str, "%cM %cD %cI",
+	snprintf(Str, 9, "%cM %cD %cI",
 	  Get_M_Char(Bits),
 	  Get_D_Char(Bits),
 	  Get_I_Char(Bits));
@@ -573,7 +573,7 @@ SCORE NWSmall(const ProfPos *PA, unsigned uLengthA, const ProfPos *PB,
 		DRow[0] = PA[0].m_scoreGapOpen + (i - 1)*e;
 		SetDPD(i, 0, DRow[0]);
 
-		MCurr[0] = MINUS_INFINITY; 
+		MCurr[0] = MINUS_INFINITY;
 		if (i == 1)
 			{
 			MCurr[1] = ScoreProfPos2(PA[0], PB[0]);

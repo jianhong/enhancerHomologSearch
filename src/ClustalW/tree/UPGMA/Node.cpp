@@ -26,7 +26,7 @@ Node::Node(int _seqNum, double *dists, int numDist)
 {
     allElements.resize(1);
     allElements[0] = seqNum;
-                    
+
     if (ptrToDistMatRow)
     {
         findMinDist();
@@ -45,46 +45,46 @@ void Node::merge(Node **rightNode, double _height)
     height = _height;
     left->height = height;
     right->height = height;
-    
+
     vectorutils::mergeVectors(&allElements, &(right->allElements));
-    right->allElements.clear();      
-    
+    right->allElements.clear();
+
     if (next == right)
     {
         next = right->next;
     }
     else
-    {    
+    {
         *rightNode = right->next;
     }
 }
 
 
 void Node::findMinDist()
-{    
+{
     double *distIterator = ptrToDistMatRow;
     double *minDistSoFar = distIterator++;
-    
-    // We search from the end of our area of the array       
+
+    // We search from the end of our area of the array
     for(int i = numDists; --i; distIterator++) // When --i gets to zero it will stop
-    {    
+    {
         if ((*distIterator >= 0) && (*distIterator < *minDistSoFar))
         {
             minDistSoFar = distIterator;
         }
     }
-    
+
     minDist = *minDistSoFar;
     indexToMinDist = minDistSoFar - ptrToDistMatRow;
 }
- 
+
 void Node::printElements()
 {
     for(int i = 0; i < (int)allElements.size(); i++)
     {
-        cout << " " << allElements[i];
+        Rcpp::Rcout << " " << allElements[i];
     }
-    cout << "\n";               
+    Rcpp::Rcout << "\n";
 }
 
 string Node::elementsToString()
@@ -112,5 +112,5 @@ void Node::makeEmpty(Node* t)
     }
     t = 0;
 }
-                                           
+
 }

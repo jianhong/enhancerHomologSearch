@@ -32,7 +32,7 @@ const char *ScoreToStr(SCORE Score)
 	static int iBufferIndex = 0;
 	iBufferIndex = (iBufferIndex + 1)%iBufferCount;
 	char *pStr = szStr + iBufferIndex*iBufferLength;
-	sprintf(pStr, "%8g", Score);
+	snprintf(pStr, sizeof(pStr), "%8g", Score);
 	return pStr;
 	}
 
@@ -49,7 +49,7 @@ const char *ScoreToStrL(SCORE Score)
 	static int iBufferIndex = 0;
 	iBufferIndex = (iBufferIndex + 1)%iBufferCount;
 	char *pStr = szStr + iBufferIndex*iBufferLength;
-	sprintf(pStr, "%.3g", Score);
+	snprintf(pStr, sizeof(pStr), "%.3g", Score);
 	return pStr;
 	}
 

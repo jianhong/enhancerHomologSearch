@@ -1,5 +1,6 @@
 #include "muscle.h"
 #include <stdio.h>
+#include <Rcpp.h>
 
 static char szOnExceptionMessage[] =
 	{
@@ -8,7 +9,7 @@ static char szOnExceptionMessage[] =
 
 void OnException()
 	{
-	fprintf(stderr, "%s", szOnExceptionMessage);
+	Rcpp::Rcerr << szOnExceptionMessage;
 	Log("%s", szOnExceptionMessage);
 	Log("Finished %s\n", GetTimeAsStr());
 		throw EXIT_Except;

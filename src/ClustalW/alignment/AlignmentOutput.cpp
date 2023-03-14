@@ -63,7 +63,7 @@ AlignmentOutput::AlignmentOutput()
     }
     catch(const exception& e)
     {
-        cerr << "An exception has occured in the contructor of AlignmentOutput.\n"
+        Rcpp::Rcerr << "An exception has occured in the contructor of AlignmentOutput.\n"
              << e.what() << "\n";
         throw 1;
     }
@@ -107,7 +107,7 @@ void AlignmentOutput::createAlignmentOutput(Alignment* alignPtr, int firstSeq, i
             // Check if the numbers are ok.
             if ((firstRes > lastRes) || (firstRes == -1) || (lastRes == -1))
             {
-                cerr << "seqrange numbers are not set properly, using default....\n";
+                Rcpp::Rcerr << "seqrange numbers are not set properly, using default....\n";
                 firstRes = 1;
                 lastRes = length;
             }
@@ -119,13 +119,13 @@ void AlignmentOutput::createAlignmentOutput(Alignment* alignPtr, int firstSeq, i
         if (rangeOK && (lastRes > length))
         {
             lastRes = length;
-            cout << "Seqrange " << lastRes << " is more than the " << length
+            Rcpp::Rcout << "Seqrange " << lastRes << " is more than the " << length
                  << "  setting it to " << length << " \n";
         }
 
         if (userParameters->getMenuFlag())
         {
-            cout << "Consensus length = " << lastRes << " \n";
+            Rcpp::Rcout << "Consensus length = " << lastRes << " \n";
         }
 
         outputRegion partToOutput;
@@ -237,7 +237,7 @@ void AlignmentOutput::createAlignmentOutput(Alignment* alignPtr, int firstSeq, i
     }
     catch(const exception& e)
     {
-        cerr << "An exception has occured in the createAlignmentOutput function.\n"
+        Rcpp::Rcerr << "An exception has occured in the createAlignmentOutput function.\n"
              << e.what() << "\n";
         throw 1;
     }
@@ -515,7 +515,7 @@ bool AlignmentOutput::openExplicitFile(unique_ptr<ofstream>& outFile, string fil
 {
     if (fileName == "")
     {
-        cerr << "Bad output file [" << fileName << "]\n";
+        Rcpp::Rcerr << "Bad output file [" << fileName << "]\n";
         utilityObject->error("Bad output file [%s]\n", fileName.c_str());
         return false;
     }
@@ -544,7 +544,7 @@ string AlignmentOutput::openOutputFile(unique_ptr<ofstream>& outFile, string pro
 
     if(_fileName.compare(userParameters->getSeqName()) == 0)
     {
-        cout << "Output file name is the same as input file.\n";
+        Rcpp::Rcout << "Output file name is the same as input file.\n";
         if (userParameters->getMenuFlag())
         {
             message = "\n\nEnter new name to avoid overwriting  [" + _fileName + "]";
@@ -592,7 +592,7 @@ void AlignmentOutput::fastaOut(Alignment* alignPtr, outputRegion partToOutput, C
     int firstSeq = partToOutput._firstSeq;
     int lastSeq = partToOutput._lastSeq;
     rangeNum rnum;
-    cout << "firstres = " << firstRes << " lastres = " << lastRes << "\n";
+    Rcpp::Rcout << "firstres = " << firstRes << " lastres = " << lastRes << "\n";
     try
     {
         const SeqArray* alignment = alignPtr->getSeqArray(); //NOTE june29
@@ -671,26 +671,26 @@ void AlignmentOutput::fastaOut(Alignment* alignPtr, outputRegion partToOutput, C
             }
         }
         //fastaOutFile->close();
-        cout << "FASTA string created!\n";
+        Rcpp::Rcout << "FASTA string created!\n";
     }
     catch(const bad_alloc& e)
     {
         //fastaOutFile->close();
-        cerr << "A bad_alloc exception has occured in the fastaOut function.\n"
+        Rcpp::Rcerr << "A bad_alloc exception has occured in the fastaOut function.\n"
              << e.what() << "\n";
         throw 1;
     }
     catch(const VectorOutOfRange& e)
     {
         //fastaOutFile->close();
-        cerr << "An exception has occured in the fastaOut function.\n"
+        Rcpp::Rcerr << "An exception has occured in the fastaOut function.\n"
              << e.what() << "\n";
         throw 1;
     }
     catch(...)
     {
         //fastaOutFile->close();
-        cerr << "An exception has occured in the fastaOut function.\n";
+        Rcpp::Rcerr << "An exception has occured in the fastaOut function.\n";
         throw 1;
     }
     return;
@@ -871,21 +871,21 @@ void AlignmentOutput::gcgOut(Alignment* alignPtr, outputRegion partToOutput)
     catch(const bad_alloc& e)
     {
         gcgOutFile->close();
-        cerr << "A bad_alloc exception has occured in the gcgOut function.\n"
+        Rcpp::Rcerr << "A bad_alloc exception has occured in the gcgOut function.\n"
              << e.what() << "\n";
         throw 1;
     }
     catch(const VectorOutOfRange& e)
     {
         gcgOutFile->close();
-        cerr << "An exception has occured in the gcgOut function.\n"
+        Rcpp::Rcerr << "An exception has occured in the gcgOut function.\n"
              << e.what() << "\n";
         throw 1;
     }
     catch(...)
     {
         gcgOutFile->close();
-        cerr << "An exception has occured in the gcgOut function.\n";
+        Rcpp::Rcerr << "An exception has occured in the gcgOut function.\n";
         throw 1;
     }
 }
@@ -1030,21 +1030,21 @@ void AlignmentOutput::phylipOut(Alignment* alignPtr, outputRegion partToOutput)
     catch(const bad_alloc& e)
     {
         phylipOutFile->close();
-        cerr << "A bad_alloc exception has occured in the phylipOut function.\n"
+        Rcpp::Rcerr << "A bad_alloc exception has occured in the phylipOut function.\n"
              << e.what() << "\n";
         throw 1;
     }
     catch(const VectorOutOfRange& e)
     {
         phylipOutFile->close();
-        cerr << "An exception has occured in the phylipOut function.\n"
+        Rcpp::Rcerr << "An exception has occured in the phylipOut function.\n"
              << e.what() << "\n";
         throw 1;
     }
     catch(...)
     {
         phylipOutFile->close();
-        cerr << "An exception has occured in the phylipOut function.\n";
+        Rcpp::Rcerr << "An exception has occured in the phylipOut function.\n";
         throw 1;
     }
 }
@@ -1159,21 +1159,21 @@ void AlignmentOutput::nexusOut(Alignment* alignPtr, outputRegion partToOutput)
     catch(const bad_alloc& e)
     {
         nexusOutFile->close();
-        cerr << "A bad_alloc exception has occured in the nexusOut function.\n"
+        Rcpp::Rcerr << "A bad_alloc exception has occured in the nexusOut function.\n"
              << e.what() << "\n";
         throw 1;
     }
     catch(const VectorOutOfRange& e)
     {
         nexusOutFile->close();
-        cerr << "An exception has occured in the nexusOut function.\n"
+        Rcpp::Rcerr << "An exception has occured in the nexusOut function.\n"
              << e.what() << "\n";
         throw 1;
     }
     catch(...)
     {
         nexusOutFile->close();
-        cerr << "An exception has occured in the nexusOut function.\n";
+        Rcpp::Rcerr << "An exception has occured in the nexusOut function.\n";
         throw 1;
     }
 }
@@ -1448,21 +1448,21 @@ void AlignmentOutput::gdeOut(Alignment* alignPtr, outputRegion partToOutput)
     catch(const bad_alloc& e)
     {
         gdeOutFile->close();
-        cerr << "A bad_alloc exception has occured in the gdeOut function.\n"
+        Rcpp::Rcerr << "A bad_alloc exception has occured in the gdeOut function.\n"
              << e.what() << "\n";
         throw 1;
     }
     catch(const VectorOutOfRange& e)
     {
         gdeOutFile->close();
-        cerr << "An exception has occured in the gdeOut function.\n"
+        Rcpp::Rcerr << "An exception has occured in the gdeOut function.\n"
              << e.what() << "\n";
         throw 1;
     }
     catch(...)
     {
         gdeOutFile->close();
-        cerr << "An exception has occured in the gdeOut function.\n";
+        Rcpp::Rcerr << "An exception has occured in the gdeOut function.\n";
         throw 1;
     }
 }
@@ -1563,21 +1563,21 @@ void AlignmentOutput::nbrfOut(Alignment* alignPtr, outputRegion partToOutput)
     catch(const bad_alloc& e)
     {
         nbrfOutFile->close();
-        cerr << "A bad_alloc exception has occured in the nbrfOut function.\n"
+        Rcpp::Rcerr << "A bad_alloc exception has occured in the nbrfOut function.\n"
              << e.what() << "\n";
         throw 1;
     }
     catch(const VectorOutOfRange& e)
     {
         nbrfOutFile->close();
-        cerr << "An exception has occured in the nbrfOut function.\n"
+        Rcpp::Rcerr << "An exception has occured in the nbrfOut function.\n"
              << e.what() << "\n";
         throw 1;
     }
     catch(...)
     {
         nbrfOutFile->close();
-        cerr << "An exception has occured in the nbrfOut function.\n";
+        Rcpp::Rcerr << "An exception has occured in the nbrfOut function.\n";
         throw 1;
     }
 }
@@ -2146,28 +2146,28 @@ void AlignmentOutput::clustalOut(Alignment* alignPtr, outputRegion partToOutput,
     catch(const bad_alloc& e)
     {
         //clustalOutFile->close();
-        cerr << "A bad_alloc exception has occured in the clustalOut function.\n"
+        Rcpp::Rcerr << "A bad_alloc exception has occured in the clustalOut function.\n"
              << e.what() << "\n";
         throw 1;
     }
     catch(const VectorOutOfRange& e)
     {
         //clustalOutFile->close();
-        cerr << "An exception has occured in the clustalOut function.\n"
+        Rcpp::Rcerr << "An exception has occured in the clustalOut function.\n"
              << e.what() << "\n";
         throw 1;
     }
     catch(std::exception& e)
     {
         //clustalOutFile->close();
-        cerr << "An exception has occured in the clustalOut function.\n"
+        Rcpp::Rcerr << "An exception has occured in the clustalOut function.\n"
              << e.what() << "\n";
         throw 1;
     }
     catch(...)
     {
         //clustalOutFile->close();
-        cerr << "An exception has occured in the clustalOut function.\n";
+        Rcpp::Rcerr << "An exception has occured in the clustalOut function.\n";
         throw 1;
     }
     return;
@@ -2271,7 +2271,7 @@ void AlignmentOutput::printSecStructMask(int prfLength, vector<char>* mask,
     catch(const exception& e)
     {
         // Catch all the exceptions
-        cerr << "There has been an exception in the function printSecStructMask\n"
+        Rcpp::Rcerr << "There has been an exception in the function printSecStructMask\n"
              << e.what() << "\n";
         throw 1;
     }
@@ -2366,7 +2366,7 @@ void AlignmentOutput::findRangeValues(Alignment* alignPtr, rangeNum *rnum, int f
         }
         if(userParameters->getSeqRange())
         {
-            cout << "Name : " << alignPtr->getName(i) << " "
+            Rcpp::Rcout << "Name : " << alignPtr->getName(i) << " "
                  << "\n  firstRes = "<< firstRes << " "
                  << "   len = " << len << " "
                  << "\n  iStart = " << iStart << " "
@@ -2382,13 +2382,13 @@ void AlignmentOutput::findRangeValues(Alignment* alignPtr, rangeNum *rnum, int f
                 formula = iStart - pregaps +  ( tmpStart == 1 ? 0: tmpStart-1) ;
             }
 
-            cout << "\n\nsuggestion  iStart - pregaps + tmpStart - ntermgaps = "
+            Rcpp::Rcout << "\n\nsuggestion  iStart - pregaps + tmpStart - ntermgaps = "
                  << iStart << " - " << pregaps << " + " << tmpStart << " - " << ntermgaps
                  << " formula " << formula << " ";
         }
         else
         {
-            cerr << "\n no range found .... strange,  iStart = " << iStart;
+            Rcpp::Rcerr << "\n no range found .... strange,  iStart = " << iStart;
             formula = 1;
         }
         if (pregaps == firstRes - 1) // all gaps -  now the conditions........
@@ -2403,19 +2403,19 @@ void AlignmentOutput::findRangeValues(Alignment* alignPtr, rangeNum *rnum, int f
         iEnd = formula + len - ngaps -1;
         rnum->start = formula;
         rnum->end = iEnd;
-        cout << "\n check... " << alignPtr->getName(i) << " " << rnum->start
+        Rcpp::Rcout << "\n check... " << alignPtr->getName(i) << " " << rnum->start
              << " - " << rnum->end;
-        cout << " Done checking.........";
+        Rcpp::Rcout << " Done checking.........";
     }
     catch(const VectorOutOfRange& e)
     {
-        cerr << "An exception has occured in the findRangeValues function.\n"
+        Rcpp::Rcerr << "An exception has occured in the findRangeValues function.\n"
              << e.what() << "\n";
         throw 1;
     }
     catch(...)
     {
-        cerr << "An exception has occured in findRangeValues function\n";
+        Rcpp::Rcerr << "An exception has occured in findRangeValues function\n";
         throw 1;
     }
 }
@@ -2442,7 +2442,7 @@ string AlignmentOutput::nameonly(string s)
     }
     catch(const exception& e)
     {
-        cerr << "An exception has occured in the function nameonly\n"
+        Rcpp::Rcerr << "An exception has occured in the function nameonly\n"
              << e.what();
         throw 1;
     }
@@ -2511,17 +2511,17 @@ void AlignmentOutput::showAlign()
     _fileIn.open(fileName.c_str(), ios::in);
     _fileIn.seekg(0, std::ios::beg); // start at the beginning
 
-    cout << "\n\n";
+    Rcpp::Rcout << "\n\n";
     numLines = 0;
 
     while(_fileIn.getline(temp, MAXLINE + 1, '\n'))
     {
        //fputs(temp,stdout);
-       cout << temp << "\n";
+       Rcpp::Rcout << temp << "\n";
        ++numLines;
        if(numLines >= PAGE_LEN)
        {
-           cout << "\n";
+           Rcpp::Rcout << "\n";
            utilityObject->getStr(string("Press [RETURN] to continue or  X  to stop"), answer);
            if(toupper(answer[0]) == 'X')
            {
@@ -2535,7 +2535,7 @@ void AlignmentOutput::showAlign()
        }
     }
     _fileIn.close();
-    cout << "\n";
+    Rcpp::Rcout << "\n";
     utilityObject->getStr(string("Press [RETURN] to continue"), answer);
 }
 

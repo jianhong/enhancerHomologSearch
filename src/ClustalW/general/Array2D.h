@@ -8,6 +8,7 @@
 
 #include<iostream>
 #include <vector>
+#include <Rcpp.h>
 namespace clustalw
 {
 
@@ -107,9 +108,9 @@ public:
        {
            for(int col=0; col < m_dimCol; col++)
            {
-               cout <<" "<< m_2DVector[row][col];
+               Rcpp::Rcout <<" "<< m_2DVector[row][col];
            }
-           cout<<"\n";
+           Rcpp::Rcout<<"\n";
        }
    }
 
@@ -248,9 +249,9 @@ public:
        {
            for(int col=0; col < m_dimCol; col++)
            {
-               cout <<" "<< m_2DVector[row][col];
+               Rcpp::Rcout <<" "<< m_2DVector[row][col];
            }
-           cout<<"\n";
+           Rcpp::Rcout<<"\n";
        }
    }
 

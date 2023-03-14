@@ -7,9 +7,6 @@ TextFile::TextFile(const char szFileName[], bool bWrite)
 	FILE *ptrFile = 0;
 	if (bWrite)
 		{
-		if (0 == strcmp(szFileName, "-"))
-			ptrFile = stdout;
-		else
 			ptrFile = fopen(szFileName, "wb");
 		}
 	else
@@ -44,8 +41,7 @@ TextFile::TextFile(FILE *ptrFile, const char *ptrFileName)
 
 TextFile::~TextFile()
 	{
-	if (m_ptrFile &&
-	  m_ptrFile != stdin && m_ptrFile != stdout && m_ptrFile != stderr)
+	if (m_ptrFile)
 		fclose(m_ptrFile);
 	free(m_ptrName);
 	}
@@ -57,7 +53,7 @@ bool TextFile::GetLine(char szLine[], unsigned uBytes)
 	if (0 == uBytes)
 		Quit("TextFile::GetLine, buffer zero size");
 
-	
+
 	int FillVal = 0; // suppress warning from gcc that I don't understand
 	memset(szLine, FillVal, (size_t) uBytes);
 
@@ -130,7 +126,7 @@ void TextFile::PutFormat(const char szFormat[], ...)
 	char szStr[4096];
 	va_list ArgList;
 	va_start(ArgList, szFormat);
-	vsprintf(szStr, szFormat, ArgList);
+	vsnprintf(szStr, 4096, szFormat, ArgList);
 	PutString(szStr);
 	}
 

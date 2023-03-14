@@ -1,7 +1,7 @@
 /**
  * Author: Mark Larkin
- * 
- * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.  
+ *
+ * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.
  */
 /**
  * Changes:
@@ -23,7 +23,7 @@ namespace clustalw
  */
 EMBLFileParser::EMBLFileParser(string filePath)
 {
-    fileName = filePath; 
+    fileName = filePath;
     fillCharTab();
 }
 
@@ -45,7 +45,7 @@ EMBLFileParser::~EMBLFileParser()
     int i;
 
     for (i=0; i<no; i++)
-    { 
+    {
         Sequence tempSeq = getSeq(firstSeq + i, offendingSeq);
         if (parseExitCode!=OK) {
             seqRangeVector.clear();
@@ -69,7 +69,7 @@ EMBLFileParser::~EMBLFileParser()
     string characterSeq = "";
     string name = "";
     string title = "";
-    
+
     _line[0] = EOS;
     int i;
     //int j;
@@ -111,7 +111,7 @@ EMBLFileParser::~EMBLFileParser()
                 break;
             }
         }
-        strncpy(_sname, _line + i, MAXNAMES); // remember entryname 
+        strncpy(_sname, _line + i, MAXNAMES); // remember entryname
         for (i = 0; i <= (int)strlen(_sname); i++)
         {
             if (_sname[i] == ' ')
@@ -125,8 +125,8 @@ EMBLFileParser::~EMBLFileParser()
         utilityObject->rTrim(_sname);
         utilityObject->blankToUnderscore(_sname);
         name = string(_sname);
-        // Andreas Wilm (UCD): why cout here? cout << name << "\n"; 
-        
+        // Andreas Wilm (UCD): why cout here? cout << name << "\n";
+
         while (!utilityObject->lineType(_line, "SQ"))
         {
             if(!_fileIn->getline(_line, MAXLINE + 1)) // If we cannot get anymore!
@@ -143,7 +143,7 @@ EMBLFileParser::~EMBLFileParser()
             {
                 break;
             }
-            
+
             // NOTE I changed this to -1 and -2 because the getline doesnt return the \n
             if (strlen(_line) > 2 && _line[strlen(_line) - 1] == '.' &&
                     _line[strlen(_line) - 2] == '.')
@@ -158,7 +158,7 @@ EMBLFileParser::~EMBLFileParser()
                 {
                     break;
                 }
-                // EOL     
+                // EOL
                 c = chartab[c];
                 if (c)
                 {
@@ -172,7 +172,7 @@ EMBLFileParser::~EMBLFileParser()
             }
         }
         _fileIn->close();
-        
+
         if ((int)characterSeq.length() > userParameters->getMaxAllowedSeqLength())
         {
             parseExitCode=SEQUENCETOOBIG;
@@ -186,10 +186,10 @@ EMBLFileParser::~EMBLFileParser()
     catch(...)
     {
         _fileIn->close();
-        cerr << "There was an exception in the EMBLFileParser::getSeq function.\n"
+        Rcpp::Rcerr << "There was an exception in the EMBLFileParser::getSeq function.\n"
              << "Need to end program\n";
         throw 1;
-    }            
+    }
 }
 
 /*
@@ -204,17 +204,17 @@ int EMBLFileParser::countSeqs()
     // int i;
     //bool seqOk;
     numSeqs = 0;
-    
+
     try
     {
         _fileIn = new InFileStream;  //nige
         _fileIn->open(fileName.c_str());  //nige
-    
+
         if(!_fileIn->is_open())
         {
             return 0; // No sequences found!
-        }       
-                 
+        }
+
         while (_fileIn->getline(line, MAXLINE + 1))
         {
             if (utilityObject->lineType(line, "ID"))
@@ -222,14 +222,14 @@ int EMBLFileParser::countSeqs()
                 numSeqs++;
             }
         }
-        
+
         _fileIn->close();
         return numSeqs;
     }
     catch(...)
     {
         _fileIn->close();
-        cerr << "An exception has occured in the function EMBLFileParser::countSeqs()\n"
+        Rcpp::Rcerr << "An exception has occured in the function EMBLFileParser::countSeqs()\n"
              << "Program needs to terminate.\nPlease contact the Clustal developers\n";
         throw 1;
     }
@@ -253,7 +253,7 @@ void EMBLFileParser::getSecStructure(vector<char>& gapPenaltyMask, vector<char>&
     char _feature[MAXLINE + 1];
     int i;
     _line[0] = '\0';
-    
+
     try
     {
         _fileIn = new InFileStream;  //nige
@@ -263,8 +263,8 @@ void EMBLFileParser::getSecStructure(vector<char>& gapPenaltyMask, vector<char>&
         // clear out the masks
         gapPenaltyMask.clear();
         secStructMask.clear();
-            
-        // find the start of the sequence entry 
+
+        // find the start of the sequence entry
         for (;;)
         {
             while (!utilityObject->lineType(_line, "ID"))
@@ -275,7 +275,7 @@ void EMBLFileParser::getSecStructure(vector<char>& gapPenaltyMask, vector<char>&
                     return;
                 }
             }
-            
+
             for (i = 5; i <= (int)strlen(_line); i++)
             {
                 if (_line[i] != ' ')
@@ -295,8 +295,8 @@ void EMBLFileParser::getSecStructure(vector<char>& gapPenaltyMask, vector<char>&
             _sname[MAXNAMES] = EOS;
             utilityObject->rTrim(_sname);
             utilityObject->blankToUnderscore(_sname);
-            
-            // look for secondary structure feature table / gap penalty mask 
+
+            // look for secondary structure feature table / gap penalty mask
             while (_fileIn->getline(_line, MAXLINE + 1))
             {
                 if (utilityObject->lineType(_line, "FT"))
@@ -394,11 +394,11 @@ void EMBLFileParser::getSecStructure(vector<char>& gapPenaltyMask, vector<char>&
     catch(...)
     {
         _fileIn->close();
-        cerr << "An exception has occured in the function EMBLFileParser::getSecStructure()\n"
+        Rcpp::Rcerr << "An exception has occured in the function EMBLFileParser::getSecStructure()\n"
              << "Program needs to terminate.\nPlease contact the Clustal developers\n";
         throw 1;
     }
-    
+
 }
 
 /*
@@ -445,7 +445,7 @@ void EMBLFileParser::getSwissFeature(char* line, vector<char>& secStructMask, in
     }
     catch(...)
     {
-        cerr << "An exception has occured in the function EMBLFileParser::getSwissFeature()\n"
+        Rcpp::Rcerr << "An exception has occured in the function EMBLFileParser::getSwissFeature()\n"
              << "Program needs to terminate.\nPlease contact the Clustal developers\n";
         throw 1;
     }
@@ -481,10 +481,10 @@ void EMBLFileParser::getSwissMask(char* line, vector<char>& gapPenaltyMask, int 
     }
     catch(...)
     {
-        cerr << "An exception has occured in the function EMBLFileParser::getSwissMask()\n"
+        Rcpp::Rcerr << "An exception has occured in the function EMBLFileParser::getSwissMask()\n"
              << "Program needs to terminate.\nPlease contact the Clustal developers\n";
         throw 1;
-    }    
+    }
 }
 
 

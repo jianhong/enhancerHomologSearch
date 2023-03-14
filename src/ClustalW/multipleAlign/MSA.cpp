@@ -1,13 +1,13 @@
 /**
  * Author: Mark Larkin
- * 
- * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.  
+ *
+ * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.
  */
 /**
  * @author Mark Larkin, Conway Institute, UCD. mark.larkin@ucd.ie
  * Changes:
  *
- * Mark: 23-01-2007: There was a problem with running an alignment with only 
+ * Mark: 23-01-2007: There was a problem with running an alignment with only
  * one sequence in it. I needed to make a change to the multiSeqAlign function.
  ****************************************************************************/
 #ifdef HAVE_CONFIG_H
@@ -22,25 +22,25 @@ namespace clustalw
 {
 
 /**
- * 
- * @param alnPtr 
- * @param distMat 
- * @param iStart 
- * @param phylipName 
- * @return 
+ *
+ * @param alnPtr
+ * @param distMat
+ * @param iStart
+ * @param phylipName
+ * @return
  */
 int MSA::multiSeqAlign(Alignment* alnPtr, DistMatrix* distMat, vector<int>* seqWeight, AlignmentSteps* progSteps, int iStart)
 {
-        
+
     if(!progSteps)
     {
         return 0;
     }
-        
+
     int* aligned;
     vector<int> group;
     int ix;
-    
+
     int* maxid;
     int max = 0, sum = 0;
     vector<int> treeWeight;
@@ -48,14 +48,14 @@ int MSA::multiSeqAlign(Alignment* alnPtr, DistMatrix* distMat, vector<int>* seqW
     int entries = 0;
     int score = 0;
     int _numSteps = 0;
-    utilityObject->info("Start of Multiple Alignment\n"); 
+    utilityObject->info("Start of Multiple Alignment\n");
 
     int _numSeqs = alnPtr->getNumSeqs();
-    
-    vector<int> newOutputIndex(_numSeqs);   
-   
+
+    vector<int> newOutputIndex(_numSeqs);
+
     alnPtr->addSeqWeight(seqWeight);
-    
+
     ProfileAlignAlgorithm* alignAlgorithm = new MyersMillerProfileAlign;
     _numSteps = progSteps->getNumSteps();
     // for each sequence, find the most closely related sequence
@@ -81,25 +81,25 @@ int MSA::multiSeqAlign(Alignment* alnPtr, DistMatrix* distMat, vector<int>* seqW
 
         utilityObject->info("Aligning...");
         // first pass, align closely related sequences first....
-        
-        
+
+
         ix = 0;
         aligned = new int[_numSeqs + 1];
-        
+
         for (i = 0; i <= _numSeqs; i++)
         {
             aligned[i] = 0;
         }
-        
+
         const vector<vector<int> >* ptrToSets = progSteps->getSteps();
-        
-        
+
+
         for (set = 1; set <= _numSteps; ++set)
         {
             entries = 0;
             for (i = 1; i <= _numSeqs; i++)
             {
-                if (((*ptrToSets)[set][i] != 0) && 
+                if (((*ptrToSets)[set][i] != 0) &&
                     (maxid[i] > userParameters->getDivergenceCutoff()))
                 {
                     entries++;
@@ -114,7 +114,7 @@ int MSA::multiSeqAlign(Alignment* alnPtr, DistMatrix* distMat, vector<int>* seqW
                         {
                             if(ix >= (int)newOutputIndex.size())
                             {
-                                cerr << "ERROR: size = " << newOutputIndex.size() 
+                                Rcpp::Rcerr << "ERROR: size = " << newOutputIndex.size()
                                      << "ix = " << ix << "\n";
                                 throw 1;
                             }
@@ -134,10 +134,10 @@ int MSA::multiSeqAlign(Alignment* alnPtr, DistMatrix* distMat, vector<int>* seqW
             {
                 #if DEBUGFULL
                     if(logObject && DEBUGLOG)
-                    {    
+                    {
                         logObject->logMsg("Doing profile align");
                     }
-                #endif                 
+                #endif
                 score = alignAlgorithm->profileAlign(alnPtr, distMat, progSteps->getStep(set),
                                                      aligned);
             }
@@ -147,7 +147,7 @@ int MSA::multiSeqAlign(Alignment* alnPtr, DistMatrix* distMat, vector<int>* seqW
             }
 
 
-            // negative score means fatal error... exit now! 
+            // negative score means fatal error... exit now!
 
             if (score < 0)
             {
@@ -158,7 +158,7 @@ int MSA::multiSeqAlign(Alignment* alnPtr, DistMatrix* distMat, vector<int>* seqW
                 if ((entries > 0) && (score > 0))
                 {
                     utilityObject->info("Group %d: Sequences:%4d      Score:%d",
-                                        set, entries, score);                     
+                                        set, entries, score);
                 }
                 else
                 {
@@ -184,13 +184,13 @@ int MSA::multiSeqAlign(Alignment* alnPtr, DistMatrix* distMat, vector<int>* seqW
         }
     }
 
-    // second pass - align remaining, more divergent sequences..... 
+    // second pass - align remaining, more divergent sequences.....
 
     // if not all sequences were aligned, for each unaligned sequence,
     // find it's closest pair amongst the aligned sequences.
 
-    group.resize(_numSeqs + 1); 
-    treeWeight.resize(_numSeqs); 
+    group.resize(_numSeqs + 1);
+    treeWeight.resize(_numSeqs);
 
     for (i = 0; i < _numSeqs; i++)
     {
@@ -259,7 +259,7 @@ int MSA::multiSeqAlign(Alignment* alnPtr, DistMatrix* distMat, vector<int>* seqW
 
         // align this sequence to the existing alignment
         // weight sequences with percent identity with profile
-        // OR...., multiply sequence weights from tree by percent identity with new sequence 
+        // OR...., multiply sequence weights from tree by percent identity with new sequence
         if (userParameters->getNoWeights() == false)
         {
             for (j = 0; j < _numSeqs; j++)
@@ -315,12 +315,12 @@ int MSA::multiSeqAlign(Alignment* alnPtr, DistMatrix* distMat, vector<int>* seqW
                 entries++;
             }
         }
-        
+
         alnPtr->addSeqWeight(seqWeight);
         aligned[iseq] = 1;
-        
+
         score = alignAlgorithm->profileAlign(alnPtr, distMat, &group, aligned);
-         
+
         if (userParameters->getOutputOrder() == INPUT)
         {
             ++ix;
@@ -332,14 +332,14 @@ int MSA::multiSeqAlign(Alignment* alnPtr, DistMatrix* distMat, vector<int>* seqW
             ++ix;
         }
     }
-        
+
     alnPtr->addOutputIndex(&newOutputIndex);
-    
+
     if(userParameters->getDisplayInfo())
     {
       int alignmentScore = alnPtr->alignScore(); // ?? check, FS, 2009-05-18
     }
-    
+
     delete alignAlgorithm;
     delete [] aligned;
     delete [] maxid;
@@ -348,17 +348,17 @@ int MSA::multiSeqAlign(Alignment* alnPtr, DistMatrix* distMat, vector<int>* seqW
 
 
 /**
- * 
- * @param alnPtr 
- * @param distMat 
- * @param iStart 
- * @param phylipName 
- * @return 
+ *
+ * @param alnPtr
+ * @param distMat
+ * @param iStart
+ * @param phylipName
+ * @return
  */
-int MSA::seqsAlignToProfile(Alignment* alnPtr, DistMatrix* distMat, vector<int>* seqWeight, int iStart, 
+int MSA::seqsAlignToProfile(Alignment* alnPtr, DistMatrix* distMat, vector<int>* seqWeight, int iStart,
                            string phylipName)
 {
-    int *aligned;  
+    int *aligned;
     vector<int> treeWeight;
     vector<int> group;
     int ix;
@@ -369,14 +369,14 @@ int MSA::seqsAlignToProfile(Alignment* alnPtr, DistMatrix* distMat, vector<int>*
     int sum = 0, entries = 0;
     int score = 0;
     int _numSeqs = alnPtr->getNumSeqs();
-    
-    utilityObject->info("Start of Multiple Alignment\n"); 
-       
+
+    utilityObject->info("Start of Multiple Alignment\n");
+
     ProfileAlignAlgorithm* alignAlgorithm = new MyersMillerProfileAlign;
-    
+
     // calculate sequence weights according to branch lengths of the tree -
      // weights in global variable seq_weight normalised to sum to 100
-    vector<int> newOutputIndex(_numSeqs);    
+    vector<int> newOutputIndex(_numSeqs);
     //groupTree.calcSeqWeights(0, _numSeqs, &seqWeight);
 
     treeWeight.resize(_numSeqs);
@@ -388,7 +388,7 @@ int MSA::seqsAlignToProfile(Alignment* alnPtr, DistMatrix* distMat, vector<int>*
     // for each sequence, find the most closely related sequence
 
     maxid = new int[_numSeqs + 1];
-    
+
     for (i = 1; i <= _numSeqs; i++)
     {
         maxid[i] =  - 1;
@@ -415,7 +415,7 @@ int MSA::seqsAlignToProfile(Alignment* alnPtr, DistMatrix* distMat, vector<int>*
     }
 
     // for each unaligned sequence, find it's closest pair amongst the
-    // aligned sequences. 
+    // aligned sequences.
 
     group.resize(_numSeqs + 1);
 
@@ -451,7 +451,7 @@ int MSA::seqsAlignToProfile(Alignment* alnPtr, DistMatrix* distMat, vector<int>*
             }
         }
 
-        // align this sequence to the existing alignment 
+        // align this sequence to the existing alignment
         entries = 0;
         for (j = 1; j <= _numSeqs; j++)
         {
@@ -470,7 +470,7 @@ int MSA::seqsAlignToProfile(Alignment* alnPtr, DistMatrix* distMat, vector<int>*
         aligned[iseq] = 1;
 
         // multiply sequence weights from tree by percent
-        // identity with new sequence 
+        // identity with new sequence
 
         for (j = 0; j < _numSeqs; j++)
         {
@@ -509,7 +509,7 @@ int MSA::seqsAlignToProfile(Alignment* alnPtr, DistMatrix* distMat, vector<int>*
         }
         // Add the seqWeights to the Alignment object!!!!
         alnPtr->addSeqWeight(seqWeight);
-        
+
         score = alignAlgorithm->profileAlign(alnPtr, distMat, &group, aligned);
         utilityObject->info("Sequence:%d     Score:%d", iseq, score);
         if (userParameters->getOutputOrder() == INPUT)
@@ -528,7 +528,7 @@ int MSA::seqsAlignToProfile(Alignment* alnPtr, DistMatrix* distMat, vector<int>*
     delete [] maxid;
     delete alignAlgorithm;
     alnPtr->addOutputIndex(&newOutputIndex);
-    
+
     if(userParameters->getDisplayInfo())
     {
         alnPtr->alignScore();
@@ -539,26 +539,26 @@ int MSA::seqsAlignToProfile(Alignment* alnPtr, DistMatrix* distMat, vector<int>*
 
 
 /**
- * 
- * @param alnPtr 
- * @param distMat 
- * @return 
+ *
+ * @param alnPtr
+ * @param distMat
+ * @return
  */
 int MSA::calcPairwiseForProfileAlign(Alignment* alnPtr, DistMatrix* distMat)
 {
     //Tree groupTree;
     int i, j, temp;
     int entries;
-    int* aligned;  
+    int* aligned;
     vector<int> group;
     vector<int> seqWeight;
     float dscore;
     int score;
     int _numSeqs = alnPtr->getNumSeqs();
-    
+
     seqWeight.resize(_numSeqs);
     ProfileAlignAlgorithm* alignAlg = new MyersMillerProfileAlign;
-    
+
     utilityObject->info("Start of Initial Alignment");
     /* calculate sequence weights according to branch lengths of the tree -
      * weights in global variable seq_weight normalised to sum to INT_SCALE_FACTOR */
@@ -595,11 +595,11 @@ int MSA::calcPairwiseForProfileAlign(Alignment* alnPtr, DistMatrix* distMat)
     }
 
     alnPtr->addSeqWeight(&seqWeight);
-    
+
     score = alignAlg->profileAlign(alnPtr, distMat, &group, aligned);
     utilityObject->info("Sequences:%d      Score:%d", entries, score);
     delete [] aligned;
-    
+
     for (i = 1; i <= _numSeqs; i++)
     {
         for (j = i + 1; j <= _numSeqs; j++)
@@ -616,12 +616,12 @@ int MSA::calcPairwiseForProfileAlign(Alignment* alnPtr, DistMatrix* distMat)
 
 
 /**
- * 
- * @param alnPtr 
- * @param distMat 
- * @param p1TreeName 
- * @param p2TreeName 
- * @return 
+ *
+ * @param alnPtr
+ * @param distMat
+ * @param p1TreeName
+ * @param p2TreeName
+ * @return
  */
 int MSA::doProfileAlign(Alignment* alnPtr, DistMatrix* distMat, vector<int>* prof1Weight, vector<int>* prof2Weight)
 {
@@ -634,10 +634,10 @@ int MSA::doProfileAlign(Alignment* alnPtr, DistMatrix* distMat, vector<int>* pro
     //vector<int> prof1Weight, prof2Weight;
     int _profile1NumSeqs = alnPtr->getProfile1NumSeqs();
     int _numSeqs = alnPtr->getNumSeqs();
-    vector<int> _seqWeight, _outputIndex;    
-    
+    vector<int> _seqWeight, _outputIndex;
+
     utilityObject->info("Start of Multiple Alignment\n");
-        
+
     _seqWeight.resize(_numSeqs + 1);
     _outputIndex.resize(_numSeqs);
     ProfileAlignAlgorithm* alignAlgorithm = new MyersMillerProfileAlign;
@@ -653,7 +653,7 @@ int MSA::doProfileAlign(Alignment* alnPtr, DistMatrix* distMat, vector<int>* pro
             if (maxid[i] < (*distMat)(i + 1, j))
             {
                 maxid[i] = static_cast<int>((*distMat)(i + 1, j)); // Mark change 17-5-07
-            } 
+            }
         }
         _seqWeight[i] = maxid[i] * (*prof1Weight)[i];
     }
@@ -724,21 +724,21 @@ int MSA::doProfileAlign(Alignment* alnPtr, DistMatrix* distMat, vector<int>* pro
     alnPtr->addSeqWeight(&_seqWeight);
 
     score = alignAlgorithm->profileAlign(alnPtr, distMat, &group, aligned);
-   
+
     utilityObject->info("Sequences:%d      Score:%d", entries, score);
-    
+
     for (i = 1; i <= _numSeqs; i++)
     {
         _outputIndex[i - 1] = i;
     }
 
     alnPtr->addOutputIndex(&_outputIndex);
-    
+
     delete alignAlgorithm;
     delete [] aligned;
     delete [] maxid;
     return (_numSeqs);
     return 1;
 }
- 
+
 }

@@ -71,7 +71,7 @@ void DoMuscle(MuscleInput *msaInput, MuscleOutput *msaOutput)
 			{
 			size_t n = strlen(Path) + 1 + strlen(FileName) + 1;
 			char *NewFileName = new char[n];
-			sprintf(NewFileName, "%s/%s", Path, FileName);
+			snprintf(NewFileName, sizeof(NewFileName), "%s/%s", Path, FileName);
 			FileName = NewFileName;
 			}
 		TextFile File(FileName);
@@ -130,7 +130,7 @@ void DoMuscle(MuscleInput *msaInput, MuscleOutput *msaOutput)
 		{
 	// Discourage users...
 		if (!g_bUseTreeNoWarn)
-			fprintf(stderr, "%s", g_strUseTreeWarning);
+			Rcpp::Rcerr << g_strUseTreeWarning;
 
 	// Read tree from file
 		TextFile TreeFile(g_pstrUseTreeFileName);

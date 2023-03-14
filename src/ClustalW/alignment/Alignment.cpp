@@ -246,7 +246,7 @@ bool Alignment::appendOutputIndex(vector<int>* outputIndexToAppend)
         else
         {
             clearAlignment();
-            cerr << "There is a problem with adding the sequences\n";
+            Rcpp::Rcerr << "There is a problem with adding the sequences\n";
             return false;
         }
     }
@@ -358,13 +358,13 @@ void Alignment::debugPrintAllNames()
     vector<string>::iterator nameIter = names.begin();
     while(nameIter != names.end())
     {
-        cout << *nameIter << endl;
+        Rcpp::Rcout << *nameIter << endl;
         nameIter++;
     }
 }
 
 void Alignment::NameIterator::begin(Alignment *a) {
-    //cout << "begin()\n";
+    //Rcpp::Rcout << "begin()\n";
     if (a) {
         alignment = a;
         i = alignment->names.begin();
@@ -372,7 +372,7 @@ void Alignment::NameIterator::begin(Alignment *a) {
 }
 
 const string Alignment::NameIterator::next() {
-    //cout << "next()\n";
+    //Rcpp::Rcout << "next()\n";
     if (!alignment)
         return string();
     if (i == alignment->names.end())
@@ -381,7 +381,7 @@ const string Alignment::NameIterator::next() {
 }
 
 bool Alignment::NameIterator::end() {
-    //cout << "end()\n";
+    //Rcpp::Rcout << "end()\n";
     if (!alignment)
         return true;
     if (i == alignment->names.end())
@@ -430,7 +430,7 @@ void Alignment::addSequencesToVector(vector<Sequence>* seqVector)
     if(!(((int)seqArray.size() == numSeqs + 1) && ((int)names.size() == numSeqs + 1)
           && ((int)titles.size() == numSeqs + 1) && ((int)sequenceIds.size() == numSeqs + 1)))
     {
-        cerr << "There has been an error adding the sequences to Alignment.\n"
+        Rcpp::Rcerr << "There has been an error adding the sequences to Alignment.\n"
              << "Must terminate the program. EaddSequencesrror occured in addSequences.\n";
         throw 1;
     }
@@ -599,8 +599,8 @@ int Alignment::countGaps(int seq1, int seq2, int len)
     }
     catch(const exception &ex)
     {
-        cerr << ex.what() << endl;
-        cerr << "Terminating program. Cannot continue. Function = countGaps\n";
+        Rcpp::Rcerr << ex.what() << endl;
+        Rcpp::Rcerr << "Terminating program. Cannot continue. Function = countGaps\n";
         throw 1;
     }
 
@@ -727,17 +727,17 @@ float Alignment::countid(int s1, int s2)
 
 void Alignment::debugPrintSequences()
 {
-    cout << std::endl;
+    Rcpp::Rcout << std::endl;
     for(int i = 0; i < (int)seqArray.size(); i++)
     {
         for(int j = 0; j < (int)seqArray[i].size(); j++)
         {
             if(seqArray[i][j] > 9)
-                cout << " " << seqArray[i][j];
+                Rcpp::Rcout << " " << seqArray[i][j];
             else
-                cout << "  " << seqArray[i][j];
+                Rcpp::Rcout << "  " << seqArray[i][j];
         }
-        cout << std::endl;
+        Rcpp::Rcout << std::endl;
     }
 }
 
@@ -904,7 +904,7 @@ void Alignment::printSequencesAddedInfo()
 
         for(int i = startSeq; i <= numSeqs; i++)
         {
-            cout << "Sequence " << i << ": "
+            Rcpp::Rcout << "Sequence " << i << ": "
                  << std::left << setw(maxNames) << names.at(i)
                  << std::right << setw(6) << getSequenceLength(i)
                  << " " << dnaFlag << std::endl;
@@ -916,7 +916,7 @@ void Alignment::debugPrintOutAlignInfo()
 {
     for(int i = 1; i <= numSeqs; i++)
     {
-        cout << "seq-no=" << i << ": name="
+        Rcpp::Rcout << "seq-no=" << i << ": name="
              << std::left << setw(maxNames) << names.at(i)
              << " length="
              << std::right << setw(6) << getSequenceLength(i)
@@ -1482,7 +1482,7 @@ void Alignment::removeGapOnlyColsFromSelectedSeqs(vector<int>* selected)
 
     if(firstSeqSelected == NoneSelected)
     {
-        cout << "No Sequences have been selected\n";
+        Rcpp::Rcout << "No Sequences have been selected\n";
         return;
     }
 
@@ -1501,7 +1501,7 @@ void Alignment::removeGapOnlyColsFromSelectedSeqs(vector<int>* selected)
         }
         if(numGaps == numColumns)
         {
-            //cout << "                removing a gap column\n\n";
+            //Rcpp::Rcout << "                removing a gap column\n\n";
             for(int j = firstSeqSelected; j < sizeSelected && (*selected)[j] == 1; j++)
             {
                 for(k = i + 1; k <= getSeqLength(j) + 1 && (int)seqArray[j].size() > k; k++)
@@ -1691,7 +1691,7 @@ bool Alignment::removeAllOutsideRange(int beginPos, int endPos)
     ok = keepPortionOfSeqArray(beginPos, endPos);
     if(!ok)
     {
-        cerr << "There was a problem removing a portion of the array\n";
+        Rcpp::Rcerr << "There was a problem removing a portion of the array\n";
         return false;
     }
 
@@ -1781,21 +1781,21 @@ void Alignment::debugPrintSeqArray(SeqArray* arrayToPrint)
             {
                 if(*begin < (int)aaCodes.size())
                 {
-                    cout << aaCodes[*begin];
+                    Rcpp::Rcout << aaCodes[*begin];
                 }
                 else
                 {
-                    cout << "-";
+                    Rcpp::Rcout << "-";
                 }
             }
-            cout << "\n";
+            Rcpp::Rcout << "\n";
         }
     }
 }
 
 void Alignment::debugPrintProfile1()
 {
-    cout << "************** PROFILE1 *********************\n";
+    Rcpp::Rcout << "************** PROFILE1 *********************\n";
     SeqArray::iterator mainBeginIt = seqArray.begin() + 1;
     SeqArray::iterator mainEndIt = mainBeginIt + profile1NumSeqs;
     vector<int>::iterator begin, end;
@@ -1803,7 +1803,7 @@ void Alignment::debugPrintProfile1()
 
     for(; mainBeginIt != mainEndIt; mainBeginIt++)
     {
-        cout << "PROFILE1 SEQ: ";
+        Rcpp::Rcout << "PROFILE1 SEQ: ";
         if(mainBeginIt->size() > 0)
         {
             begin = mainBeginIt->begin() + 1;
@@ -1812,21 +1812,21 @@ void Alignment::debugPrintProfile1()
             {
                 if(*begin < (int)aaCodes.size())
                 {
-                    cout << aaCodes[*begin];
+                    Rcpp::Rcout << aaCodes[*begin];
                 }
                 else
                 {
-                    cout << "-";
+                    Rcpp::Rcout << "-";
                 }
             }
-            cout << "\n";
+            Rcpp::Rcout << "\n";
         }
     }
 }
 
 void Alignment::debugPrintProfile2()
 {
-    cout << "************** PROFILE2 *********************\n";
+    Rcpp::Rcout << "************** PROFILE2 *********************\n";
     SeqArray::iterator mainBeginIt = seqArray.begin() + 1 + profile1NumSeqs;
     SeqArray::iterator mainEndIt = seqArray.end();
     vector<int>::iterator begin, end;
@@ -1834,7 +1834,7 @@ void Alignment::debugPrintProfile2()
 
     for(; mainBeginIt != mainEndIt; mainBeginIt++)
     {
-        cout << "PROFILE2 SEQ: ";
+        Rcpp::Rcout << "PROFILE2 SEQ: ";
         if(mainBeginIt->size() > 0)
         {
             begin = mainBeginIt->begin() + 1;
@@ -1843,14 +1843,14 @@ void Alignment::debugPrintProfile2()
             {
                 if(*begin < (int)aaCodes.size())
                 {
-                    cout << aaCodes[*begin];
+                    Rcpp::Rcout << aaCodes[*begin];
                 }
                 else
                 {
-                    cout << "-";
+                    Rcpp::Rcout << "-";
                 }
             }
-            cout << "\n";
+            Rcpp::Rcout << "\n";
         }
     }
 }
@@ -2025,7 +2025,7 @@ void Alignment::addSequences(SeqArray* seqVector)
     names.push_back(string(""));
     titles.push_back(string(""));
     sequenceIds.push_back(0);
-    cout << "\nThere are " << numSeqs << " in the alignment obj\n";
+    Rcpp::Rcout << "\nThere are " << numSeqs << " in the alignment obj\n";
     for(int i = 1; i <= numSeqs; i++)
     {
         ostringstream name;

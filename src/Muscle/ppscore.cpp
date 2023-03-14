@@ -4,6 +4,7 @@
 #include "tree.h"
 #include "profile.h"
 #include "objscore.h"
+#include <Rcpp.h>
 
 bool g_bTracePPScore = false;
 MSA *g_ptrPPScoreMSA1 = 0;
@@ -89,5 +90,5 @@ void PPScore()
 	SCORE Score = ObjScoreDP_Profs(Prof1, Prof2, uLength1);
 
 	Log("Score=%.4g\n", Score);
-	printf("Score=%.4g\n", Score);
+	Rprintf("Score=%.4g\n", Score);
 	}

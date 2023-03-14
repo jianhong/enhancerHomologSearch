@@ -6,7 +6,7 @@ static char szMsg[64];
 // Define XXXToStr(XXX x) functions for each enum type XXX.
 #define s(t)	const char *t##ToStr(t x) { switch (x) { case t##_Undefined: return "Undefined";
 #define c(t, x)	case t##_##x: return #x;
-#define e(t)	} sprintf(szMsg, #t "_%d", x); return szMsg; }
+#define e(t)	} snprintf(szMsg, sizeof(szMsg), #t "_%d", x); return szMsg; }
 #include "enums.h"
 
 // Define StrToXXX(const char *Str) functions for each enum type XXX.

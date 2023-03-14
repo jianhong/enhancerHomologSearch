@@ -1,12 +1,13 @@
 /**
  * Author: Mark Larkin
- * 
- * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.  
+ *
+ * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.
  */
 #ifndef MYERSMILLERPROFILEALIGN_H
 #define MYERSMILLERPROFILEALIGN_H
 
 #include <vector>
+#include <Rcpp.h>
 #include "ProfileAlignAlgorithm.h"
 #include "ProfileStandard.h"
 #include "ProfileWithSub.h"
@@ -20,10 +21,10 @@ class MyersMillerProfileAlign : public ProfileAlignAlgorithm
 
     /* Functions */
         MyersMillerProfileAlign();
-        virtual int profileAlign(Alignment* alnPtr, DistMatrix* distMat, 
+        virtual int profileAlign(Alignment* alnPtr, DistMatrix* distMat,
                                  vector<int>* group, int* aligned);
     /* Attributes */
-    
+
     private:
     /* Functions */
         void addGGaps(Alignment* alnPtr, SeqArray* seqArray);
@@ -39,7 +40,7 @@ class MyersMillerProfileAlign : public ProfileAlignAlgorithm
         int gapPenalty1(int i, int j, int k);
         int openPenalty2(int i, int j);
         int extPenalty2(int i, int j);
-        int gapPenalty2(int i, int j, int k);    
+        int gapPenalty2(int i, int j, int k);
     /* Attributes */
         ProfileWithSub* profileWithSub;
         ProfileStandard* profileStandard;
@@ -56,14 +57,14 @@ class MyersMillerProfileAlign : public ProfileAlignAlgorithm
         vector<int> alnPath1;
         vector<int> alnPath2;
         int printPtr;
-        int lastPrint;                        
+        int lastPrint;
         int matrix[32][32];
         vector<int> gaps;
         bool switchProfiles;
         const SeqArray* profile1;
         const SeqArray* profile2;
         int _gapPos1, _gapPos2;
-        int alignmentLength;                   
+        int alignmentLength;
 };
 
 }

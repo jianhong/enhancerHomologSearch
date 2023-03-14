@@ -1,7 +1,7 @@
 /**
  * Author: Mark Larkin
- * 
- * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.  
+ *
+ * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.
  */
 #ifdef HAVE_CONFIG_H
     #include "config.h"
@@ -24,24 +24,24 @@ UnRootedClusterTree::UnRootedClusterTree()
  * without a distance matrix. It calculates the distance matrix from the alignment
  * quickly.
  */
- 
+
 // Note this function was called phylogenetic_tree before
 void UnRootedClusterTree::treeFromAlignment(TreeNames* treeNames, Alignment *alignPtr)
 {
     try
     {
-        OutputFile phylipPhyTreeFile;   
+        OutputFile phylipPhyTreeFile;
         OutputFile clustalPhyTreeFile;
         OutputFile distancesPhyTreeFile;
         OutputFile nexusPhyTreeFile;
         OutputFile pimFile;
-    
+
         string path;
         int i, j;
         int overspill = 0;
         int totalDists;
         numSeqs = alignPtr->getNumSeqs(); // NOTE class variable
-        
+
         /**
          * Check if numSeqs is ok
          */
@@ -49,23 +49,23 @@ void UnRootedClusterTree::treeFromAlignment(TreeNames* treeNames, Alignment *ali
         {
             return;
         }
-              
+
         firstSeq = 1;
         lastSeq = numSeqs;
         phyloTree = new PhyloTree;
-        
+
         // The SeqInfo struct is passed to reduce the number of parameters passed!
         SeqInfo info;
         info.firstSeq = firstSeq;
         info.lastSeq = lastSeq;
         info.numSeqs = numSeqs;
-    
+
         outputTree = new ClusterTreeOutput(&info, 0); // No bootstrap!
-    
+
         phyloTree->treeDesc.resize(numSeqs + 1, vector<int>(numSeqs + 1));
-    
+
         TreeGroups saveTree(numSeqs + 1, vector<int>(numSeqs + 1));
-    
+
         // NOTE at the moment there is only one type of clustering algorithm, but there will
         // be more!
         clusAlgorithm = new NJTree();
@@ -75,14 +75,14 @@ void UnRootedClusterTree::treeFromAlignment(TreeNames* treeNames, Alignment *ali
         /**
          * Open the required output files.
          */
-        if(!openFilesForTreeFromAlignment(&clustalPhyTreeFile, &phylipPhyTreeFile, 
+        if(!openFilesForTreeFromAlignment(&clustalPhyTreeFile, &phylipPhyTreeFile,
                         &distancesPhyTreeFile, &nexusPhyTreeFile, &pimFile, treeNames, &path))
         {
             return; // Problem opeing one of the files, cannot continue!
-        } 
-    
+        }
+
         int _lenFirstSeq = alignPtr->getSeqLength(firstSeq);
-    
+
         bootPositions.resize(_lenFirstSeq + 2);
 
         for (j = 1; j <= _lenFirstSeq; ++j)
@@ -97,7 +97,7 @@ void UnRootedClusterTree::treeFromAlignment(TreeNames* treeNames, Alignment *ali
                        phylipPhyTreeFile.getPtrToFile(), nexusPhyTreeFile.getPtrToFile(),
                        pimFile.getPtrToFile(), distancesPhyTreeFile.getPtrToFile(), alignPtr);
 
-        // check if any distances overflowed the distance corrections 
+        // check if any distances overflowed the distance corrections
         if (overspill > 0)
         {
             totalDists = (numSeqs *(numSeqs - 1)) / 2;
@@ -108,17 +108,17 @@ void UnRootedClusterTree::treeFromAlignment(TreeNames* treeNames, Alignment *ali
         {
             verbose = true;
         }
-        // Turn on file output 
-    
+        // Turn on file output
 
-        if (userParameters->getOutputTreeClustal() || userParameters->getOutputTreePhylip() 
+
+        if (userParameters->getOutputTreeClustal() || userParameters->getOutputTreePhylip()
             || userParameters->getOutputTreeNexus())
         {
-            
+
             clusAlgorithm->setVerbose(true);
             clusAlgorithm->generateTree(phyloTree, quickDistMat.get(), &info,
                                         clustalPhyTreeFile.getPtrToFile());
-            clusAlgorithm->setVerbose(false);                            
+            clusAlgorithm->setVerbose(false);
         }
 
         for (i = 1; i < numSeqs + 1; i++)
@@ -141,22 +141,22 @@ void UnRootedClusterTree::treeFromAlignment(TreeNames* treeNames, Alignment *ali
 
         if (userParameters->getOutputTreeNexus())
         {
-            outputTree->printNexusTree(phyloTree, nexusPhyTreeFile.getPtrToFile(), alignPtr, 
+            outputTree->printNexusTree(phyloTree, nexusPhyTreeFile.getPtrToFile(), alignPtr,
                                        quickDistMat.get(), &bootTotals);
         }
-    
+
         /** Free up resources!!!!! */
-    
+
         treeGaps.clear();
         bootPositions.clear();
-          
+
         delete clusAlgorithm;
         delete phyloTree;
         delete outputTree;
     }
     catch(const exception& ex)
     {
-        cerr << ex.what() << endl;
+        Rcpp::Rcerr << ex.what() << endl;
         utilityObject->error("Terminating program. Cannot continue\n");
         throw 1;
     }
@@ -167,18 +167,18 @@ void UnRootedClusterTree::treeFromAlignment(TreeNames* treeNames, Alignment *ali
  * pairwise distances.  This produces the GUIDE DENDROGRAMS in
  * PHYLIP format.
  */
-void UnRootedClusterTree::treeFromDistMatrix(DistMatrix* distMat, 
+void UnRootedClusterTree::treeFromDistMatrix(DistMatrix* distMat,
                                 Alignment *alignPtr, int seq1, int nSeqs,
                                  string& phylipName)
 {
     OutputFile phylipPhyTreeFile;
-    
+
     try
     {
         // Test to see if the inputs are valid
         if(seq1 < 1 || nSeqs < 1)
         {
-            cerr << "Invalid inputs into treeFromDistMatrix \n"
+            Rcpp::Rcerr << "Invalid inputs into treeFromDistMatrix \n"
                  << "seq1 = " << seq1 << " nSeqs = " << nSeqs << "\n"
                  << "Need to end program!\n";
             throw 1;
@@ -190,7 +190,7 @@ void UnRootedClusterTree::treeFromDistMatrix(DistMatrix* distMat,
         verbose = false;
         firstSeq = seq1;
         lastSeq = firstSeq + nSeqs - 1;
-    
+
         SeqInfo info;
         info.firstSeq = firstSeq;
         info.lastSeq = lastSeq;
@@ -200,37 +200,37 @@ void UnRootedClusterTree::treeFromDistMatrix(DistMatrix* distMat,
         // NOTE that this is not exactly correct. This may cause a problem when outputing
         // a tree for each of the profiles. But then we can pass it in, maybe.
         utilityObject->getPath(userParameters->getSeqName(), &path);
-        
+
         if(nSeqs >= 2)
         {
             string name = phylipName;
-            if(!phylipPhyTreeFile.openFile(&name, 
+            if(!phylipPhyTreeFile.openFile(&name,
                              "\nEnter name for new GUIDE TREE           file  ", &path, "dnd",
                              "Guide tree"))
             {
                 return;
             }
-            phylipName = name;                    
+            phylipName = name;
         }
         else
         {
             return;
         }
-                
+
         // Not sure about bootstrapping here!
         clusAlgorithm = new NJTree();
         outputTree = new ClusterTreeOutput(&info, 0);
-        
+
         ofstream* ptrToFile = phylipPhyTreeFile.getPtrToFile();
-        
+
         if (nSeqs == 2)
         {
             dist = (*distMat)(firstSeq, firstSeq + 1) / 2.0;
             if(ptrToFile->is_open())
             {
-                (*ptrToFile) <<  "(" << alignPtr->getName(firstSeq) << ":" 
+                (*ptrToFile) <<  "(" << alignPtr->getName(firstSeq) << ":"
                              << setprecision(5)
-                             << dist << "," << alignPtr->getName(firstSeq + 1) << ":" 
+                             << dist << "," << alignPtr->getName(firstSeq + 1) << ":"
                              << setprecision(5) << dist <<");\n";
             }
         }
@@ -245,27 +245,27 @@ void UnRootedClusterTree::treeFromDistMatrix(DistMatrix* distMat,
             clusAlgorithm->generateTree(&phyloTree, distMat, &info, &debuglog);
 #else
             clusAlgorithm->generateTree(&phyloTree, distMat, &info);
-#endif            
-            
+#endif
+
             outputTree->printPhylipTree(&phyloTree, ptrToFile, alignPtr,
                                         distMat, &bootTotals);
         }
         delete clusAlgorithm;
         delete outputTree;
-    
+
         //phylipPhyTreeFile.close();
     }
     catch(const exception &ex)
     {
-        cerr << "ERROR: Error has occured in treeFromDistMatrix. " 
+        Rcpp::Rcerr << "ERROR: Error has occured in treeFromDistMatrix. "
              << "Need to terminate program.\n"
              << ex.what();
         throw 1;
     }
     catch(...)
     {
-        cerr << "ERROR: Error has occured in treeFromDistMatrix. " 
-             << "Need to terminate program.\n";      
+        Rcpp::Rcerr << "ERROR: Error has occured in treeFromDistMatrix. "
+             << "Need to terminate program.\n";
         throw 1;
     }
 }
@@ -279,37 +279,37 @@ void UnRootedClusterTree::bootstrapTree(TreeNames* treeNames, Alignment *alignPt
     int i, j;
     int ranno;
     string path;
-    
+
     OutputFile clustalPhyTreeFile;
-    ofstream* ptrToClustalFile; 
+    ofstream* ptrToClustalFile;
     OutputFile phylipPhyTreeFile;
     OutputFile nexusPhyTreeFile;
-    
+
     try
     {
-        phyloTree = new PhyloTree; 
+        phyloTree = new PhyloTree;
         PhyloTree sampleTree;
         PhyloTree standardTree;
         PhyloTree saveTree;
         int totalDists, overspill = 0, totalOverspill = 0;
         int nfails = 0;
-        numSeqs = alignPtr->getNumSeqs(); 
+        numSeqs = alignPtr->getNumSeqs();
         firstSeq = 1;
         lastSeq = numSeqs;
-        clusAlgorithm = new NJTree(); 
+        clusAlgorithm = new NJTree();
 
         SeqInfo info;
         info.firstSeq = firstSeq;
         info.lastSeq = lastSeq;
-        info.numSeqs = numSeqs;    
-    
+        info.numSeqs = numSeqs;
+
         /**
          * Check if numSeqs is ok
          */
         if(!checkIfConditionsMet(numSeqs, 4))
         {
             return;
-        } 
+        }
 
         if (!userParameters->getOutputTreeClustal() && !userParameters->getOutputTreePhylip()
             && !userParameters->getOutputTreeNexus())
@@ -317,15 +317,15 @@ void UnRootedClusterTree::bootstrapTree(TreeNames* treeNames, Alignment *alignPt
             utilityObject->error("You must select either clustal or phylip or nexus tree output format");
             return;
         }
-        
+
         utilityObject->getPath(userParameters->getSeqName(), &path);
 
         if(!openFilesForBootstrap(&clustalPhyTreeFile, &phylipPhyTreeFile, &nexusPhyTreeFile,
                                   treeNames, &path))
         {
             return; // There was a problem opening the output files.
-        }       
-    
+        }
+
         int _lenFirstSeq = alignPtr->getSeqLength(firstSeq);
         bootTotals.clear();
         bootTotals.resize(numSeqs + 1);
@@ -337,7 +337,7 @@ void UnRootedClusterTree::bootstrapTree(TreeNames* treeNames, Alignment *alignPt
         {
             bootPositions[j] = j;
         }
-        
+
         // the "standard" tree
         overspill = calcQuickDistMatForSubSet(clustalPhyTreeFile.getPtrToFile(),
                 phylipPhyTreeFile.getPtrToFile(), nexusPhyTreeFile.getPtrToFile(), alignPtr);
@@ -350,20 +350,20 @@ void UnRootedClusterTree::bootstrapTree(TreeNames* treeNames, Alignment *alignPt
         }
 
         treeGaps.clear();
-    
+
         if (userParameters->getOutputTreeClustal())
         {
             verbose = true;
         }
         // Turn on screen output
         phyloTree->treeDesc.resize(numSeqs + 1, vector<int>(numSeqs + 1));
-    
-        // compute the standard tree 
+
+        // compute the standard tree
 
         if (userParameters->getOutputTreeClustal() || userParameters->getOutputTreePhylip() ||
             userParameters->getOutputTreeNexus())
         {
-            clusAlgorithm->setVerbose(true); 
+            clusAlgorithm->setVerbose(true);
             clusAlgorithm->generateTree(phyloTree, quickDistMat.get(), &info,
                                         clustalPhyTreeFile.getPtrToFile());
         }
@@ -373,7 +373,7 @@ void UnRootedClusterTree::bootstrapTree(TreeNames* treeNames, Alignment *alignPt
         promptForBoolSeedAndNumTrials();
 
         RandomGenerator randGenerator(userParameters->getBootRanSeed());
-        
+
         /**
          * Print bootstrap information to top of clustal bootstrap file!
          */
@@ -384,14 +384,14 @@ void UnRootedClusterTree::bootstrapTree(TreeNames* treeNames, Alignment *alignPt
 
         verbose = false; // Turn OFF screen output
         clusAlgorithm->setVerbose(false);
-        
+
         sampleTree.treeDesc.resize(numSeqs + 1, vector<int>(numSeqs + 1));
-    
+
         if (userParameters->getMenuFlag())
         {
-            cout <<  "\n\nEach dot represents 10 trials\n\n";
+            Rcpp::Rcout <<  "\n\nEach dot represents 10 trials\n\n";
         }
-    
+
         totalOverspill = 0;
         nfails = 0;
         int lenSeq1 = alignPtr->getSeqLength(1);
@@ -399,15 +399,15 @@ void UnRootedClusterTree::bootstrapTree(TreeNames* treeNames, Alignment *alignPt
         {
             for (j = 1; j <= alignPtr->getSeqLength(firstSeq); ++j)
             {
-                // select alignment positions for            
+                // select alignment positions for
                 ranno = randGenerator.addRand((unsigned long)lenSeq1) + 1;
-                bootPositions[j] = ranno; // bootstrap sample 
+                bootPositions[j] = ranno; // bootstrap sample
             }
-            
+
             overspill = calcQuickDistMatForSubSet(clustalPhyTreeFile.getPtrToFile(),
                 phylipPhyTreeFile.getPtrToFile(), nexusPhyTreeFile.getPtrToFile(), alignPtr,
                 true);
-            
+
             if (overspill > 0)
             {
                 totalOverspill = totalOverspill + overspill;
@@ -415,7 +415,7 @@ void UnRootedClusterTree::bootstrapTree(TreeNames* treeNames, Alignment *alignPt
             }
 
             treeGaps.clear();
-        
+
             if (userParameters->getOutputTreeClustal() ||
                 userParameters->getOutputTreePhylip() || userParameters->getOutputTreeNexus())
             {
@@ -428,21 +428,21 @@ void UnRootedClusterTree::bootstrapTree(TreeNames* treeNames, Alignment *alignPt
             sampleTree.rightBranch.clear();
 
             compareTree(phyloTree, &sampleTree, &bootTotals, lastSeq - firstSeq + 1);
-        
+
             if (userParameters->getMenuFlag())
             {
                 if (i % 10 == 0)
                 {
-                    cout <<  ".";
+                    Rcpp::Rcout <<  ".";
                 }
                 if (i % 100 == 0)
                 {
-                    cout << "\n";
+                    Rcpp::Rcout << "\n";
                 }
             }
         }
 
-        // check if any distances overflowed the distance corrections 
+        // check if any distances overflowed the distance corrections
         if (nfails > 0)
         {
             totalDists = (numSeqs *(numSeqs - 1)) / 2;
@@ -460,7 +460,7 @@ void UnRootedClusterTree::bootstrapTree(TreeNames* treeNames, Alignment *alignPt
         {
             outputTree->printTree(phyloTree, clustalPhyTreeFile.getPtrToFile(), &bootTotals);
         }
-    
+
         /**
          * Print phylip tree with boottotals.
          */
@@ -469,10 +469,10 @@ void UnRootedClusterTree::bootstrapTree(TreeNames* treeNames, Alignment *alignPt
             // Save the old tree!
             saveTree.treeDesc.resize(numSeqs + 1, vector<int>(numSeqs + 1));
             saveTree.treeDesc.assign(phyloTree->treeDesc.begin(), phyloTree->treeDesc.end());
-        
+
             outputTree->printPhylipTree(phyloTree, phylipPhyTreeFile.getPtrToFile(),
                                         alignPtr, quickDistMat.get(), &bootTotals);
-            // reassign the old values!                            
+            // reassign the old values!
             phyloTree->treeDesc.assign(saveTree.treeDesc.begin(), saveTree.treeDesc.end());
         }
 
@@ -481,10 +481,10 @@ void UnRootedClusterTree::bootstrapTree(TreeNames* treeNames, Alignment *alignPt
          */
         if (userParameters->getOutputTreeNexus())
         {
-            outputTree->printNexusTree(phyloTree, nexusPhyTreeFile.getPtrToFile(), alignPtr, 
+            outputTree->printNexusTree(phyloTree, nexusPhyTreeFile.getPtrToFile(), alignPtr,
                                        quickDistMat.get(), &bootTotals);
         }
-    
+
         delete phyloTree;
         delete clusAlgorithm;
         delete outputTree;

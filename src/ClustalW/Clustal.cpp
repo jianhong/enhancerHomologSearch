@@ -75,7 +75,7 @@ void Clustal::align(string* phylipName, ClustalWOutput *output, bool createOutpu
     //start = time (NULL);
     //ObjectiveScore score;
     //double _score = score.getSagaScore(&alignmentObj);
-    //Rcout << "SAGA score " << _score << "\n";
+    //Rcpp::Rcout << "SAGA score " << _score << "\n";
 
     string path;
     int count;
@@ -123,8 +123,8 @@ void Clustal::align(string* phylipName, ClustalWOutput *output, bool createOutpu
     }
     if(userParameters->getDisplayInfo())
     {
-        Rcout << "Start of Pairwise alignments\n";
-        Rcout << "Aligning...\n";
+        Rcpp::Rcout << "Start of Pairwise alignments\n";
+        Rcpp::Rcout << "Aligning...\n";
     }
     if(userParameters->getDNAFlag())
     {
@@ -173,10 +173,10 @@ void Clustal::align(string* phylipName, ClustalWOutput *output, bool createOutpu
     TreeInterface calcSteps;
     progSteps = calcSteps.getWeightsAndStepsFromDistMat(&seqWeight, &distMat, &alignmentObj,
                                                         1, _numSeqs, phylipName, &success);
-    //Rcout << "weights and steps calculated!\n";
+    //Rcpp::Rcout << "weights and steps calculated!\n";
     //end = time (NULL);
     //dif = difftime(end, start);
-    //Rcout << "It took " << dif << " seconds so Far\n";
+    //Rcpp::Rcout << "It took " << dif << " seconds so Far\n";
 
     if(!success)
     {
@@ -197,11 +197,11 @@ void Clustal::align(string* phylipName, ClustalWOutput *output, bool createOutpu
     MSA* msaObj = new MSA();
     count = msaObj->multiSeqAlign(&alignmentObj, &distMat, &seqWeight, progSteps.get(), 0);
     delete msaObj;
-    //Rcout << "alignment finished!\n";
+    //Rcpp::Rcout << "alignment finished!\n";
 
     //end = time (NULL);
     //dif = difftime(end, start);
-    //Rcout << "It took " << dif << " seconds so Far\n";
+    //Rcpp::Rcout << "It took " << dif << " seconds so Far\n";
 
     if (count <= 0)
     {
@@ -210,7 +210,7 @@ void Clustal::align(string* phylipName, ClustalWOutput *output, bool createOutpu
 
     if (userParameters->getMenuFlag())
     {
-        Rcout << "\n\n\n";
+        Rcpp::Rcout << "\n\n\n";
     }
 
     /// Do iteration to improve alignment!!!
@@ -221,7 +221,7 @@ void Clustal::align(string* phylipName, ClustalWOutput *output, bool createOutpu
         iterateObj.removeFirstIterate(&alignmentObj);
         alignmentObj.calculateMaxLengths(); // Mark Change 20-6-07
         if(userParameters->getDisplayInfo())
-            Rcout << "Finished iteration\n";
+            Rcpp::Rcout << "Finished iteration\n";
     }
 
     if (statsObject->isEnabled()) {
@@ -239,7 +239,7 @@ void Clustal::align(string* phylipName, ClustalWOutput *output, bool createOutpu
 
     //end = time (NULL);
     //dif = difftime(end, start);
-    //Rcout << "It took " << dif << " seconds\n";
+    //Rcpp::Rcout << "It took " << dif << " seconds\n";
     return;
 }
 
@@ -250,7 +250,7 @@ void Clustal::align(string* phylipName, ClustalWOutput *output, bool createOutpu
 void Clustal::sequencesAlignToProfile(string* phylipName, ClustalWOutput *output)
 {
 
-	Rcout << "sequencesAlignToProfile called";
+	Rcpp::Rcout << "sequencesAlignToProfile called";
 
     string path;
     string treeName;
@@ -378,8 +378,8 @@ void Clustal::sequencesAlignToProfile(string* phylipName, ClustalWOutput *output
     {
         if(userParameters->getDisplayInfo())
         {
-            Rcout << "Start of Pairwise alignments\n";
-            Rcout << "Aligning...\n";
+            Rcpp::Rcout << "Start of Pairwise alignments\n";
+            Rcpp::Rcout << "Aligning...\n";
         }
 
         if(userParameters->getDNAFlag())
@@ -407,7 +407,7 @@ void Clustal::sequencesAlignToProfile(string* phylipName, ClustalWOutput *output
         delete pairwiseDist;
 
         if(userParameters->getDisplayInfo())
-            Rcout << "\n\n";
+            Rcpp::Rcout << "\n\n";
 
         TreeInterface calcSeqWeights;
         calcSeqWeights.getWeightsFromDistMat(&seqWeights, &distMat, &alignmentObj, 1,
@@ -447,7 +447,7 @@ void Clustal::sequencesAlignToProfile(string* phylipName, ClustalWOutput *output
 
     if (userParameters->getMenuFlag())
     {
-        Rcout << "\n\n\n";
+        Rcpp::Rcout << "\n\n\n";
     }
 
     /// STEP 4: OUTPUT THE ALIGNMENT  //
@@ -462,7 +462,7 @@ void Clustal::sequencesAlignToProfile(string* phylipName, ClustalWOutput *output
 void Clustal::profileAlign(string* p1TreeName, string* p2TreeName, ClustalWOutput *output)
 {
 
-	Rcout << "profileAlign called";
+	Rcpp::Rcout << "profileAlign called";
 
     string path;
     //string treeName;
@@ -636,7 +636,7 @@ void Clustal::profileAlign(string* p1TreeName, string* p2TreeName, ClustalWOutpu
     }
     if(userParameters->getMenuFlag())
     {
-        Rcout << "\n\n\n";
+        Rcpp::Rcout << "\n\n\n";
     }
 
     alignOutput.createAlignmentOutput(&alignmentObj, 1, _numSeqs, output);
@@ -681,8 +681,8 @@ void Clustal::doGuideTreeOnly(string* phylipName)
 
     if(userParameters->getDisplayInfo())
     {
-        Rcout << "Start of Pairwise alignments\n";
-        Rcout << "Aligning...\n";
+        Rcpp::Rcout << "Start of Pairwise alignments\n";
+        Rcpp::Rcout << "Aligning...\n";
     }
 
     if(userParameters->getDNAFlag())
@@ -733,7 +733,7 @@ void Clustal::doGuideTreeOnly(string* phylipName)
 // FIXME this is to  90% identical with align(), please merge
 void Clustal::doAlignUseOldTree(string* phylipName, ClustalWOutput *output)
 {
-	Rcout << "doAlignUseOldTree called";
+	Rcpp::Rcout << "doAlignUseOldTree called";
 
     string path;
     int count;
@@ -814,8 +814,8 @@ void Clustal::doAlignUseOldTree(string* phylipName, ClustalWOutput *output)
     {
         if(userParameters->getDisplayInfo())
         {
-            Rcout << "Start of Pairwise alignments\n";
-            Rcout << "Aligning...\n";
+            Rcpp::Rcout << "Start of Pairwise alignments\n";
+            Rcpp::Rcout << "Aligning...\n";
         }
         if(userParameters->getDNAFlag())
         {
@@ -867,7 +867,7 @@ void Clustal::doAlignUseOldTree(string* phylipName, ClustalWOutput *output)
 
     if (userParameters->getMenuFlag())
     {
-        Rcout << "\n\n\n";
+        Rcpp::Rcout << "\n\n\n";
     }
 
     // same as in align()
@@ -878,7 +878,7 @@ void Clustal::doAlignUseOldTree(string* phylipName, ClustalWOutput *output)
         iterateObj.removeFirstIterate(&alignmentObj);
         alignmentObj.calculateMaxLengths(); // Mark Change 20-6-07
         if(userParameters->getDisplayInfo())
-            Rcout << "Finished iteration\n";
+            Rcpp::Rcout << "Finished iteration\n";
     }
 
     alignOutput.createAlignmentOutput(&alignmentObj, 1, _numSeqs, output);
@@ -938,7 +938,7 @@ void Clustal::getHelp(string helpPointer, bool printTitle)
 
     if(! userParameters->getMenuFlag())
     {
-        Rcout << helpString;
+        Rcpp::Rcout << helpString;
     }
     else
     {
@@ -948,13 +948,13 @@ void Clustal::getHelp(string helpPointer, bool printTitle)
 
         while (pos != string::npos)
         {
-            Rcout << helpString.substr(lastPos, pos - lastPos);
+            Rcpp::Rcout << helpString.substr(lastPos, pos - lastPos);
             nlines++;
 
             if(nlines >= PAGE_LEN)
             {
                 char tempChar;
-                Rcout << "\nPress [RETURN] to continue or  X  to stop ";
+                Rcpp::Rcout << "\nPress [RETURN] to continue or  X  to stop ";
                 cin.get(tempChar);
                 if(toupper(tempChar) == 'X')
                 {
@@ -968,7 +968,7 @@ void Clustal::getHelp(string helpPointer, bool printTitle)
 
             lastPos = pos; //helpString.find_first_not_of("\n", pos);
             pos = helpString.find_first_of("\n", lastPos+1);
-            //Rcerr << "DEBUG: pos=" << pos << " lastPos=" << lastPos << "/" << helpString.length() << "\n";
+            //Rcpp::Rcerr << "DEBUG: pos=" << pos << " lastPos=" << lastPos << "/" << helpString.length() << "\n";
         }
     }
 }
@@ -1018,11 +1018,11 @@ int Clustal::profile1Input(string profile1Name)
         if(code != OK)
         {
             if (code==NOSEQUENCESINFILE)
-                Rcerr << "ERROR: There are no sequences in profile2 file." << std::endl;
+                Rcpp::Rcerr << "ERROR: There are no sequences in profile2 file." << std::endl;
             else if (code==ALLNAMESNOTDIFFERENT)
-                Rcerr << "ERROR: Not all sequence names are different" << std::endl;
+                Rcpp::Rcerr << "ERROR: Not all sequence names are different" << std::endl;
             else
-                Rcerr << "ERROR: Unhandled error code (" << code << ") returned from profileInput.\n";
+                Rcpp::Rcerr << "ERROR: Unhandled error code (" << code << ") returned from profileInput.\n";
             // AW: should we really exit here? What if called from clustalx?
             throw 2;
         }
@@ -1054,9 +1054,9 @@ int Clustal::profile2Input(string profile2Name)
 
 
     FileReader readProfileFile;
-    Rcout << "before profileInput\n";
+    Rcpp::Rcout << "before profileInput\n";
     code = readProfileFile.profileInput(&alignmentObj);
-    Rcout << "after profileInput\n";
+    Rcpp::Rcout << "after profileInput\n";
 
     if(!userParameters->getInteractive())
     {
@@ -1064,11 +1064,11 @@ int Clustal::profile2Input(string profile2Name)
         // also, shouldnt we use  utilityObject->error()?
         if(code != OK) {
             if (code==NOSEQUENCESINFILE)
-                Rcerr << "ERROR: There are no sequences in profile2 file." << std::endl;
+                Rcpp::Rcerr << "ERROR: There are no sequences in profile2 file." << std::endl;
             else if (code==ALLNAMESNOTDIFFERENT)
-                Rcerr << "ERROR: Not all sequence names are different" << std::endl;
+                Rcpp::Rcerr << "ERROR: Not all sequence names are different" << std::endl;
             else
-                Rcerr << "ERROR: Unhandled error code (" << code << ") returned from profileInput.\n";
+                Rcpp::Rcerr << "ERROR: Unhandled error code (" << code << ") returned from profileInput.\n";
             // AW: should we really exit here? What if called from clustalx?
             // DD: fixed
             if(!userParameters->getGui())
@@ -1145,7 +1145,7 @@ int Clustal::commandLineReadSeq(int firstSeq, ClustalWInput *input)
  */
 void Clustal::outputNow(ClustalWOutput *output)
 {
-	Rcout << "outputNow called";
+	Rcpp::Rcout << "outputNow called";
     if(alignmentObj.getNumSeqs() > 0)
     {
         string path = "";
@@ -1639,7 +1639,7 @@ void Clustal::QTSetFileNamesForOutput(AlignmentFileNames fileNames)
 
 bool Clustal::QTRealignSelectedRange(AlignmentFileNames fileNames, int beginPos, int endPos, bool realignEndGapPen, ClustalWOutput *output)
 {
-	Rcout << "QTRealignSelectedRange called";
+	Rcpp::Rcout << "QTRealignSelectedRange called";
     bool alignEndGapPen = userParameters->getEndGapPenalties();
 
     Alignment saveOldAlign = alignmentObj; // Take a copy of it. Note provided copy
@@ -1703,7 +1703,7 @@ bool Clustal::QTRealignSelectedRange(AlignmentFileNames fileNames, int beginPos,
 
 void Clustal::test()
 {
-    Rcout << "RUNNING TEST\n";
+    Rcpp::Rcout << "RUNNING TEST\n";
     ClustalWOutput *output = new ClustalWOutput();
     AlignmentOutput alignOutput;
     string path;
@@ -1711,7 +1711,7 @@ void Clustal::test()
 
     if(!alignOutput.openAlignmentOutput(path))
     {
-        Rcerr << "could not open the file\n";
+        Rcpp::Rcerr << "could not open the file\n";
         return;
     }
 

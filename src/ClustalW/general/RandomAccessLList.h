@@ -1,12 +1,12 @@
 /**
  * Author: Mark Larkin
- * 
- * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.  
+ *
+ * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.
  */
 /**
  * Author: Mark Larkin UCD Conway Institute
  *
- * This class is to be used as a linked list type container. 
+ * This class is to be used as a linked list type container.
  * The features are as follows:
  * 1) It allows efficient deletions anywhere.
  * 2) It also allows efficient random access.
@@ -34,7 +34,7 @@ class ListElement
         {
             // Do nothing
         }
-        
+
         ListElement(T* e, ListElement* n, ListElement* p, unsigned int _index)
         {
             element = e;
@@ -42,19 +42,19 @@ class ListElement
             prev = p;
             index = _index;
         }
-                
+
         ~ListElement()
         {
             element = 0;
             next = 0;
         }
-        
+
         unsigned int getIndex(){return index;}
-                
+
         T* element;
         ListElement* next;
         ListElement* prev;
-    private:    
+    private:
         unsigned int index;
 };
 
@@ -72,7 +72,7 @@ class RandomAccessLList
                 elements[i] = 0;
             }
         }
-        
+
         ~RandomAccessLList()
         {
             for(int i = 0; i < maxSize; i++)
@@ -82,25 +82,25 @@ class RandomAccessLList
                     delete elements[i];
                 }
             }
-            delete [] elements;        
+            delete [] elements;
         }
-        
+
         unsigned int getNumElements(){return numElements;}
-        
+
         void addElementToBack(T* element)
         {
             if(numElements < maxSize)
             {
                 // Add the element
                 elements[numElements] = new ListElement<T>(element, 0, 0, numElements);
-                
+
                 if(numElements == 0)
                 {
                     // First element
                     elements[numElements]->next = 0;
                     elements[numElements]->prev = 0;
                     firstElementInList = elements[numElements];
-                    numElements++;             
+                    numElements++;
                 }
                 else if(numElements > 0) // If it is not the first element
                 {
@@ -111,7 +111,7 @@ class RandomAccessLList
                 }
             }
         }
-        
+
         ListElement<T>* getAt(int index)
         {
             if(index >= 0 && index < maxSize)
@@ -120,23 +120,23 @@ class RandomAccessLList
             }
             else
             {
-                cout << "\nCannot get item : " << index << "\n";
+                Rcpp::Rcout << "\nCannot get item : " << index << "\n";
                 return 0;
             }
         }
-        
+
         ListElement<T>* getFirst()
         {
             return firstElementInList;
-        }        
-        
+        }
+
         void removeItem(ListElement<T>* item)
         {
             if(item != 0 )
             {
                 int index = item->getIndex();
                 if(elements[index] != 0)
-                { 
+                {
                     if(item->prev == 0 && item->next == 0) // Last item in the list
                     {
                         firstElementInList = 0;
@@ -160,7 +160,7 @@ class RandomAccessLList
                         item->prev = 0;
                         delete item; // Not sure if this is good or not.
                         item = 0;
-                        numElements--;                
+                        numElements--;
                     }
                     else // remove middle item
                     {
@@ -172,23 +172,23 @@ class RandomAccessLList
                         item->next = 0;
                         delete item; // Not sure if this is good or not.
                         item = 0;
-                        numElements--;                 
+                        numElements--;
                     }
                     elements[index] = 0;
                 }
             }
             else
             {
-                cout << "ERROR: trying to remove item outside the bounds\n";
-            }            
+                Rcpp::Rcout << "ERROR: trying to remove item outside the bounds\n";
+            }
         }
-        
-    private:    
+
+    private:
         ListElement<T>** elements;
         ListElement<T>* firstElementInList;
         int maxSize;
         unsigned int numElements;
-        
+
 };
 
 }

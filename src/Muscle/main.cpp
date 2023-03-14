@@ -2,6 +2,7 @@
 
 #include "muscle.h"
 #include <stdio.h>
+#include <Rcpp.h>
 #ifdef	WIN32
 #include <windows.h>	// for SetPriorityClass()
 #include <io.h>			// for isatty()
@@ -40,7 +41,7 @@ int main(int argc, char **argv)
 
 	if (g_bVersion)
 		{
-		printf("%s\n", MUSCLE_LONG_VERSION);
+		Rprintf("%s\n", MUSCLE_LONG_VERSION);
 			throw EXIT_SUCCESS;
 		}
 

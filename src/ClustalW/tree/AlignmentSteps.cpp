@@ -1,7 +1,7 @@
 /**
  * Author: Mark Larkin
- * 
- * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.  
+ *
+ * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.
  */
 #ifdef HAVE_CONFIG_H
     #include "config.h"
@@ -19,7 +19,7 @@ void AlignmentSteps::saveSet(int n, int *groups)
     for(int i = 1; i < n + 1; i++)
     {
         tempVec[i] = groups[i - 1];
-    } 
+    }
     steps.push_back(tempVec);
     numSteps++;
 }
@@ -42,11 +42,11 @@ void AlignmentSteps::printAlignSteps()
     {
         for(int j = 1; j < (int)steps[i].size(); j++)
         {
-            cout << " " << steps[i][j];
+            Rcpp::Rcout << " " << steps[i][j];
         }
-        cout << "\n";
+        Rcpp::Rcout << "\n";
     }
-    cout << "\n\n";
+    Rcpp::Rcout << "\n\n";
 }
 
 void AlignmentSteps::clear()

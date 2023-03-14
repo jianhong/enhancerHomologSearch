@@ -1,10 +1,10 @@
 /**
  * Author: Mark Larkin
- * 
- * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.  
+ *
+ * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.
  */
-/** 
- * Changes: 
+/**
+ * Changes:
  *
  * Mark 24-1-2007. I am now using the char "delimiter" for the delimiter when using
  * getline. This is to get around the problem of some files having '\r'.
@@ -16,7 +16,7 @@
  *
  * 9-2-2008, Paul McGettigan : fixed problem where space after '>' but before sequence name was causing
  *                             alignment to fail due to no sequence name being read in
- * 15-2-2008, Paul McGettigan : fixed bug 91 where Pseudo -FASTA format files were not being processed as 
+ * 15-2-2008, Paul McGettigan : fixed bug 91 where Pseudo -FASTA format files were not being processed as
  *                              previously in v1.83
  */
 
@@ -30,8 +30,8 @@ namespace clustalw
 
 /**
  * Constructor for the Pearson file parser.
- * @param filePath 
- * @return 
+ * @param filePath
+ * @return
  */
 PearsonFileParser::PearsonFileParser(string filePath)
 {
@@ -58,20 +58,20 @@ PearsonFileParser::getSeqRange(int firstSeq, int nSeqsToRead, string *offendingS
     string greater = ">";
     //_line[0] = EOS;
     vector<Sequence> seqRangeVector;
-    
+
     string line;
-    
-    
+
+
     //int i, j;
     int nSeqsRead = 0;
     unsigned char c;
     char delim;
     int _currentSeqNum = 0; // Not at any sequence yet!
-    
+
     try
     {
        delim=FileParser::getDelimiter(fileName);
-       //cout << "delim = " << delim << endl;
+       //Rcpp::Rcout << "delim = " << delim << endl;
        ifstream _fileIn;
        _fileIn.open(fileName.c_str(),ios::in);
 
@@ -84,8 +84,8 @@ PearsonFileParser::getSeqRange(int firstSeq, int nSeqsToRead, string *offendingS
               _currentSeqNum++;
           }
         } while(_currentSeqNum <firstSeq);
-        
-        
+
+
         while (nSeqsRead < nSeqsToRead)
         {
             // get sequence name from current line (excluded '>' and read up to first ' ' or MAXNAMES
@@ -94,7 +94,7 @@ PearsonFileParser::getSeqRange(int firstSeq, int nSeqsToRead, string *offendingS
             //if(name.find(">") != string::npos){
             //  andreas wilm: exit if angle bracket within header?
             //}
-            
+
             while(name.substr(0,1)==" "){
                 name=name.substr(1,MAXNAMES);
             }
@@ -106,31 +106,31 @@ PearsonFileParser::getSeqRange(int firstSeq, int nSeqsToRead, string *offendingS
             utilityObject->rTrim(&name); // also replaces linef
 
             name=utilityObject->blankToUnderscore(name); // replace blanks with '_'
-            
-            
+
+
             // Read in lines until we get to the begining of next sequence.
-            
+
             title = ""; // No title information
-            
+
             while(std::getline(_fileIn,line,delim) ){
-                 
+
                string::const_iterator iterator1 = line.begin();
                 while(iterator1 != line.end()){
 
                     // Andreas Wilm (UCD): exit if angle brackets within sequence
                     if(*iterator1=='>' && iterator1!=line.begin()) {
                         /* error output handled in Clustal.cpp
-                        cerr << "\nMultiple angle brackets inside sequence found:"
+                        Rcpp::Rcerr << "\nMultiple angle brackets inside sequence found:"
                              << " invalid format.\n"
                              << "Maybe you forgot a linebreak between sequences?\n";
                         */
-                        
+
                         parseExitCode=BADFORMAT;
                         _fileIn.close();
                         seqRangeVector.clear();
                         return seqRangeVector;
                     }
-                       
+
                     if(*iterator1 =='\n' || *iterator1 =='\r' || *iterator1 == EOS || *iterator1 =='>'){
                         break;
                     }
@@ -144,9 +144,9 @@ PearsonFileParser::getSeqRange(int firstSeq, int nSeqsToRead, string *offendingS
                 }
                 if(*iterator1 == '>'){
                     break;
-               } 
+               }
             }
-            
+
             // check sequence
             if ((int)characterSeq.length() > userParameters->getMaxAllowedSeqLength())
             {
@@ -180,7 +180,7 @@ PearsonFileParser::getSeqRange(int firstSeq, int nSeqsToRead, string *offendingS
 
     catch(...)
     {
-        cerr << "There was an exception in the PearsonFileParser::getSeqRange function.\n"
+        Rcpp::Rcerr << "There was an exception in the PearsonFileParser::getSeqRange function.\n"
              << "Need to end program\n";
         throw 1;
     }
@@ -194,7 +194,7 @@ PearsonFileParser::getSeqRange(int firstSeq, int nSeqsToRead, string *offendingS
  * Deprecated: where possible use faster getSeqRange which reads
  * sequences in one go
  * @param seqNum The number of the sequence to get.
- * @return 
+ * @return
  */
     Sequence PearsonFileParser::getSeq(int seqNum, string *offendingSeq)
 {
@@ -208,15 +208,15 @@ PearsonFileParser::getSeqRange(int firstSeq, int nSeqsToRead, string *offendingS
     string blank = "";
     string greater = ">";
     //_line[0] = EOS;
-    
+
     string line;
-    
-    cerr << "Use of PearsonFileParser::getSeq is deprecated!\n";
+
+    Rcpp::Rcerr << "Use of PearsonFileParser::getSeq is deprecated!\n";
     //int i, j;
     unsigned char c;
     char delim;
     int _currentSeqNum = 0; // Not at any sequence yet!
-    
+
     try
     {
         /*
@@ -225,7 +225,7 @@ PearsonFileParser::getSeqRange(int firstSeq, int nSeqsToRead, string *offendingS
         _fileIn->seekg(0, std::ios::beg); // start at the beginning
        */
        delim=FileParser::getDelimiter(fileName);
-       //cout << "delim = " << delim << endl;
+       //Rcpp::Rcout << "delim = " << delim << endl;
        ifstream _fileIn;
        _fileIn.open(fileName.c_str(),ios::in);
 
@@ -242,12 +242,12 @@ PearsonFileParser::getSeqRange(int firstSeq, int nSeqsToRead, string *offendingS
             _currentSeqNum++;
           }
         } while(_currentSeqNum <seqNum);
-        
-        
+
+
         // get sequence name from current line (excluded '>' and read up to first ' ' or MAXNAMES
         // remove the first char i.e. '>'
         name=line.substr(1,MAXNAMES);
-           
+
         //////////////////////////////////////
         // PMcG 9-2-2008 need to handle spaces at start of sequence name to conform to 1.83 handling
         //////////////////////////////////////
@@ -258,12 +258,12 @@ PearsonFileParser::getSeqRange(int firstSeq, int nSeqsToRead, string *offendingS
         //i = name.find(" ");
         if(name.find(" ") != string::npos){
           name=name.substr(0,name.find(" "));
-        } 
+        }
         name=utilityObject->blankToUnderscore(name); // replace blanks with '_'
 
 
         // Read in lines until we get to the begining of sequence seqNum.
-          
+
         /* PMcG replace char array with string processing
         while (_currentSeqNum != seqNum)
         {
@@ -292,7 +292,7 @@ PearsonFileParser::getSeqRange(int firstSeq, int nSeqsToRead, string *offendingS
                 break;
             }
         }
-        strncpy(sname, _line + i, MAXNAMES); // remember entryname 
+        strncpy(sname, _line + i, MAXNAMES); // remember entryname
         for (i = 1; i <= strlen(sname); i++)
         {
             if (sname[i] == ' ')
@@ -303,9 +303,9 @@ PearsonFileParser::getSeqRange(int firstSeq, int nSeqsToRead, string *offendingS
         sname[i] = EOS;
         utilityObject->rTrim(sname);
         utilityObject->blankToUnderscore(sname); // replace blanks with '_'
-        name = string(sname);        
+        name = string(sname);
         */
-        
+
         title = ""; // No title information
 
         string seqLine = "";
@@ -369,13 +369,13 @@ PearsonFileParser::getSeqRange(int firstSeq, int nSeqsToRead, string *offendingS
             // return empty seq
             return Sequence(blank, blank, blank);
         }
-        
+
         return Sequence(characterSeq, name, title);
     }
 
     catch(...)
     {
-        cerr << "There was an exception in the PearsonFileParser::getSeq function.\n"
+        Rcpp::Rcerr << "There was an exception in the PearsonFileParser::getSeq function.\n"
              << "Need to end program\n";
         throw 1;
     }
@@ -400,21 +400,21 @@ int PearsonFileParser::countSeqs()
         ifstream _fileIn;
         _fileIn.open(fileName.c_str(),ios::in);
 
-    
+
         if(!_fileIn.is_open())
         {
             return 0; // No sequences found!
         }
-    
+
         /* while ((*_fileIn) >> line2/@_fileIn->getline(line, 1000 + 1)@/)
            {
            /@if(_nseqs == 50)
            {
-           cout << "\n\n" << line << "\n\n";
+           Rcpp::Rcout << "\n\n" << line << "\n\n";
            throw 1;
            }@/
             */
-        while (std::getline(_fileIn,line2,delim)) {                 
+        while (std::getline(_fileIn,line2,delim)) {
             if (line2[0] == '>')
                 {
                     _nseqs++;
@@ -426,23 +426,23 @@ int PearsonFileParser::countSeqs()
     catch(...)
     {
         freeFileResources(_fileIn);
-        cerr << "An exception has occured in the function PearsonFileParser::countSeqs()\n"
+        Rcpp::Rcerr << "An exception has occured in the function PearsonFileParser::countSeqs()\n"
              << "Program needs to terminate.\nPlease contact the Clustal developers\n";
         throw 1;
     }
 }
 
 /**
- * There is no secondary structure information in the Pearson file. This is here to 
+ * There is no secondary structure information in the Pearson file. This is here to
  * set the structPenalties to NONE.
- * @param gapPenaltyMask 
- * @param secStructMask 
- * @param secStructName 
- * @param structPenalties 
- * @param length 
+ * @param gapPenaltyMask
+ * @param secStructMask
+ * @param secStructName
+ * @param structPenalties
+ * @param length
  */
-void PearsonFileParser::getSecStructure(vector<char>& gapPenaltyMask, 
-                         vector<char>& secStructMask, string& secStructName, 
+void PearsonFileParser::getSecStructure(vector<char>& gapPenaltyMask,
+                         vector<char>& secStructMask, string& secStructName,
                           int &structPenalties, int length)
 {
     structPenalties = NONE;

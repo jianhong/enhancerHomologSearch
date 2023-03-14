@@ -1,7 +1,7 @@
 /**
  * Author: Mark Larkin
- * 
- * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.  
+ *
+ * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.
  */
 #ifdef HAVE_CONFIG_H
     #include "config.h"
@@ -102,13 +102,13 @@ CommandLineParser::CommandLineParser(StringArray* args, bool xmenus)
     setOutputPim(-1)
 {
     int ctr=0;
-    
+
     // The rest of the variables are arrays!
     try
     {
         clustalObj = new Clustal();
-        
-        // selecting the size prevents the resizing of the vector which is expensive. 
+
+        // selecting the size prevents the resizing of the vector which is expensive.
         typeArg = new StringArray(3);
         bootLabelsArg = new StringArray(3);
         outOrderArg = new StringArray(3);
@@ -122,45 +122,45 @@ CommandLineParser::CommandLineParser(StringArray* args, bool xmenus)
         cmdLineType = new StringArray(6);
         clusterAlgorithm = new StringArray(3);
         iterationArg = new StringArray(4);
-        
+
         params = new StringArray; // Wait until I need it!!!!!!!!!
         paramArg = new StringArray;
     }
     catch(const exception &ex)
     {
-        cerr << ex.what() << endl;
-        cerr << "Terminating program. Cannot continue" << std::endl;
+        Rcpp::Rcerr << ex.what() << endl;
+        Rcpp::Rcerr << "Terminating program. Cannot continue" << std::endl;
         throw 1;
     }
-                           
+
     (*typeArg)[0] = "protein";
     (*typeArg)[1] = "dna";
     (*typeArg)[2] = "";
-        
+
     (*bootLabelsArg)[0] = "node";
     (*bootLabelsArg)[1] = "branch";
     (*bootLabelsArg)[2] = "";
-    
+
     (*outOrderArg)[0] = "input";
     (*outOrderArg)[1] = "aligned";
     (*outOrderArg)[2] = "";
-    
+
     (*caseArg)[0] = "lower";
     (*caseArg)[1] = "upper";
     (*caseArg)[2] = "";
-    
+
     (*seqNoArg)[0] = "off";
     (*seqNoArg)[1] = "on";
     (*seqNoArg)[2] = "";
-    
+
     (*seqNoRangeArg)[0] = "off";
     (*seqNoRangeArg)[1] = "on";
     (*seqNoRangeArg)[2] = "";
-        
+
     (*scoreArg)[0] = "percent";
     (*scoreArg)[1] = "absolute";
     (*scoreArg)[2] = "";
-    
+
     (*outputArg)[0] = "gcg";
     (*outputArg)[1] = "gde";
     (*outputArg)[2] = "pir";
@@ -169,26 +169,26 @@ CommandLineParser::CommandLineParser(StringArray* args, bool xmenus)
     (*outputArg)[5] = "fasta";
     (*outputArg)[6] = "clustal";
     (*outputArg)[7] = "";
-    
+
     (*outputTreeArg)[0] = "nj";
     (*outputTreeArg)[1] = "phylip";
     (*outputTreeArg)[2] = "dist";
     (*outputTreeArg)[3] = "nexus";
     (*outputTreeArg)[4] = "";
-    
+
     (*outputSecStrArg)[0] = "structure";
     (*outputSecStrArg)[1] = "mask";
     (*outputSecStrArg)[2] = "both";
     (*outputSecStrArg)[3] = "none";
     (*outputSecStrArg)[4] = "";
-    
+
     (*cmdLineType)[0] = " ";
     (*cmdLineType)[1] = "=n ";
     (*cmdLineType)[2] = "=f ";
     (*cmdLineType)[3] = "=string ";
     (*cmdLineType)[4] = "=filename ";
     (*cmdLineType)[5] = "";
-    
+
     (*clusterAlgorithm)[0] = "nj";
     (*clusterAlgorithm)[1] = "upgma";
     (*clusterAlgorithm)[2] = "";
@@ -197,12 +197,12 @@ CommandLineParser::CommandLineParser(StringArray* args, bool xmenus)
     (*iterationArg)[1] = "alignment";
     (*iterationArg)[2] = "none";
     (*iterationArg)[3] = "";
-        
+
     userMatrixName = "";
     pwUserMatrixName = "";
     DNAUserMatrixName = "";
     pwDNAUserMatrixName = "";
-    
+
     clustalTreeName = "";
     distTreeName = "";
     phylipTreeName = "";
@@ -218,7 +218,7 @@ CommandLineParser::CommandLineParser(StringArray* args, bool xmenus)
     cmdLineFile[ctr++] = getCmdLineDataStruct("profile2", &setProfile2, FILARG, NULL);
     cmdLineFile[ctr++] = getCmdLineDataStruct("", NULL, -1, NULL);
     // FIXME: final ctr index is hardcoded in CommandLineParser
-    
+
     ctr=0;
     cmdLineVerb[ctr++] = getCmdLineDataStruct("help", &setHelp, NOARG, NULL);
     cmdLineVerb[ctr++] = getCmdLineDataStruct("fullhelp", &setFullHelp, NOARG, NULL);
@@ -239,11 +239,11 @@ CommandLineParser::CommandLineParser(StringArray* args, bool xmenus)
     cmdLineVerb[ctr++] = getCmdLineDataStruct("interactive", &setInteractive, NOARG, NULL);
     cmdLineVerb[ctr++] = getCmdLineDataStruct("batch", &setBatch, NOARG, NULL);
     // Mark change 16-feb-2007 I added options for doing LE and iteration
-    cmdLineVerb[ctr++] = getCmdLineDataStruct("iteration", &setDoIteration, 
+    cmdLineVerb[ctr++] = getCmdLineDataStruct("iteration", &setDoIteration,
                                            OPTARG, iterationArg);
     cmdLineVerb[ctr++] = getCmdLineDataStruct("", NULL, -1, NULL);
     // FIXME: final ctr index is hardcoded in CommandLineParser.h
-    
+
     // NOTE Start back here!!!!!!!!!!!!
     ctr=0;
     cmdLinePara[ctr++] = getCmdLineDataStruct("type", &setType, OPTARG, typeArg);
@@ -328,9 +328,9 @@ CommandLineParser::~CommandLineParser()
     delete outputArg;
     delete outputTreeArg;
     delete outputSecStrArg;
-    delete cmdLineType;        
+    delete cmdLineType;
     delete params;
-    delete paramArg;   
+    delete paramArg;
     delete clusterAlgorithm;
     delete iterationArg;
 }
@@ -343,29 +343,29 @@ void CommandLineParser::run(StringArray* args, bool xmenus, ClustalWInput *input
             logObject->logMsg("Parsing Command line Parameters!\n");
         }
     #endif
-        
+
     int i, j, temp;
     //int len;
     //static int cl_error_code = 0;
     //char path[FILENAMELEN];
     int numparams = 0;
 
-    bool doAlign, doConvert, doAlignUseOldTree, doGuideTreeOnly, doTreeFromAlign, 
+    bool doAlign, doConvert, doAlignUseOldTree, doGuideTreeOnly, doTreeFromAlign,
          doBootstrap, doProfileAlign, doSomething;
 
     /*if (!xmenus && userParameters->getDisplayInfo())
     {
-        cout <<  std::endl << std::endl << std::endl;
-        cout << " CLUSTAL " << userParameters->getRevisionLevel() 
+        Rcpp::Rcout <<  std::endl << std::endl << std::endl;
+        Rcpp::Rcout << " CLUSTAL " << userParameters->getRevisionLevel()
              << " Multiple Sequence Alignments" << std::endl << std::endl << std::endl;
     }*/
 
     doAlign = doConvert = doAlignUseOldTree = doGuideTreeOnly = doTreeFromAlign = false;
-    doBootstrap = doProfileAlign = doSomething = false; 
-    
+    doBootstrap = doProfileAlign = doSomething = false;
+
     numparams = checkParam(args, params, paramArg);
-    
-    if (numparams < 0) 
+
+    if (numparams < 0)
     {
     	throw 1;
     }
@@ -374,8 +374,8 @@ void CommandLineParser::run(StringArray* args, bool xmenus, ClustalWInput *input
 //*** Note: This part of the code is to print out the options with  ****
 //*** their expected value types/ranges                             ****
 //**********************************************************************
-    
-    if(setHelp != -1) 
+
+    if(setHelp != -1)
     {
         userParameters->setHelpFlag(true);
         if (xmenus) {
@@ -387,7 +387,7 @@ void CommandLineParser::run(StringArray* args, bool xmenus, ClustalWInput *input
         }
     }
 
-    if(setFullHelp != -1) 
+    if(setFullHelp != -1)
     {
         userParameters->setFullHelpFlag(true);
         if (xmenus) {
@@ -399,7 +399,7 @@ void CommandLineParser::run(StringArray* args, bool xmenus, ClustalWInput *input
         }
     }
 
-    if(setQuiet != -1) 
+    if(setQuiet != -1)
     {
         userParameters->setDisplayInfo(false);
         utilityObject->beQuiet(true);
@@ -408,20 +408,20 @@ void CommandLineParser::run(StringArray* args, bool xmenus, ClustalWInput *input
         utilityObject->beQuiet(false);
     }
 
-        
+
     // need to check maxseqlen before reading input file
     if (setMaxSeqLen != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting max allowed sequence length.");
-            }    
-        #endif      
+            }
+        #endif
         temp = 0;
         if((*paramArg)[setMaxSeqLen].length() > 0)
         {
-            if (sscanf((*paramArg)[setMaxSeqLen].c_str(),"%d", &temp) != 1) 
+            if (sscanf((*paramArg)[setMaxSeqLen].c_str(),"%d", &temp) != 1)
             {
                 reportBadOptionAndExit("maxseqlen", "integer");
             }
@@ -432,14 +432,14 @@ void CommandLineParser::run(StringArray* args, bool xmenus, ClustalWInput *input
         }
         else
         {
-            cerr << "Cannot use a negative value for maximum sequence length. Using default"  << std::endl;
+            Rcpp::Rcerr << "Cannot use a negative value for maximum sequence length. Using default"  << std::endl;
         }
-        
+
     }
 
     if (setStatsFile != -1)
     {
-        if((*paramArg)[setStatsFile].length() > 0) 
+        if((*paramArg)[setStatsFile].length() > 0)
         {
             statsObject->setEnabled(true);
             statsObject->setStatsFile((*paramArg)[setStatsFile]);
@@ -457,17 +457,17 @@ void CommandLineParser::run(StringArray* args, bool xmenus, ClustalWInput *input
     {
         userParameters->setDoRemoveFirstIteration(true);
     }*/
-    
+
     if(setDoIteration != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting iteration parameter.");
             }
         #endif
-        if((*paramArg)[setDoIteration].length() > 0) 
-        { 
+        if((*paramArg)[setDoIteration].length() > 0)
+        {
             temp = findMatch((*paramArg)[setDoIteration], iterationArg, 3);
             if(temp == 0)
             {
@@ -478,82 +478,82 @@ void CommandLineParser::run(StringArray* args, bool xmenus, ClustalWInput *input
                 userParameters->setDoRemoveFirstIteration(ALIGNMENT);
             }
             else if(temp == 2)
-            {               
+            {
                 userParameters->setDoRemoveFirstIteration(NONE);
             }
             else
             {
-                cerr << "Unknown option for iteration. Setting to NONE"  << std::endl;
+                Rcpp::Rcerr << "Unknown option for iteration. Setting to NONE"  << std::endl;
                 userParameters->setDoRemoveFirstIteration(NONE);
             }
         }
-    }    
-    if(setOptions != -1) 
+    }
+    if(setOptions != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("Displaying options!\n");
             }
         #endif
-                
-        cout << "clustalw option list:-" << std::endl;
-        
-        for (i = 0; cmdLineVerb[i].str[0] != '\0'; i++) 
+
+        Rcpp::Rcout << "clustalw option list:-" << std::endl;
+
+        for (i = 0; cmdLineVerb[i].str[0] != '\0'; i++)
         {
-            cout << "\t\t" << default_commandsep << cmdLineVerb[i].str 
+            Rcpp::Rcout << "\t\t" << default_commandsep << cmdLineVerb[i].str
                  << (*cmdLineType)[cmdLineVerb[i].type];
 
-            if (cmdLineVerb[i].type == OPTARG) 
+            if (cmdLineVerb[i].type == OPTARG)
             {
                 if (cmdLineVerb[i].arg !=  NULL)
-                {     
-                    cout << "=" << cmdLineVerb[i].arg->at(0);
+                {
+                    Rcpp::Rcout << "=" << cmdLineVerb[i].arg->at(0);
                     for(j = 1; j < (int)cmdLineVerb[i].arg->size() - 1; j++)
                     {
-                        cout << " OR " << cmdLineVerb[i].arg->at(j);
+                        Rcpp::Rcout << " OR " << cmdLineVerb[i].arg->at(j);
                     }
                 }
             }
-            cout << std::endl;
+            Rcpp::Rcout << std::endl;
         }
-        for (i = 0; cmdLineFile[i].str[0] != '\0'; i++) 
+        for (i = 0; cmdLineFile[i].str[0] != '\0'; i++)
         {
-            cout<<"\t\t" << default_commandsep << cmdLineFile[i].str 
+            Rcpp::Rcout<<"\t\t" << default_commandsep << cmdLineFile[i].str
                 << (*cmdLineType)[cmdLineFile[i].type];
-                
-            if (cmdLineFile[i].type == OPTARG) 
+
+            if (cmdLineFile[i].type == OPTARG)
             {
                 if (cmdLineFile[i].arg !=  NULL)
                 {
-                    
-                    cout << "=" << cmdLineFile[i].arg->at(0);
+
+                    Rcpp::Rcout << "=" << cmdLineFile[i].arg->at(0);
                     for(j = 1; j < (int)cmdLineFile[i].arg->size() - 1; j++)
                     {
-                        cout << " OR " << cmdLineFile[i].arg->at(j);
+                        Rcpp::Rcout << " OR " << cmdLineFile[i].arg->at(j);
                     }
                 }
             }
-            cout << std::endl;
+            Rcpp::Rcout << std::endl;
         }
-        for (i = 0; cmdLinePara[i].str[0] != '\0'; i++) 
+        for (i = 0; cmdLinePara[i].str[0] != '\0'; i++)
         {
-            cout <<"\t\t" << default_commandsep << cmdLinePara[i].str 
+            Rcpp::Rcout <<"\t\t" << default_commandsep << cmdLinePara[i].str
                  << (*cmdLineType)[cmdLinePara[i].type];
-     
-            if (cmdLinePara[i].type == OPTARG) 
+
+            if (cmdLinePara[i].type == OPTARG)
             {
                 if (cmdLinePara[i].arg !=  NULL)
                 {
-                    
-                    cout << "=" << cmdLinePara[i].arg->at(0);
+
+                    Rcpp::Rcout << "=" << cmdLinePara[i].arg->at(0);
                     for(j = 1; j < (int)cmdLinePara[i].arg->size() - 1; j++)
                     {
-                        cout << " OR " << cmdLinePara[i].arg->at(j);
+                        Rcpp::Rcout << " OR " << cmdLinePara[i].arg->at(j);
                     }
                 }
             }
-            cout << std::endl;
+            Rcpp::Rcout << std::endl;
         }
         throw 1;;
     }
@@ -567,34 +567,34 @@ void CommandLineParser::run(StringArray* args, bool xmenus, ClustalWInput *input
     if(setType != -1)
     {
         string msg;
-        if(((*paramArg)[setType].length()) > 0) 
+        if(((*paramArg)[setType].length()) > 0)
         {
             temp = findMatch((*paramArg)[setType], typeArg, 2);
-            if(temp == 0) 
-            { 
+            if(temp == 0)
+            {
                 userParameters->setDNAFlag(false);
                 userParameters->setExplicitDNAFlag(true);
                 /*msg = "Sequence type explicitly set to Protein";
-		  cout << msg << std::endl;*/
+		  Rcpp::Rcout << msg << std::endl;*/
             }
-            else if(temp == 1) 
+            else if(temp == 1)
             {
                 /*msg = "Sequence type explicitly set to DNA";
-		  cout << msg << std::endl;*/
+		  Rcpp::Rcout << msg << std::endl;*/
                 userParameters->setDNAFlag(true);
                 userParameters->setExplicitDNAFlag(true);
             }
             else
             {
                 msg = "Unknown sequence type " + (*paramArg)[setType];
-                cerr << std::endl << msg << endl;
+                Rcpp::Rcerr << std::endl << msg << endl;
             }
-            #if DEBUGFULL 
+            #if DEBUGFULL
                 if(logObject && DEBUGLOG)
                 {
                     logObject->logMsg(msg);
                 }
-            #endif            
+            #endif
         }
     }
 
@@ -605,7 +605,7 @@ void CommandLineParser::run(StringArray* args, bool xmenus, ClustalWInput *input
 //   by /infile=fname.                                                      *
 //***************************************************************************
 // JULIE - moved to checkParam()
-  //  if(paramstr[0] != '/') 
+  //  if(paramstr[0] != '/')
   //  {
   //      strcpy(seqName, params[0]);
   //  }
@@ -615,26 +615,26 @@ void CommandLineParser::run(StringArray* args, bool xmenus, ClustalWInput *input
 //  Look for /infile=file.ext on the command line *
 //*************************************************
 
-    if(setInfile != -1) 
+    if(setInfile != -1)
     {
-        if((*paramArg)[setInfile].length() <= 0) 
+        if((*paramArg)[setInfile].length() <= 0)
         {
             exitWithErrorMsg("Bad sequence file name");
         }
         userParameters->setSeqName((*paramArg)[setInfile]);
 
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 string msg = "Sequence file name (seqName) has been set to ";
-                msg += userParameters->getSeqName();             
+                msg += userParameters->getSeqName();
                 logObject->logMsg(msg);
             }
-        #endif        
+        #endif
     }
-    
+
     // NOTE keep an eye on this part to see if it works.
-    if(userParameters->getSeqName() != "") 
+    if(userParameters->getSeqName() != "")
     {
         // NOTE I will need to cheack if it has been successful before setting
         // doSomething to true.
@@ -660,29 +660,29 @@ void CommandLineParser::run(StringArray* args, bool xmenus, ClustalWInput *input
 //********************************************************
 
 
-    if(setProfile1 != -1) 
+    if(setProfile1 != -1)
     {
-        if((*paramArg)[setProfile1].length() <= 0) 
+        if((*paramArg)[setProfile1].length() <= 0)
         {
             exitWithErrorMsg("Bad profile 1 file name");
         }
-                
+
         clustalObj->profile1Input((*paramArg)[setProfile1]);
     }
 
-    if(setProfile2 != -1) 
+    if(setProfile2 != -1)
     {
-        if((*paramArg)[setProfile2].length() <= 0) 
+        if((*paramArg)[setProfile2].length() <= 0)
         {
             exitWithErrorMsg("Bad profile 2 file name");
         }
-        if(userParameters->getProfile1Empty()) 
+        if(userParameters->getProfile1Empty())
         {
             exitWithErrorMsg("Only 1 profile file (profile 2) specified.");
         }
-        
+
         clustalObj->profile2Input((*paramArg)[setProfile2]);
-        doSomething = doProfileAlign = true; 
+        doSomething = doProfileAlign = true;
     }
 
 //************************************************************************
@@ -698,13 +698,13 @@ void CommandLineParser::run(StringArray* args, bool xmenus, ClustalWInput *input
     {
         userParameters->setInteractive(true);
         if (setQuiet!=-1) {
-            cout << "interactive menu: overriding " << default_commandsep << "quiet" << std::endl;
+            Rcpp::Rcout << "interactive menu: overriding " << default_commandsep << "quiet" << std::endl;
             userParameters->setDisplayInfo(true);
             utilityObject->beQuiet(false);
         }
     }
 
-    if (userParameters->getInteractive()) 
+    if (userParameters->getInteractive())
     {
         setTree = -1;
         setBootstrap = -1;
@@ -718,35 +718,35 @@ void CommandLineParser::run(StringArray* args, bool xmenus, ClustalWInput *input
 
     if(setTree != -1 )
     {
-        if(userParameters->getEmpty()) 
+        if(userParameters->getEmpty())
         {
             exitWithErrorMsg("Cannot draw tree.  No input alignment file");
         }
         else
-        { 
+        {
             doTreeFromAlign = true;
         }
     }
 
     if(setBootstrap != -1)
     {
-        if(userParameters->getEmpty()) 
+        if(userParameters->getEmpty())
         {
             exitWithErrorMsg("Cannot bootstrap tree. No input alignment file");
         }
-        else 
+        else
         {
             temp = 0;
             // Check if there is anything in the string!
             if((*paramArg)[setBootstrap].length() > 0)
             {
-                if (sscanf((*paramArg)[setBootstrap].c_str(), "%d", &temp) != 1) 
+                if (sscanf((*paramArg)[setBootstrap].c_str(), "%d", &temp) != 1)
                 {
                     reportBadOptionAndExit("bootstrap", "integer");
                 }
             }
             if(temp > 0)
-            {    
+            {
                 userParameters->setBootNumTrials(temp);
             }
             doBootstrap = true;
@@ -755,41 +755,41 @@ void CommandLineParser::run(StringArray* args, bool xmenus, ClustalWInput *input
 
     if(setAlign != -1)
     {
-        if(userParameters->getEmpty()) 
+        if(userParameters->getEmpty())
         {
             exitWithErrorMsg("Cannot align sequences.  No input file");
         }
         else
-        { 
+        {
             doAlign = true;
         }
     }
 
     if(setConvert != -1)
     {
-        if(userParameters->getEmpty()) 
+        if(userParameters->getEmpty())
         {
             exitWithErrorMsg("Cannot convert sequences.  No input file");
         }
         else
-        { 
+        {
             doConvert = true;
         }
     }
- 
+
     if(setUseTree != -1)
     {
-        if(userParameters->getEmpty()) 
+        if(userParameters->getEmpty())
         {
             exitWithErrorMsg("Cannot align sequences.  No input file");
         }
-        else  
+        else
         {
-           if((*paramArg)[setUseTree].length() == 0) 
+           if((*paramArg)[setUseTree].length() == 0)
            {
                exitWithErrorMsg("Cannot align sequences.  No tree file specified");
            }
-           else 
+           else
            {
                phylipTreeName = (*paramArg)[setUseTree];
            }
@@ -800,17 +800,17 @@ void CommandLineParser::run(StringArray* args, bool xmenus, ClustalWInput *input
 
     if(setNewTree != -1)
     {
-        if(userParameters->getEmpty()) 
+        if(userParameters->getEmpty())
         {
             exitWithErrorMsg("Cannot align sequences.  No input file");
         }
-        else  
+        else
         {
-            if((*paramArg)[setNewTree].length() == 0) 
+            if((*paramArg)[setNewTree].length() == 0)
             {
                 exitWithErrorMsg("Cannot align sequences.  No tree file specified");
             }
-            else 
+            else
             {
                 phylipTreeName = (*paramArg)[setNewTree];
             }
@@ -818,24 +818,24 @@ void CommandLineParser::run(StringArray* args, bool xmenus, ClustalWInput *input
             doGuideTreeOnly = true;
         }
     }
- 
+
     if(setUseTree1 != -1)
     {
-        if(userParameters->getProfile1Empty()) 
+        if(userParameters->getProfile1Empty())
         {
             exitWithErrorMsg("Cannot align profiles.  No input file");
         }
-        else if(profileType == SEQUENCE) 
+        else if(profileType == SEQUENCE)
         {
             reportInvalidOptionAndExit("usetree1");
         }
-        else  
+        else
         {
-            if((*paramArg)[setUseTree1].length() == 0) 
+            if((*paramArg)[setUseTree1].length() == 0)
             {
                 exitWithErrorMsg("Cannot align profiles.  No tree file specified");
             }
-            else 
+            else
             {
                 p1TreeName = (*paramArg)[setUseTree1];
             }
@@ -846,45 +846,45 @@ void CommandLineParser::run(StringArray* args, bool xmenus, ClustalWInput *input
 
     if(setNewTree1 != -1)
     {
-        if(userParameters->getProfile1Empty()) 
+        if(userParameters->getProfile1Empty())
         {
             exitWithErrorMsg("Cannot align profiles.  No input file");
         }
-        else if(profileType == SEQUENCE) 
+        else if(profileType == SEQUENCE)
         {
             reportInvalidOptionAndExit("newtree1");
         }
-        else  
+        else
         {
-           if((*paramArg)[setNewTree1].length() == 0) 
+           if((*paramArg)[setNewTree1].length() == 0)
            {
                exitWithErrorMsg("Cannot align profiles. No tree file specified");
            }
-           else 
+           else
            {
                 p1TreeName = (*paramArg)[setNewTree1];
            }
            userParameters->setNewTree1File(true);
         }
     }
- 
+
     if(setUseTree2 != -1)
     {
-        if(userParameters->getProfile2Empty()) 
+        if(userParameters->getProfile2Empty())
         {
             exitWithErrorMsg("Cannot align profiles.  No input file");
         }
-        else if(profileType == SEQUENCE) 
+        else if(profileType == SEQUENCE)
         {
             reportInvalidOptionAndExit("usetree2");
         }
-        else  
+        else
         {
-            if((*paramArg)[setUseTree2].length() == 0) 
+            if((*paramArg)[setUseTree2].length() == 0)
             {
                 exitWithErrorMsg("Cannot align profiles.  No tree file specified");
             }
-            else 
+            else
             {
                 p2TreeName = (*paramArg)[setUseTree2];
             }
@@ -895,21 +895,21 @@ void CommandLineParser::run(StringArray* args, bool xmenus, ClustalWInput *input
 
     if(setNewTree2 != -1)
     {
-        if(userParameters->getProfile2Empty()) 
+        if(userParameters->getProfile2Empty())
         {
             exitWithErrorMsg("Cannot align profiles.  No input file");
         }
-        else if(profileType == SEQUENCE) 
+        else if(profileType == SEQUENCE)
         {
             reportInvalidOptionAndExit("newtree2");
         }
-        else  
+        else
         {
-            if((*paramArg)[setNewTree2].length() == 0) 
+            if((*paramArg)[setNewTree2].length() == 0)
             {
                 exitWithErrorMsg("Cannot align profiles.  No tree file specified");
             }
-            else 
+            else
             {
                 p2TreeName = (*paramArg)[setNewTree2];
             }
@@ -918,78 +918,78 @@ void CommandLineParser::run(StringArray* args, bool xmenus, ClustalWInput *input
     }
 
 
-    if( (!doTreeFromAlign) && (!doBootstrap) && (!userParameters->getEmpty()) && (!doProfileAlign) && 
+    if( (!doTreeFromAlign) && (!doBootstrap) && (!userParameters->getEmpty()) && (!doProfileAlign) &&
       (!doAlignUseOldTree) && (!doGuideTreeOnly) && (!doConvert))
-    { 
+    {
         doAlign = true;
     }
 
-//** ? /quicktree 
+//** ? /quicktree
     if(setQuickTree != -1)
     {
         userParameters->setQuickPairAlign(true);
     }
 
-    // NOTE 
-    if(userParameters->getDNAFlag()) 
+    // NOTE
+    if(userParameters->getDNAFlag())
     {
         userParameters->setDNAParams();
     }
-    else 
+    else
     {
         userParameters->setProtParams();
     }
-    
-    if(userParameters->getInteractive()) 
+
+    if(userParameters->getInteractive())
     {
         if (!xmenus)
-        { 
+        {
             userParameters->setMenuFlag(true);
         }
         return;
     }
 
 
-    if(!doSomething) 
+    if(!doSomething)
     {
         exitWithErrorMsg("No input file(s) specified");
     }
 
 
-    
+
 
 //***************************************************************************
 // Now do whatever has been requested ***************************************
 //***************************************************************************
 // NOTE This part is obviously not done yet! Functions not working in Clustal!!!!
-    #if DEBUGFULL 
+    #if DEBUGFULL
         if(logObject && DEBUGLOG)
         {
             logObject->logMsg("Now doing the requested task(s)");
         }
     #endif
-        
-    if(doProfileAlign) 
+
+    if(doProfileAlign)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Doing profile align");
             }
-        #endif        
+        #endif
         if (profileType == PROFILE)
         {
-            #if DEBUGFULL 
+            #if DEBUGFULL
                 if(logObject && DEBUGLOG)
                 {
                     logObject->logMsg("        Calling Profile_align in clustal obj!");
                 }
-            #endif            
+            #endif
             clustalObj->profileAlign(&p1TreeName, &p2TreeName, output);
         }
         else
         {
-            #if DEBUGFULL 
+            #if DEBUGFULL
                 if(logObject && DEBUGLOG)
                 {
                 logObject->logMsg("        Calling sequencesAlignToProfile in clustal obj!");
@@ -1001,74 +1001,74 @@ void CommandLineParser::run(StringArray* args, bool xmenus, ClustalWInput *input
 
     else if(doAlign)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Doing Alignment");
             }
         #endif
-        //cout << "align: " << &phylipTreeName;
+        //Rcpp::Rcout << "align: " << &phylipTreeName;
         clustalObj->align(&phylipTreeName, output);
     }
 
-    else if(doConvert) 
+    else if(doConvert)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Doing filetype conversion");
             }
         #endif
-        //cout << "align: " << &phylipTreeName;
+        //Rcpp::Rcout << "align: " << &phylipTreeName;
         clustalObj->outputNow(output);
     }
 
     else if (doAlignUseOldTree)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Doing Alignment only");
             }
-        #endif                 
+        #endif
         clustalObj->doAlignUseOldTree(&phylipTreeName, output);
     }
 
     else if(doGuideTreeOnly)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Doing tree only");
             }
-        #endif               
+        #endif
         clustalObj->doGuideTreeOnly(&phylipTreeName);
     }
 
     else if(doTreeFromAlign)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
-            {   
+            {
                 logObject->logMsg("    Doing tree");
             }
-        #endif                  
+        #endif
         clustalObj->phylogeneticTree(&phylipTreeName, &clustalTreeName, &distTreeName,
                                      &nexusTreeName, pimName);
     }
 
     else if(doBootstrap)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Doing Bootstrap");
             }
-        #endif            
+        #endif
             clustalObj->bootstrapTree(&phylipTreeName, &clustalTreeName, &nexusTreeName);
     }
 
-    //cout << std::endl;
+    //Rcpp::Rcout << std::endl;
     return;
 }
 
@@ -1082,17 +1082,17 @@ int CommandLineParser::checkParam(StringArray* args, StringArray* params,
     vector<int> match;
     match.resize(MAXARGS);
     bool name1 = false;
-    
-    #if DEBUGFULL 
+
+    #if DEBUGFULL
         if(logObject && DEBUGLOG)
         {
             logObject->logMsg("Checking Parameters!");
         }
     #endif
-        
+
     if(args->size() == 0) // NOTE I think this will work better!
     {
-        cout << "The argument list is empty\n";
+        Rcpp::Rcout << "The argument list is empty\n";
         return 0;
     }
 
@@ -1107,8 +1107,8 @@ int CommandLineParser::checkParam(StringArray* args, StringArray* params,
     {
         params->push_back((*args)[0].substr(1));
     }
-    
-    for (i = 1; i < (int)args->size(); i++) 
+
+    for (i = 1; i < (int)args->size(); i++)
     {
         params->push_back(""); // Empty string!
 
@@ -1128,10 +1128,10 @@ int CommandLineParser::checkParam(StringArray* args, StringArray* params,
     // params are now setup
     // extract paramArgs in next step
 
-    
+
     if ((int)args->size() > MAXARGS)
     {
-        cerr << "Error: too many command line arguments\n";
+        Rcpp::Rcerr << "Error: too many command line arguments\n";
         return(-1);
     }
     /*
@@ -1143,7 +1143,7 @@ int CommandLineParser::checkParam(StringArray* args, StringArray* params,
         userParameters->setSeqName((*params)[0]);
         /* Andreas Wilm (UCD) 2008-03-19:
            conversion nowadays unnecessary and makes trouble
-           
+
            /@  JULIE
            convert to lower case now
            @/
@@ -1151,27 +1151,27 @@ int CommandLineParser::checkParam(StringArray* args, StringArray* params,
            if(logObject && DEBUGLOG)
            {
            logObject->logMsg("Converting seqName to lower case.\n");
-           }         
+           }
            string temp = ConvertStringToLower(userParameters->getSeqName());
            userParameters->setSeqName(temp);
            #endif
         */
         nameFirst = 1;
     }
-  
+
     // NOTE if name first we should start at the 2nd element in paramArg
     // This loop is used to set up the paramArg vector!
-    for (i = nameFirst; i < num; i++) 
+    for (i = nameFirst; i < num; i++)
     {
         bool has_arg=false;
         paramArg->push_back(""); // Push a new empty string on.
         len = (*params)[i].length();
         for(j = 0; j < len; j++)
         {
-            if((*params)[i][j] == '=') 
+            if((*params)[i][j] == '=')
             {
                 has_arg=true;
-                (*paramArg)[i].assign((*params)[i].substr(j + 1, len - j -1));               
+                (*paramArg)[i].assign((*params)[i].substr(j + 1, len - j -1));
                 // Trim off the bit from the '=' to the end, and put all in lower case!
                 (*params)[i].assign(ConvertStringToLower((*params)[i].substr(0, j)));
                 break;
@@ -1180,32 +1180,32 @@ int CommandLineParser::checkParam(StringArray* args, StringArray* params,
         // Andreas Wilm (UCD): 2008-03-19:
         // this convert nonarg params to lowercase (-QuIcKtReE etc)
         if (!has_arg) {
-            (*params)[i].assign(ConvertStringToLower((*params)[i]));          
+            (*params)[i].assign(ConvertStringToLower((*params)[i]));
         }
     }
 
     if(paramArg->size() != params->size())
     {
-        cerr << "There is something wrong with arguments. Lengths different\n";
+        Rcpp::Rcerr << "There is something wrong with arguments. Lengths different\n";
         return -1;
     }
-    
+
     /*
       for each parameter given on the command line, first search the list of recognised
       optional parameters....
     */
-    for (i = 0; i < num; i++) 
+    for (i = 0; i < num; i++)
     {
         if ((i == 0) && (name1 == true))
-        { 
+        {
             continue;
         }
         j = 0;
         match[i] = -1;
-        for(;;) 
+        for(;;)
         {
             if (cmdLinePara[j].str[0] == '\0')
-            { 
+            {
                 // Think this means we have not found it!
                 break;
             }
@@ -1213,15 +1213,15 @@ int CommandLineParser::checkParam(StringArray* args, StringArray* params,
             {
                 match[i] = j; // Match has been found!
                 *cmdLinePara[match[i]].flag = i;
-                
-                if ((cmdLinePara[match[i]].type != NOARG) && ((*paramArg)[i] == "")) 
+
+                if ((cmdLinePara[match[i]].type != NOARG) && ((*paramArg)[i] == ""))
                 {
-                    cerr <<  "Error: parameter required for " << default_commandsep << (*params)[i] << endl;
+                    Rcpp::Rcerr <<  "Error: parameter required for " << default_commandsep << (*params)[i] << endl;
                     return -1;
-                
+
                 /* Andreas Wilm (UCD) 2008-03-19:
                  *  conversion nowadays unnecessary and breaks things
-                 *  
+                 *
                  * //  JULIE
                  * //    convert parameters to lower case now, unless the parameter is a fileName
                  * #ifdef UNIX
@@ -1230,7 +1230,7 @@ int CommandLineParser::checkParam(StringArray* args, StringArray* params,
                 */
 
                 } else if (cmdLinePara[match[i]].type != FILARG && (*paramArg)[i] != "") {
-                    if ((*paramArg)[i] != "") 
+                    if ((*paramArg)[i] != "")
                     {
                         // lowercase arg if not a filename to support mixed case
                         (*paramArg)[i].assign(ConvertStringToLower((*paramArg)[i]));
@@ -1241,36 +1241,36 @@ int CommandLineParser::checkParam(StringArray* args, StringArray* params,
             j++;
         }
     }
-    
+
     /*
-      ....then the list of recognised input files,.... 
+      ....then the list of recognised input files,....
     */
-    for (i = 0; i < num; i++) 
+    for (i = 0; i < num; i++)
     {
-        if ((i == 0) && (name1 == true)) 
+        if ((i == 0) && (name1 == true))
         {
             continue;
         }
-        if (match[i] != -1) 
+        if (match[i] != -1)
         {
             continue;
         }
         j = 0;
-        for(;;) 
+        for(;;)
         {
-            if (cmdLineFile[j].str[0] == '\0') 
+            if (cmdLineFile[j].str[0] == '\0')
             {
                 // Have not found a match!
                 break;
             }
-            if (!(*params)[i].compare(cmdLineFile[j].str)) 
+            if (!(*params)[i].compare(cmdLineFile[j].str))
             {
                 match[i] = j;
                 *cmdLineFile[match[i]].flag = i;
                 if ((cmdLineFile[match[i]].type != NOARG) &&
-                                    ((*paramArg)[i] == "")) 
+                                    ((*paramArg)[i] == ""))
                 {
-                    cerr << "Error: parameter required for " << default_commandsep << (*params)[i] << endl;
+                    Rcpp::Rcerr << "Error: parameter required for " << default_commandsep << (*params)[i] << endl;
                     return -1;
                 }
                 break;
@@ -1278,35 +1278,35 @@ int CommandLineParser::checkParam(StringArray* args, StringArray* params,
             j++;
         }
     }
-    
+
     /*
-      ....and finally the recognised verbs. 
+      ....and finally the recognised verbs.
     */
-    for (i = 0; i < num; i++) 
+    for (i = 0; i < num; i++)
     {
-        if ((i == 0) && (name1 == true)) 
+        if ((i == 0) && (name1 == true))
         {
             continue;
         }
-        if (match[i] != -1) 
+        if (match[i] != -1)
         {
             continue;
         }
         j = 0;
-        for(;;) 
+        for(;;)
         {
-            if (cmdLineVerb[j].str[0] == '\0') 
+            if (cmdLineVerb[j].str[0] == '\0')
             {
                 // Havent found it!
                 break;
             }
-            if (!(*params)[i].compare(cmdLineVerb[j].str)) 
+            if (!(*params)[i].compare(cmdLineVerb[j].str))
             {
                 match[i] = j;
                 *cmdLineVerb[match[i]].flag = i;
-                if ((cmdLineVerb[match[i]].type != NOARG) && ((*paramArg)[i] == "")) 
+                if ((cmdLineVerb[match[i]].type != NOARG) && ((*paramArg)[i] == ""))
                 {
-                    cerr << "Error: parameter required for " << default_commandsep << (*params)[i] << endl;
+                    Rcpp::Rcerr << "Error: parameter required for " << default_commandsep << (*params)[i] << endl;
                     return -1;
                 }
                 break;
@@ -1318,11 +1318,11 @@ int CommandLineParser::checkParam(StringArray* args, StringArray* params,
     /*
       check for any unrecognised parameters.
     */
-    for (i = 0; i < num; i++) 
+    for (i = 0; i < num; i++)
     {
-        if (match[i] == -1) 
+        if (match[i] == -1)
         {
-            cerr << "Error: unknown option " << default_commandsep << (*params)[i] << endl;
+            Rcpp::Rcerr << "Error: unknown option " << default_commandsep << (*params)[i] << endl;
             return -1;
         }
     }
@@ -1338,30 +1338,30 @@ void CommandLineParser::setOptionalParam(Rcpp::NumericMatrix substitutionMatrix)
     float ftemp;
     //char tstr[100];
 
-    #if DEBUGFULL 
+    #if DEBUGFULL
         if(logObject && DEBUGLOG)
         {
             logObject->logMsg("Setting optional parameters.");
         }
-    #endif      
+    #endif
     //****************************************************************************
     //* look for parameters on command line  e.g. gap penalties, k-tuple etc.    *
     //****************************************************************************
-  
-    // Mark change 16-2-2007. 
-    
+
+    // Mark change 16-2-2007.
+
     if(setNumIterations != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting num iterations parameter.");
-            }    
-        #endif      
+            }
+        #endif
         temp = 0;
         if((*paramArg)[setNumIterations].length() > 0)
         {
-            if (sscanf((*paramArg)[setNumIterations].c_str(),"%d", &temp) != 1) 
+            if (sscanf((*paramArg)[setNumIterations].c_str(),"%d", &temp) != 1)
             {
                 reportBadOptionAndExit("numiter", "int");
                 temp = 0;
@@ -1377,59 +1377,59 @@ void CommandLineParser::setOptionalParam(Rcpp::NumericMatrix substitutionMatrix)
         }
     }
 
-    
+
     //** ? /score=percent or /score=absolute *
     if(setScore != -1)
-    {    
-        if((*paramArg)[setScore].length() > 0) 
+    {
+        if((*paramArg)[setScore].length() > 0)
         {
             temp = findMatch((*paramArg)[setScore], scoreArg, 2);
             if(temp == 0)
             {
                 userParameters->setPercent(true);
-                #if DEBUGFULL 
+                #if DEBUGFULL
                     if(logObject && DEBUGLOG)
                     {
                         logObject->logMsg("    Setting score parameter = percent");
                     }
-                #endif                 
+                #endif
             }
             else if(temp == 1)
             {
                 userParameters->setPercent(false);
-                #if DEBUGFULL 
+                #if DEBUGFULL
                     if(logObject && DEBUGLOG)
                     {
                         logObject->logMsg("    Setting score parameter = absolute");
                     }
-                #endif                 
+                #endif
             }
             else
             {
-                cerr << "\nUnknown SCORE type: " << (*paramArg)[setScore] << endl;
-                #if DEBUGFULL 
+                Rcpp::Rcerr << "\nUnknown SCORE type: " << (*paramArg)[setScore] << endl;
+                #if DEBUGFULL
                     if(logObject && DEBUGLOG)
                     {
                         logObject->logMsg("    problem setting score type!!!!!");
                     }
-                #endif                
+                #endif
             }
         }
     }
     // NOTE I decided to stay with sscanf for getting the int. Options in c++ no better.
     //** ? /seed=n *
-    if(setSeed != -1) 
+    if(setSeed != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting seed parameter.");
-            }    
-        #endif      
+            }
+        #endif
         temp = 0;
         if((*paramArg)[setSeed].length() > 0)
         {
-            if (sscanf((*paramArg)[setSeed].c_str(),"%d",&temp) != 1) 
+            if (sscanf((*paramArg)[setSeed].c_str(),"%d",&temp) != 1)
             {
                 reportBadOptionAndExit("seed", "integer");
             }
@@ -1438,20 +1438,20 @@ void CommandLineParser::setOptionalParam(Rcpp::NumericMatrix substitutionMatrix)
         {
             userParameters->setBootRanSeed(temp);
         }
-        //cout<< "\ntemp = " << temp << "; seed = " << userParameters->getBootRanSeed()
+        //Rcpp::Rcout<< "\ntemp = " << temp << "; seed = " << userParameters->getBootRanSeed()
         //    << ";\n";
     }
-  
+
     if(setTreeAlgorithm != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting clustering algorithm parameter.");
             }
         #endif
-        if((*paramArg)[setTreeAlgorithm].length() > 0) 
-        { 
+        if((*paramArg)[setTreeAlgorithm].length() > 0)
+        {
             temp = findMatch((*paramArg)[setTreeAlgorithm], clusterAlgorithm, 2);
             if(temp == 0)
             {
@@ -1463,27 +1463,27 @@ void CommandLineParser::setOptionalParam(Rcpp::NumericMatrix substitutionMatrix)
             }
             else
             {
-                cerr << "Unknown option for clustering algorithm. Using default\n";
+                Rcpp::Rcerr << "Unknown option for clustering algorithm. Using default\n";
                 userParameters->setClusterAlgorithm(NJ);
             }
         }
     }
-    
-    
+
+
     //** ? /output=PIR, GCG, GDE or PHYLIP *
     if(setOutput != -1)
     {
-        
-        #if DEBUGFULL 
+
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting output parameter.");
             }
-        #endif          
-        if((*paramArg)[setOutput].length() > 0) 
+        #endif
+        if((*paramArg)[setOutput].length() > 0)
         {
             temp = findMatch((*paramArg)[setOutput], outputArg, 7);
-            if (temp >= 0 && temp <= 6) 
+            if (temp >= 0 && temp <= 6)
             {
                 userParameters->setOutputClustal(false);
                 userParameters->setOutputGCG(false);
@@ -1493,15 +1493,15 @@ void CommandLineParser::setOptionalParam(Rcpp::NumericMatrix substitutionMatrix)
                 userParameters->setOutputNexus(false);
                 userParameters->setOutputFasta(false);
             }
-            switch (temp) 
+            switch (temp)
             {
-                case 0: // GCG 
+                case 0: // GCG
                     userParameters->setOutputGCG(true);
                     break;
-                case 1: // GDE 
+                case 1: // GDE
                     userParameters->setOutputGde(true);
                     break;
-                case 2: // PIR 
+                case 2: // PIR
                     userParameters->setOutputNbrf(true);
                     break;
                 case 3: // PHYLIP
@@ -1523,21 +1523,21 @@ void CommandLineParser::setOptionalParam(Rcpp::NumericMatrix substitutionMatrix)
             }
         }
     }
-    //** ? /outputtree=NJ or PHYLIP or DIST or NEXUS 
+    //** ? /outputtree=NJ or PHYLIP or DIST or NEXUS
     if(setOutputTree != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting outputtree parameter.");
-            }   
-        #endif           
-        if((*paramArg)[setOutputTree].length() > 0) 
+            }
+        #endif
+        if((*paramArg)[setOutputTree].length() > 0)
         {
             temp = findMatch((*paramArg)[setOutputTree], outputTreeArg, 4);
-            switch (temp) 
+            switch (temp)
             {
-                case 0: // NJ 
+                case 0: // NJ
                     userParameters->setOutputTreeClustal(true);
                     break;
                 case 1: // PHYLIP
@@ -1546,65 +1546,65 @@ void CommandLineParser::setOptionalParam(Rcpp::NumericMatrix substitutionMatrix)
                 case 2: // DIST
                     userParameters->setOutputTreeDistances(true);
                     break;
-                case 3: // NEXUS 
+                case 3: // NEXUS
                     userParameters->setOutputTreeNexus(true);
                     break;
                 default:
-                    cerr << "\nUnknown OUTPUT TREE type: " 
+                    Rcpp::Rcerr << "\nUnknown OUTPUT TREE type: "
                          << (*paramArg)[setOutputTree] << endl;
             }
         }
     }
-    
-    //** ? /profile (sets type of second input file to profile) 
+
+    //** ? /profile (sets type of second input file to profile)
     if(setProfile != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting profileType = PROFILE.");
-            }         
-        #endif 
+            }
+        #endif
         profileType = PROFILE;
     }
-  
+
     //** ? /sequences (sets type of second input file to list of sequences)
     if(setSequences != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting profileType = SEQUENCE.");
-            }         
+            }
         #endif
         profileType = SEQUENCE;
-    } 
-  
-  
+    }
+
+
     //** ? /ktuple=n
-    if(setKtuple != -1) 
+    if(setKtuple != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting ktup parameter.");
             }
-        #endif         
+        #endif
         _ktup = 0;
         if((*paramArg)[setKtuple].length() > 0)
         {
-            if (sscanf((*paramArg)[setKtuple].c_str(),"%d",&_ktup)!=1) 
+            if (sscanf((*paramArg)[setKtuple].c_str(),"%d",&_ktup)!=1)
             {
                 reportBadOptionAndExit("ktuple", "integer");
                 _ktup = 0;
             }
         }
-        
-        if(_ktup > 0) 
+
+        if(_ktup > 0)
         {
-            if(userParameters->getDNAFlag()) 
+            if(userParameters->getDNAFlag())
             {
-                if(_ktup <= 4) 
+                if(_ktup <= 4)
                 {
                     userParameters->setKtup(_ktup);
                     userParameters->setDNAKtup(_ktup);
@@ -1612,12 +1612,12 @@ void CommandLineParser::setOptionalParam(Rcpp::NumericMatrix substitutionMatrix)
                     userParameters->setDNAWindowGap(_ktup + 4);
                 } else {
                     // see comment in bug 185
-                    cerr << "WARNING: Ignoring invalid ktuple of " << _ktup <<  " (must be <=4)" << std::endl;
+                    Rcpp::Rcerr << "WARNING: Ignoring invalid ktuple of " << _ktup <<  " (must be <=4)" << std::endl;
                 }
             }
-            else 
+            else
             {
-                if(_ktup <= 2) 
+                if(_ktup <= 2)
                 {
                     userParameters->setKtup(_ktup);
                     userParameters->setAAKtup(_ktup);
@@ -1627,42 +1627,42 @@ void CommandLineParser::setOptionalParam(Rcpp::NumericMatrix substitutionMatrix)
                     // userParameters->setDNAWindowGap(_ktup + 4);
                 } else {
                     // see comment in bug 185
-                   cerr << "WARNING: Ignoring invalid ktuple of " << _ktup << " (must be <=2)" << std::endl;
+                   Rcpp::Rcerr << "WARNING: Ignoring invalid ktuple of " << _ktup << " (must be <=2)" << std::endl;
                 }
             }
         }
     }
-    
-    //** ? /pairgap=n 
-    if(setPairGap != -1) 
+
+    //** ? /pairgap=n
+    if(setPairGap != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting pairgap parameter.");
             }
-        #endif         
+        #endif
         _windgap = 0;
         if((*paramArg)[setPairGap].length() > 0)
         {
-            if (sscanf((*paramArg)[setPairGap].c_str(),"%d",&_windgap)!=1) 
+            if (sscanf((*paramArg)[setPairGap].c_str(),"%d",&_windgap)!=1)
             {
                 reportBadOptionAndExit("pairgap", "integer");
                 _windgap = 0;
             }
             if(_windgap > 0)
             {
-                if(userParameters->getDNAFlag()) 
+                if(userParameters->getDNAFlag())
                 {
-                    if(_windgap > userParameters->getKtup()) 
+                    if(_windgap > userParameters->getKtup())
                     {
                         userParameters->setWindowGap(_windgap);
                         userParameters->setDNAWindowGap(_windgap);
                     }
                 }
-                else 
+                else
                 {
-                    if(_windgap > userParameters->getKtup()) 
+                    if(_windgap > userParameters->getKtup())
                     {
                         userParameters->setWindowGap(_windgap);
                         userParameters->setAAWindowGap(_windgap);
@@ -1670,38 +1670,38 @@ void CommandLineParser::setOptionalParam(Rcpp::NumericMatrix substitutionMatrix)
                 }
             }
         }
-    } 
-  
-    //** ? /topdiags=n  
-    if(setTopDiags != -1) 
+    }
+
+    //** ? /topdiags=n
+    if(setTopDiags != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting topdiags parameter.");
             }
-        #endif          
+        #endif
         _signif = 0;
         if((*paramArg)[setTopDiags].length() > 0)
         {
-            if (sscanf((*paramArg)[setTopDiags].c_str(),"%d",&_signif)!=1) 
+            if (sscanf((*paramArg)[setTopDiags].c_str(),"%d",&_signif)!=1)
             {
                 reportBadOptionAndExit("topdiags", "integer");
             }
         }
         if(_signif > 0)
         {
-            if(userParameters->getDNAFlag()) 
+            if(userParameters->getDNAFlag())
             {
-                if(_signif > userParameters->getKtup()) 
+                if(_signif > userParameters->getKtup())
                 {
                     userParameters->setSignif(_signif);
                     userParameters->setDNASignif(_signif);
                 }
             }
-            else 
+            else
             {
-                if(_signif > userParameters->getKtup()) 
+                if(_signif > userParameters->getKtup())
                 {
                     userParameters->setSignif(_signif);
                     userParameters->setAASignif(_signif);
@@ -1709,21 +1709,21 @@ void CommandLineParser::setOptionalParam(Rcpp::NumericMatrix substitutionMatrix)
             }
         }
     }
-    
 
-    //** ? /window=n 
-    if(setWindow != -1) 
+
+    //** ? /window=n
+    if(setWindow != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting window parameter.");
             }
-        #endif        
+        #endif
         _window = 0;
         if((*paramArg)[setWindow].length() > 0)
         {
-            if (sscanf((*paramArg)[setWindow].c_str(),"%d",&_window)!=1) 
+            if (sscanf((*paramArg)[setWindow].c_str(),"%d",&_window)!=1)
             {
                 reportBadOptionAndExit("window", "integer");
                 _window = 0;
@@ -1731,17 +1731,17 @@ void CommandLineParser::setOptionalParam(Rcpp::NumericMatrix substitutionMatrix)
         }
         if(_window > 0)
         {
-            if(userParameters->getDNAFlag()) 
+            if(userParameters->getDNAFlag())
             {
-                if(_window > userParameters->getKtup()) 
+                if(_window > userParameters->getKtup())
                 {
                     userParameters->setWindow(_window);
                     userParameters->setDNAWindow(_window);
                 }
             }
-            else 
+            else
             {
-                if(_window > userParameters->getKtup()) 
+                if(_window > userParameters->getKtup())
                 {
                     userParameters->setWindow(_window);
                     userParameters->setAAWindow(_window);
@@ -1749,86 +1749,86 @@ void CommandLineParser::setOptionalParam(Rcpp::NumericMatrix substitutionMatrix)
             }
         }
     }
-  
-    //** ? /kimura 
+
+    //** ? /kimura
     if(setKimura != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting kimura=true");
             }
-        #endif        
+        #endif
         userParameters->setKimura(true);
     }
-  
-    //** ? /tossgaps 
+
+    //** ? /tossgaps
     if(setTossGaps != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting tossgaps=true");
             }
-        #endif        
+        #endif
         userParameters->setTossGaps(true);
     }
-    
-    //** ? /negative  
+
+    //** ? /negative
     if(setNegative != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting useNegMatrix=true");
-            }         
-        #endif 
+            }
+        #endif
         userParameters->setUseNegMatrix(true);
     }
-  
+
     //** ? /noweights
     if(setNoWeights!= -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting noweights=true");
-            }       
-        #endif 
+            }
+        #endif
         userParameters->setNoWeights(true);
     }
-  
-  
-    //** ? /pwmatrix=ID (user's file) 
+
+
+    //** ? /pwmatrix=ID (user's file)
     if(setPWMatrix != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting pwmatrix parameter.");
-            }        
+            }
         #endif
         temp = (*paramArg)[setPWMatrix].length();
-        if(temp > 0) 
+        if(temp > 0)
         {
             _matrixname = ConvertStringToLower((*paramArg)[setPWMatrix]);
-            if (_matrixname.compare("blosum") == 0) 
+            if (_matrixname.compare("blosum") == 0)
             {
                 subMatrix->setCurrentNameAndNum(_matrixname, 1, Protein, Pairwise);
             }
-            else if (_matrixname.compare("pam") == 0) 
+            else if (_matrixname.compare("pam") == 0)
             {
                 subMatrix->setCurrentNameAndNum(_matrixname, 2, Protein, Pairwise);
             }
-            else if (_matrixname.compare("gonnet") == 0) 
+            else if (_matrixname.compare("gonnet") == 0)
             {
                 subMatrix->setCurrentNameAndNum(_matrixname, 3, Protein, Pairwise);
             }
-            else if (_matrixname.compare("id") == 0) 
+            else if (_matrixname.compare("id") == 0)
             {
                 subMatrix->setCurrentNameAndNum(_matrixname, 4, Protein, Pairwise);
             }
-            else 
+            else
             {
                 if (strcmp(DUMMY_R_MATRIX, (*paramArg)[setPWMatrix].c_str()) == 0) {
                 	if(subMatrix->getUserMatFromR(substitutionMatrix, Protein, Pairwise))
@@ -1854,38 +1854,38 @@ void CommandLineParser::setOptionalParam(Rcpp::NumericMatrix substitutionMatrix)
         }
     }
 
-        
+
     //** ? /matrix=ID (user's file)
     if(setMatrix != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting matrix parameter.");
-            }       
-        #endif 
+            }
+        #endif
         temp = (*paramArg)[setMatrix].length();
-        if(temp > 0) 
+        if(temp > 0)
         {
         	_matrixname = ConvertStringToLower((*paramArg)[setMatrix]);
 
-            if (_matrixname.compare("blosum")==0) 
+            if (_matrixname.compare("blosum")==0)
             {
                 subMatrix->setCurrentNameAndNum(_matrixname, 1, Protein, MultipleAlign);
             }
-            else if (_matrixname.compare("pam")==0) 
+            else if (_matrixname.compare("pam")==0)
             {
                 subMatrix->setCurrentNameAndNum(_matrixname, 2, Protein, MultipleAlign);
             }
-            else if (_matrixname.compare("gonnet")==0) 
+            else if (_matrixname.compare("gonnet")==0)
             {
                 subMatrix->setCurrentNameAndNum(_matrixname, 3, Protein, MultipleAlign);
             }
-            else if (_matrixname.compare("id")==0) 
+            else if (_matrixname.compare("id")==0)
             {
                 subMatrix->setCurrentNameAndNum(_matrixname, 4, Protein, MultipleAlign);
             }
-            else 
+            else
             {
             	if (strcmp(DUMMY_R_MATRIX, (*paramArg)[setMatrix].c_str()) == 0) {
             		if(subMatrix->getUserMatSeriesFromR(substitutionMatrix))
@@ -1913,26 +1913,26 @@ void CommandLineParser::setOptionalParam(Rcpp::NumericMatrix substitutionMatrix)
     //** ? /pwdnamatrix=ID (user's file)
     if(setPWDNAMatrix != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting pwdnamatrix parameter.");
-            }       
-        #endif 
+            }
+        #endif
         temp = (*paramArg)[setPWDNAMatrix].length();
-        if(temp > 0) 
+        if(temp > 0)
         {
             _matrixname = ConvertStringToLower((*paramArg)[setPWDNAMatrix]);
 
-            if (_matrixname.compare("iub") == 0) 
+            if (_matrixname.compare("iub") == 0)
             {
                 subMatrix->setCurrentNameAndNum(_matrixname, 1, DNA, Pairwise);
             }
-            else if (_matrixname.compare("clustalw") == 0) 
+            else if (_matrixname.compare("clustalw") == 0)
             {
                 subMatrix->setCurrentNameAndNum(_matrixname, 2, DNA, Pairwise);
             }
-            else 
+            else
             {
             	if (strcmp(DUMMY_R_MATRIX, (*paramArg)[setPWDNAMatrix].c_str()) == 0) {
             		if(subMatrix->getUserMatFromR(substitutionMatrix, DNA, Pairwise))
@@ -1963,26 +1963,26 @@ void CommandLineParser::setOptionalParam(Rcpp::NumericMatrix substitutionMatrix)
     //** ? /dnamatrix=ID (user's file)
     if(setDNAMatrix != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting dnamatrix parameter.");
-            }        
-        #endif 
+            }
+        #endif
         temp = (*paramArg)[setDNAMatrix].length();
-        if(temp > 0) 
+        if(temp > 0)
         {
             _matrixname = ConvertStringToLower((*paramArg)[setDNAMatrix]);
 
-            if (_matrixname.compare("iub") == 0) 
+            if (_matrixname.compare("iub") == 0)
             {
                 subMatrix->setCurrentNameAndNum(_matrixname, 1, DNA, MultipleAlign);
             }
-            else if (_matrixname.compare("clustalw") == 0) 
+            else if (_matrixname.compare("clustalw") == 0)
             {
                 subMatrix->setCurrentNameAndNum(_matrixname, 2, DNA, MultipleAlign);
             }
-            else 
+            else
             {
             	if (strcmp(DUMMY_R_MATRIX, (*paramArg)[setDNAMatrix].c_str()) == 0) {
             		if(subMatrix->getUserMatFromR(substitutionMatrix, DNA, MultipleAlign))
@@ -2009,21 +2009,21 @@ void CommandLineParser::setOptionalParam(Rcpp::NumericMatrix substitutionMatrix)
             }
         }
     }
- 
-       
+
+
     //** ? /maxdiv= n
-    if(setMaxDiv != -1) 
+    if(setMaxDiv != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting maxdiv parameter.");
-            }       
-        #endif 
+            }
+        #endif
         temp = 0;
         if((*paramArg)[setMaxDiv].length() > 0)
         {
-            if (sscanf((*paramArg)[setMaxDiv].c_str(),"%d",&temp)!=1) 
+            if (sscanf((*paramArg)[setMaxDiv].c_str(),"%d",&temp)!=1)
             {
                 reportBadOptionAndExit("maxdiv", "integer");
                 temp = 0;
@@ -2036,18 +2036,18 @@ void CommandLineParser::setOptionalParam(Rcpp::NumericMatrix substitutionMatrix)
     }
 
     //** ? /gapdist= n
-    if(setGapDist != -1) 
+    if(setGapDist != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting gapdist parameter.");
-            }       
+            }
         #endif
-         
+
         temp = 0;
         if((*paramArg)[setGapDist].length() > 0)
-            if (sscanf((*paramArg)[setGapDist].c_str(),"%d",&temp)!=1) 
+            if (sscanf((*paramArg)[setGapDist].c_str(),"%d",&temp)!=1)
             {
                 reportBadOptionAndExit("gapdist", "integer");
             }
@@ -2057,12 +2057,12 @@ void CommandLineParser::setOptionalParam(Rcpp::NumericMatrix substitutionMatrix)
         }
     }
 
-    //** ? /debug= n 
-    if(setDebug != -1) 
+    //** ? /debug= n
+    if(setDebug != -1)
     {
         temp = 0;
         if((*paramArg)[setDebug].length() > 0)
-            if (sscanf((*paramArg)[setDebug].c_str(),"%d",&temp)!=1) 
+            if (sscanf((*paramArg)[setDebug].c_str(),"%d",&temp)!=1)
             {
                 reportBadOptionAndExit("debug", "integer");
             }
@@ -2072,129 +2072,129 @@ void CommandLineParser::setOptionalParam(Rcpp::NumericMatrix substitutionMatrix)
         }
     }
 
-    //** ? /outfile= (user's file) 
+    //** ? /outfile= (user's file)
     if(setOutfile != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting outfile parameter.");
-            }        
+            }
         #endif
-        if((*paramArg)[setOutfile].length() > 0) 
+        if((*paramArg)[setOutfile].length() > 0)
         {
             userParameters->setOutfileName((*paramArg)[setOutfile]);
         }
     }
 
-    //*** ? /case= lower/upper 
-    if(setCase != -1) 
+    //*** ? /case= lower/upper
+    if(setCase != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting case parameter.");
-            }       
-        #endif 
-        if((*paramArg)[setCase].length() > 0) 
+            }
+        #endif
+        if((*paramArg)[setCase].length() > 0)
         {
             temp = findMatch((*paramArg)[setCase], caseArg, 2);
-            if(temp == 0) 
+            if(temp == 0)
             {
                 userParameters->setLowercase(true);
             }
-            else if(temp == 1) 
+            else if(temp == 1)
             {
                 userParameters->setLowercase(false);
             }
             else
             {
-                cerr << "\nUnknown case " <<  (*paramArg)[setCase] << endl;
+                Rcpp::Rcerr << "\nUnknown case " <<  (*paramArg)[setCase] << endl;
             }
         }
     }
 
-    //*** ? /seqnos=off/on 
-    if(setSeqNo != -1) 
+    //*** ? /seqnos=off/on
+    if(setSeqNo != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting seqnos parameter.");
-            }         
+            }
         #endif
-        if((*paramArg)[setSeqNo].length() > 0) 
+        if((*paramArg)[setSeqNo].length() > 0)
         {
             temp = findMatch((*paramArg)[setSeqNo], seqNoArg, 2);
-            if(temp == 0) 
+            if(temp == 0)
             {
                 userParameters->setClSeqNumbers(false);
             }
-            else if(temp == 1) 
+            else if(temp == 1)
             {
                 userParameters->setClSeqNumbers(true);
             }
             else
             {
-                cerr << "\nUnknown SEQNO option " << (*paramArg)[setSeqNo] << endl;
+                Rcpp::Rcerr << "\nUnknown SEQNO option " << (*paramArg)[setSeqNo] << endl;
             }
         }
     }
 
 
-    if(setSeqNoRange != -1) 
+    if(setSeqNoRange != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting seqno range parameter.");
-            }        
+            }
         #endif
-        if((*paramArg)[setSeqNoRange].length() > 0) 
+        if((*paramArg)[setSeqNoRange].length() > 0)
         {
             temp = findMatch((*paramArg)[setSeqNoRange], seqNoRangeArg, 2);
-            //cout << "\n comparing  "
+            //Rcpp::Rcout << "\n comparing  "
             //     << "\nparamArg[setSeqNoRange]= " << (*paramArg)[setSeqNoRange]
             //     << "\n comparing \n ";
 
-            if(temp == 0) 
+            if(temp == 0)
             {
                 userParameters->setSeqRange(false);
             }
-            else if(temp == 1) 
+            else if(temp == 1)
             {
                 userParameters->setSeqRange(true);
             }
             else
             {
-                cerr << "\nUnknown Sequence range  option " 
+                Rcpp::Rcerr << "\nUnknown Sequence range  option "
                      << (*paramArg)[setSeqNoRange] << endl;
             }
         }
     }
 
     //*** ? /range=n:m
-    if(setRange != -1) 
+    if(setRange != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting range parameter.");
-            }        
+            }
         #endif
         temp = 0;
         if((*paramArg)[setRange].length() > 0)
         {
             // NOTE I have made a big change here! Mark march 14th 2006. This was being done
-            // in the Alignment output functions. 
-            int iFirstRes = -1; 
+            // in the Alignment output functions.
+            int iFirstRes = -1;
             int iLastRes = -1;
             char ignore;
-            
+
             if (sscanf((*paramArg)[setRange].c_str(), "%d%[ :,-]%d", &iFirstRes,
-                        &ignore, &iLastRes) != 3) 
+                        &ignore, &iLastRes) != 3)
             {
-                cerr << "setRange:  Syntax Error: Cannot set range, should be from:to \n";
+                Rcpp::Rcerr << "setRange:  Syntax Error: Cannot set range, should be from:to \n";
             }
             else
             {
@@ -2204,31 +2204,31 @@ void CommandLineParser::setOptionalParam(Rcpp::NumericMatrix substitutionMatrix)
         }
     }
 
-    //*** ? /gapopen=n 
-    if(setGapOpen != -1) 
+    //*** ? /gapopen=n
+    if(setGapOpen != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting gapopen parameter.");
-            }        
+            }
         #endif
         ftemp = 0.0;
         if((*paramArg)[setGapOpen].length() > 0)
         {
-            if (sscanf((*paramArg)[setGapOpen].c_str(),"%f",&ftemp) != 1) 
+            if (sscanf((*paramArg)[setGapOpen].c_str(),"%f",&ftemp) != 1)
             {
                 reportBadOptionAndExit("gapopen", "real number");
                 ftemp = 0.0;
             }
             if(ftemp >= 0.0)
             {
-                if( userParameters->getDNAFlag()) 
+                if( userParameters->getDNAFlag())
                 {
                     userParameters->setGapOpen(ftemp);
                     userParameters->setDNAGapOpen(ftemp);
                 }
-                else 
+                else
                 {
                     userParameters->setGapOpen(ftemp);
                     userParameters->setProteinGapOpen(ftemp);
@@ -2238,31 +2238,31 @@ void CommandLineParser::setOptionalParam(Rcpp::NumericMatrix substitutionMatrix)
     }
 
     //*** ? /gapext=n
-    if(setGapExtend != -1) 
+    if(setGapExtend != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting gap extention parameter.");
-            }        
+            }
         #endif
-        
+
         ftemp = 0.0;
         if((*paramArg)[setGapExtend].length() > 0)
         {
-            if (sscanf((*paramArg)[setGapExtend].c_str(),"%f",&ftemp) != 1) 
+            if (sscanf((*paramArg)[setGapExtend].c_str(),"%f",&ftemp) != 1)
             {
                 reportBadOptionAndExit("gapext", "real number");
                ftemp = 0.0;
             }
             if(ftemp >= 0)
             {
-                if(userParameters->getDNAFlag()) 
+                if(userParameters->getDNAFlag())
                 {
                     userParameters->setGapExtend(ftemp);
                     userParameters->setDNAGapExtend(ftemp);
                 }
-                else 
+                else
                 {
                     userParameters->setGapExtend(ftemp);
                     userParameters->setProteinGapExtend(ftemp);
@@ -2272,19 +2272,19 @@ void CommandLineParser::setOptionalParam(Rcpp::NumericMatrix substitutionMatrix)
     }
 
     //*** ? /transweight=n
-    if(setTransWeight != -1) 
+    if(setTransWeight != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting transweight parameter.");
-            }        
+            }
         #endif
-        
+
         ftemp = 0.0;
         if((*paramArg)[setTransWeight].length() > 0)
         {
-            if (sscanf((*paramArg)[setTransWeight].c_str(), "%f", &ftemp) != 1) 
+            if (sscanf((*paramArg)[setTransWeight].c_str(), "%f", &ftemp) != 1)
             {
                 reportBadOptionAndExit("transweight", "real number");
             }
@@ -2292,32 +2292,32 @@ void CommandLineParser::setOptionalParam(Rcpp::NumericMatrix substitutionMatrix)
         userParameters->setTransitionWeight(ftemp);
     }
 
-    //*** ? /pwgapopen=n 
-    if(setPWGapOpen != -1) 
+    //*** ? /pwgapopen=n
+    if(setPWGapOpen != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting pwgapopen parameter.");
-            }        
+            }
         #endif
-        
+
         ftemp = 0.0;
         if((*paramArg)[setPWGapOpen].length() > 0)
         {
-            if (sscanf((*paramArg)[setPWGapOpen].c_str(), "%f", &ftemp) != 1) 
+            if (sscanf((*paramArg)[setPWGapOpen].c_str(), "%f", &ftemp) != 1)
             {
                 reportBadOptionAndExit("pwgapopen", "real number");
             }
         }
         if(ftemp >= 0.0)
         {
-            if(userParameters->getDNAFlag()) 
+            if(userParameters->getDNAFlag())
             {
                 userParameters->setPWGapOpen(ftemp);
                 userParameters->setDNAPWGapOpenPenalty(ftemp);
             }
-            else 
+            else
             {
                 userParameters->setPWGapOpen(ftemp);
                 userParameters->setProteinPWGapOpenPenalty(ftemp);
@@ -2326,32 +2326,32 @@ void CommandLineParser::setOptionalParam(Rcpp::NumericMatrix substitutionMatrix)
     }
 
 
-    //*** ? /gapext=n 
-    if(setPWGapExtend != -1) 
+    //*** ? /gapext=n
+    if(setPWGapExtend != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting pwgapext parameter.");
-            }        
+            }
         #endif
-        
+
         ftemp = 0.0;
         if((*paramArg)[setPWGapExtend].length() > 0)
         {
-            if (sscanf((*paramArg)[setPWGapExtend].c_str(), "%f", &ftemp) != 1) 
+            if (sscanf((*paramArg)[setPWGapExtend].c_str(), "%f", &ftemp) != 1)
             {
                 reportBadOptionAndExit("pwgapext", "real number");
             }
         }
         if(ftemp >= 0)
         {
-            if(userParameters->getDNAFlag()) 
+            if(userParameters->getDNAFlag())
             {
                 userParameters->setPWGapExtend(ftemp);
                 userParameters->setDNAPWGapExtendPenalty(ftemp);
             }
-            else 
+            else
             {
                 userParameters->setPWGapExtend(ftemp);
                 userParameters->setProteinPWGapExtendPenalty(ftemp);
@@ -2361,169 +2361,169 @@ void CommandLineParser::setOptionalParam(Rcpp::NumericMatrix substitutionMatrix)
 
 
 
-    //*** ? /outorder=n 
-    if(setOutOrder != -1) 
+    //*** ? /outorder=n
+    if(setOutOrder != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting outorder parameter.");
-            }        
+            }
         #endif
-        
+
         if((*paramArg)[setOutOrder].length() > 0)
         {
             temp = findMatch((*paramArg)[setOutOrder],outOrderArg,2);
         }
 
-        if(temp == 0) 
-        {    
+        if(temp == 0)
+        {
             userParameters->setOutputOrder(INPUT);
         }
-        else if(temp == 1) 
-        {    
+        else if(temp == 1)
+        {
             userParameters->setOutputOrder(ALIGNED);
         }
         else
         {
-            cerr << "\nUnknown OUTPUT ORDER type " <<  (*paramArg)[setOutOrder] << endl;
+            Rcpp::Rcerr << "\nUnknown OUTPUT ORDER type " <<  (*paramArg)[setOutOrder] << endl;
         }
     }
 
-    //*** ? /bootlabels=n 
-    if(setBootLabels != -1) 
+    //*** ? /bootlabels=n
+    if(setBootLabels != -1)
     {
 
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting bootlabels parameter.");
-            }        
+            }
         #endif
-        
+
         if((*paramArg)[setBootLabels].length() > 0)
         {
             temp = findMatch((*paramArg)[setBootLabels], bootLabelsArg, 2);
         }
 
-        if(temp == 0)  
-        {    
+        if(temp == 0)
+        {
             userParameters->setBootstrapFormat(BS_NODE_LABELS);
         }
-        else if(temp == 1)  
-        {    
+        else if(temp == 1)
+        {
             userParameters->setBootstrapFormat(BS_BRANCH_LABELS);
         }
         else
         {
-            cerr << "\nUnknown bootlabels type " << (*paramArg)[setBootLabels] << endl;
+            Rcpp::Rcerr << "\nUnknown bootlabels type " << (*paramArg)[setBootLabels] << endl;
         }
     }
 
-    //*** ? /endgaps 
+    //*** ? /endgaps
     if(setUseEndGaps != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting useendgaps=true");
-            }        
+            }
         #endif
-        
+
         userParameters->setUseEndGaps(false);
     }
 
-    //*** ? /nopgap 
+    //*** ? /nopgap
     if(setNoPGap != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting noPrefPenalties=true");
-            }        
+            }
         #endif
-        
+
         userParameters->setNoPrefPenalties(true);
     }
 
-    //*** ? /nohgap 
+    //*** ? /nohgap
     if(setNoHGap != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting nohgap=true");
-            }        
+            }
         #endif
-        
+
         userParameters->setNoHydPenalties(true);
     }
 
-    //*** ? /novgap 
+    //*** ? /novgap
     if(setNoVGap != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting novgap=false");
-            }        
+            }
         #endif
-        
+
         userParameters->setNoVarPenalties(false);
     }
 
-    //*** ? /hgapresidues="string" 
+    //*** ? /hgapresidues="string"
     // NOTE I have made some big changes here. It looks as if there was an error here!
     if(setHGapRes != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting hgapresidues parameter.");
-            }        
+            }
         #endif
-        
+
         userParameters->setHydResidues((*paramArg)[setHGapRes]);
-        
+
     }
-              
-    //*** ? /nosecstr1 
+
+    //*** ? /nosecstr1
     if(setSecStruct1 != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting useSS1=false");
-            }        
+            }
         #endif
-        
+
         userParameters->setUseSS1(false);
     }
 
-    //*** ? /nosecstr2 
+    //*** ? /nosecstr2
     if(setSecStruct2 != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting useSS2=false");
-            }        
+            }
         #endif
-        
+
         userParameters->setUseSS2(false);
     }
 
     //*** ? /secstroutput
     if(setSecStructOutput != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting secstroutput parameter.");
-            }        
+            }
         #endif
-        
-        if((*paramArg)[setSecStructOutput].length() > 0) 
+
+        if((*paramArg)[setSecStructOutput].length() > 0)
         {
             temp = findMatch((*paramArg)[setSecStructOutput], outputSecStrArg, 4);
             if(temp >= 0 && temp <= 3)
@@ -2532,26 +2532,26 @@ void CommandLineParser::setOptionalParam(Rcpp::NumericMatrix substitutionMatrix)
             }
             else
             {
-                cerr << "\nUnknown case " << (*paramArg)[setSecStructOutput] << endl;
+                Rcpp::Rcerr << "\nUnknown case " << (*paramArg)[setSecStructOutput] << endl;
             }
         }
     }
 
 
     //*** ? /helixgap= n
-    if(setHelixGap != -1) 
+    if(setHelixGap != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting helixgap parameter.");
-            }        
+            }
         #endif
-        
+
         temp = 0;
         if((*paramArg)[setHelixGap].length() > 0)
         {
-            if (sscanf((*paramArg)[setHelixGap].c_str(), "%d", &temp) != 1) 
+            if (sscanf((*paramArg)[setHelixGap].c_str(), "%d", &temp) != 1)
             {
                 reportBadOptionAndExit("helixgap", "integer");
             }
@@ -2561,21 +2561,21 @@ void CommandLineParser::setOptionalParam(Rcpp::NumericMatrix substitutionMatrix)
             userParameters->setHelixPenalty(temp);
         }
     }
-    
-    //*** ? /strandgap= n 
-    if(setStrandGap != -1) 
+
+    //*** ? /strandgap= n
+    if(setStrandGap != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting strandgap parameter.");
-            }         
+            }
         #endif
-        
+
         temp = 0;
         if((*paramArg)[setStrandGap].length() > 0)
         {
-            if (sscanf((*paramArg)[setStrandGap].c_str(), "%d", &temp) != 1) 
+            if (sscanf((*paramArg)[setStrandGap].c_str(), "%d", &temp) != 1)
             {
                 reportBadOptionAndExit("strandgap", "integer");
             }
@@ -2585,21 +2585,21 @@ void CommandLineParser::setOptionalParam(Rcpp::NumericMatrix substitutionMatrix)
             userParameters->setStrandPenalty(temp);
         }
     }
-    
-    //*** ? /loopgap= n 
-    if(setLoopGap != -1) 
+
+    //*** ? /loopgap= n
+    if(setLoopGap != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting loopgap parameter.");
-            }        
+            }
         #endif
-        
+
         temp = 0;
         if((*paramArg)[setLoopGap].length() > 0)
         {
-            if (sscanf((*paramArg)[setLoopGap].c_str(), "%d", &temp) != 1) 
+            if (sscanf((*paramArg)[setLoopGap].c_str(), "%d", &temp) != 1)
             {
                 reportBadOptionAndExit("loopgap", "integer");
             }
@@ -2611,44 +2611,44 @@ void CommandLineParser::setOptionalParam(Rcpp::NumericMatrix substitutionMatrix)
     }
 
     //*** ? /terminalgap= n
-    if(setTerminalGap != -1) 
+    if(setTerminalGap != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting terminalgap parameter.");
-            }        
+            }
         #endif
         temp = 0;
         if((*paramArg)[setTerminalGap].length() > 0)
         {
-            if (sscanf((*paramArg)[setTerminalGap].c_str(), "%d", &temp) != 1) 
+            if (sscanf((*paramArg)[setTerminalGap].c_str(), "%d", &temp) != 1)
             {
                 reportBadOptionAndExit("terminalgap", "integer");
                 temp = 0;
             }
         }
-        if (temp >= 1 && temp <= 9) 
+        if (temp >= 1 && temp <= 9)
         {
             userParameters->setHelixEndPenalty(temp);
             userParameters->setStrandEndPenalty(temp);
         }
     }
-   
+
     //*** ? /helixendin= n
-    if(setHelixEndIn != -1) 
+    if(setHelixEndIn != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting helixendin parameter.");
-            }        
+            }
         #endif
-        
+
         temp = 0;
         if((*paramArg)[setHelixEndIn].length() > 0)
         {
-            if (sscanf((*paramArg)[setHelixEndIn].c_str(), "%d", &temp) != 1) 
+            if (sscanf((*paramArg)[setHelixEndIn].c_str(), "%d", &temp) != 1)
             {
                 reportBadOptionAndExit("helixendin", "integer");
                 temp = 0;
@@ -2661,19 +2661,19 @@ void CommandLineParser::setOptionalParam(Rcpp::NumericMatrix substitutionMatrix)
     }
 
     //*** ? /helixendout= n
-    if(setHelixEndOut != -1) 
+    if(setHelixEndOut != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting helixendout parameter.");
-            }        
+            }
         #endif
-        
+
         temp = 0;
         if((*paramArg)[setHelixEndOut].length() > 0)
         {
-            if (sscanf((*paramArg)[setHelixEndOut].c_str(), "%d", &temp) != 1) 
+            if (sscanf((*paramArg)[setHelixEndOut].c_str(), "%d", &temp) != 1)
             {
                 reportBadOptionAndExit("helixendout", "integer");
                 temp = 0;
@@ -2685,20 +2685,20 @@ void CommandLineParser::setOptionalParam(Rcpp::NumericMatrix substitutionMatrix)
         }
     }
 
-    //*** ? /strandendin= n 
-    if(setStrandEndIn != -1) 
+    //*** ? /strandendin= n
+    if(setStrandEndIn != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting strandendin parameter.");
-            }        
+            }
         #endif
-        
+
         temp = 0;
         if((*paramArg)[setStrandEndIn].length() > 0)
         {
-            if (sscanf((*paramArg)[setStrandEndIn].c_str(), "%d", &temp) != 1) 
+            if (sscanf((*paramArg)[setStrandEndIn].c_str(), "%d", &temp) != 1)
             {
                 reportBadOptionAndExit("strandendin", "integer");
             }
@@ -2709,20 +2709,20 @@ void CommandLineParser::setOptionalParam(Rcpp::NumericMatrix substitutionMatrix)
         }
     }
 
-    //*** ? /strandendout= n 
-    if(setStrandEndOut != -1) 
+    //*** ? /strandendout= n
+    if(setStrandEndOut != -1)
     {
-        #if DEBUGFULL 
+        #if DEBUGFULL
             if(logObject && DEBUGLOG)
             {
                 logObject->logMsg("    Setting strandendout parameter.");
-            }        
+            }
         #endif
-        
+
         temp = 0;
         if((*paramArg)[setStrandEndOut].length() > 0)
         {
-            if (sscanf((*paramArg)[setStrandEndOut].c_str(), "%d", &temp) != 1) 
+            if (sscanf((*paramArg)[setStrandEndOut].c_str(), "%d", &temp) != 1)
             {
                 reportBadOptionAndExit("strandendout", "integer");
             }
@@ -2738,24 +2738,24 @@ int CommandLineParser::findMatch(string probe, StringArray* list, int n)
 {
     int i, j, len;
     int count, match=0;
-  
+
     len = probe.length();
-    for (i = 0; i < len; i++) 
+    for (i = 0; i < len; i++)
     {
         count = 0;
-        for (j = 0; j < n; j++) 
-        { 
-            if (probe[i] == (*list)[j][i]) 
+        for (j = 0; j < n; j++)
+        {
+            if (probe[i] == (*list)[j][i])
             {
                 match = j;
                 count++;
             }
         }
         if (count == 0)
-        { 
+        {
             return((int)-1);
         }
-        if (count == 1) 
+        if (count == 1)
         {
             return(match);
         }
@@ -2769,7 +2769,7 @@ int CommandLineParser::findMatch(string probe, StringArray* list, int n)
  * specified. It returns it by value. I cant return by reference or else the object will
  * be destroyed.
  */
-CmdLineData CommandLineParser::getCmdLineDataStruct(const char *str, int *flag, int type, 
+CmdLineData CommandLineParser::getCmdLineDataStruct(const char *str, int *flag, int type,
                                                       StringArray* arg)
 {
     CmdLineData tempStruct = {str, flag, type, arg};
@@ -2778,21 +2778,21 @@ CmdLineData CommandLineParser::getCmdLineDataStruct(const char *str, int *flag, 
 
 void CommandLineParser::printCmdLineData(const CmdLineData& temp)
 {
-    std::cout << "The str is: " << temp.str << std::endl;
-    std::cout << "The int* is: " << *(temp.flag) << std::endl;
-    std::cout << "The type is: " << temp.type << std::endl;
-    std::cout << "The StringArray is: " << std::endl;
-    
+    Rcpp::Rcout << "The str is: " << temp.str << std::endl;
+    Rcpp::Rcout << "The int* is: " << *(temp.flag) << std::endl;
+    Rcpp::Rcout << "The type is: " << temp.type << std::endl;
+    Rcpp::Rcout << "The StringArray is: " << std::endl;
+
     if(temp.arg == NULL)
     {
-        std::cout << "    NULL" << std::endl;
+        Rcpp::Rcout << "    NULL" << std::endl;
     }
     else
     {
-        cout << "The number of elements is " << temp.arg->size() << std::endl;
+        Rcpp::Rcout << "The number of elements is " << temp.arg->size() << std::endl;
         for(int i = 0; i < (int)temp.arg->size(); i++)
         {
-            cout << "The " << i << "th element is: " << temp.arg->at(i) << endl;
+            Rcpp::Rcout << "The " << i << "th element is: " << temp.arg->at(i) << endl;
         }
     }
 }
@@ -2815,7 +2815,7 @@ string CommandLineParser::ConvertStringToLower(string strToConvert)
 
 void  CommandLineParser::exitWithErrorMsg(string msg)
 {
-    cerr << "ERROR: " << msg << std::endl;
+    Rcpp::Rcerr << "ERROR: " << msg << std::endl;
     throw 1;
 }
 

@@ -2,6 +2,7 @@
 #include "msa.h"
 #include "seqvect.h"
 #include "textfile.h"
+#include <Rcpp.h>
 
 #define MEMDEBUG	0
 
@@ -98,10 +99,12 @@ void RefineW(const MSA &msaIn, MSA &msaOut)
 		MSAFromColRange(msaIn, 0, g_uWindowOffset, msaOut);
 		}
 
-	fprintf(stderr, "\n");
+	Rcpp::Rcerr << std::endl;
+	char errMsg[4096];
 	for (unsigned uWindowIndex = g_uWindowFrom; uWindowIndex <= g_uWindowTo; ++uWindowIndex)
 		{
-		fprintf(stderr, "Window %d of %d    \r", uWindowIndex, uWindowCount);
+		snprintf(errMsg, 4096, "Window %d of %d    \r", uWindowIndex, uWindowCount);
+	  Rcpp::Rcerr << errMsg;
 		const unsigned uColFrom = g_uWindowOffset + uWindowIndex*g_uRefineWindow;
 		unsigned uColTo = uColFrom + g_uRefineWindow - 1;
 		if (uColTo >= uColCount)
@@ -127,15 +130,15 @@ void RefineW(const MSA &msaIn, MSA &msaOut)
 			MSAFromColRange(msaIn, uColFrom, un, msaInTmp);
 
 			char fn[256];
-			sprintf(fn, "win%d_inaln.tmp", uWindowIndex);
+			snprintf(fn, 256, "win%d_inaln.tmp", uWindowIndex);
 			TextFile fIn(fn, true);
 			msaInTmp.ToFile(fIn);
 
-			sprintf(fn, "win%d_inseqs.tmp", uWindowIndex);
+			snprintf(fn, 256, "win%d_inseqs.tmp", uWindowIndex);
 			TextFile fv(fn, true);
 			v.ToFile(fv);
 
-			sprintf(fn, "win%d_outaln.tmp", uWindowIndex);
+			snprintf(fn, 256, "win%d_outaln.tmp", uWindowIndex);
 			TextFile fOut(fn, true);
 			msaTmp.ToFile(fOut);
 			}
@@ -158,7 +161,7 @@ void RefineW(const MSA &msaIn, MSA &msaOut)
 //		AssertMSAEqIgnoreCaseAndGaps(msaInTmp, msaTmp);
 //#endif
 		}
-	fprintf(stderr, "\n");
+	Rcpp::Rcerr << std::endl;
 
 //	AssertMSAEqIgnoreCaseAndGaps(msaIn, msaOut);//@@uncomment!
 	}

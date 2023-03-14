@@ -1,7 +1,7 @@
 /**
  * Author: Mark Larkin
- * 
- * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.  
+ *
+ * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.
  */
 #ifdef HAVE_CONFIG_H
     #include "config.h"
@@ -40,37 +40,37 @@ void FullPairwiseAlign::pairwiseAlign(Alignment *alignPtr, DistMatrix *distMat, 
     int res;
     double _score;
     float gapOpenScale, gapExtendScale;
-    
+
     try
     {
-        
+
         if(distMat->getSize() != alignPtr->getNumSeqs() + 1)
         {
-            cerr << "The distance matrix is not the right size!\n"
+            Rcpp::Rcerr << "The distance matrix is not the right size!\n"
                  << "Need to terminate program.\n";
             throw 1;
         }
         if((iStart < 0) || (iEnd < iStart) || (jStart < 0) || (jEnd < jStart))
         {
-            cerr << "The range for pairwise Alignment is incorrect.\n"
+            Rcpp::Rcerr << "The range for pairwise Alignment is incorrect.\n"
                  << "Need to terminate program.\n";
             throw 1;
         }
-        
+
         _maxAlnLength = alignPtr->getMaxAlnLength();
-    
+
         int _numSeqs = alignPtr->getNumSeqs();
         if(_numSeqs == 0)
         {
             return;
         }
-    
+
         int num = (2 * _maxAlnLength) + 1;
         bool _DNAFlag = userParameters->getDNAFlag();
         float _pwGapOpen, _pwGapExtend;
         _pwGapOpen = userParameters->getPWGapOpen();
         _pwGapExtend = userParameters->getPWGapExtend();
-        
+
         displ.resize(num);
         HH.resize(_maxAlnLength);
         DD.resize(_maxAlnLength);
@@ -81,19 +81,19 @@ void FullPairwiseAlign::pairwiseAlign(Alignment *alignPtr, DistMatrix *distMat, 
         maxRes = subMatrix->getPairwiseMatrix(matrix, scaleValues, _matAvgScore);
         if (maxRes == 0)
         {
-            cerr << "Could not get the substitution matrix\n";
+            Rcpp::Rcerr << "Could not get the substitution matrix\n";
             return;
         }
-        
+
         intScale = scaleValues.intScale;
         gapOpenScale = scaleValues.gapOpenScale;
         gapExtendScale = scaleValues.gapExtendScale;
-    
+
         int _gapPos1, _gapPos2;
         _gapPos1 = userParameters->getGapPos1();
         _gapPos2 = userParameters->getGapPos2();
-        const SeqArray* _ptrToSeqArray = alignPtr->getSeqArray(); //This is faster! 
-    
+        const SeqArray* _ptrToSeqArray = alignPtr->getSeqArray(); //This is faster!
+
         for (si = utilityObject->MAX(0, iStart); si < _numSeqs && si < iEnd; si++)
         {
             n = alignPtr->getSeqLength(si + 1);
@@ -147,20 +147,20 @@ void FullPairwiseAlign::pairwiseAlign(Alignment *alignPtr, DistMatrix *distMat, 
                     _gapExtend = static_cast<int>(_pwGapExtend * intScale);
                 }
                 // align the sequences
-            
+
                 seq1 = si + 1;
                 seq2 = sj + 1;
 
                 _ptrToSeq1 = alignPtr->getSequence(seq1);
                 _ptrToSeq2 = alignPtr->getSequence(seq2);
-            
+
                 forwardPass(_ptrToSeq1, _ptrToSeq2, n, m);
                 reversePass(_ptrToSeq1, _ptrToSeq2);
 
                 lastPrint = 0;
                 printPtr = 1;
 
-                // use Myers and Miller to align two sequences 
+                // use Myers and Miller to align two sequences
 
                 maxScore = diff(sb1 - 1, sb2 - 1, se1 - sb1 + 1, se2 - sb2 + 1,
                     (int)0, (int)0);
@@ -181,11 +181,11 @@ void FullPairwiseAlign::pairwiseAlign(Alignment *alignPtr, DistMatrix *distMat, 
                 _score = ((float)100.0 - mmScore) / (float)100.0;
                 distMat->SetAt(si + 1, sj + 1, _score);
                 distMat->SetAt(sj + 1, si + 1, _score);
-                
+
                 if(userParameters->getDisplayInfo())
                 {
                     utilityObject->info("Sequences (%d:%d) Aligned. Score:  %d",
-                                        si+1, sj+1, (int)mmScore);     
+                                        si+1, sj+1, (int)mmScore);
                 }
             }
         }
@@ -198,7 +198,7 @@ void FullPairwiseAlign::pairwiseAlign(Alignment *alignPtr, DistMatrix *distMat, 
     }
     catch(const exception& e)
     {
-        cerr << "An exception has occured in the FullPairwiseAlign class.\n"
+        Rcpp::Rcerr << "An exception has occured in the FullPairwiseAlign class.\n"
              << e.what() << "\n";
         throw 1;
     }
@@ -243,7 +243,7 @@ float FullPairwiseAlign::tracePath(int tsb1, int tsb2)
             res1 = (*_ptrToSeq1)[i1];
             res2 = (*_ptrToSeq2)[i2];
 
-            if ((res1 != userParameters->getGapPos1()) && 
+            if ((res1 != userParameters->getGapPos1()) &&
                 (res2 != userParameters->getGapPos2()) && (res1 == res2))
             {
                 count++;
@@ -266,7 +266,7 @@ float FullPairwiseAlign::tracePath(int tsb1, int tsb2)
             }
         }
     }
-    
+
     score = 100.0 *(float)count;
     return (score);
 }
@@ -586,7 +586,7 @@ int FullPairwiseAlign::diff(int A, int B, int M, int N, int tb, int te)
         }
     }
 
-    // Conquer recursively around midpoint 
+    // Conquer recursively around midpoint
 
 
     if (type == 1)

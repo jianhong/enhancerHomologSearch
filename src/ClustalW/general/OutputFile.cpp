@@ -1,7 +1,7 @@
 /**
  * Author: Mark Larkin
- * 
- * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.  
+ *
+ * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.
  */
 #ifdef HAVE_CONFIG_H
     #include "config.h"
@@ -29,13 +29,13 @@ OutputFile::~OutputFile()
     }
 }
 
-bool OutputFile::openFile(std::string* fileName, const std::string msg, const std::string* path, 
+bool OutputFile::openFile(std::string* fileName, const std::string msg, const std::string* path,
                       const std::string ext, const std::string fileType)
 {
     if (fileName->empty())
     {
         *fileName = getOutputFileName(msg, *path, ext);
-            
+
         if(fileName->empty())
         {
             return false;
@@ -43,15 +43,15 @@ bool OutputFile::openFile(std::string* fileName, const std::string msg, const st
     }
 
     file.reset(new std::ofstream(fileName->c_str(), std::ofstream::trunc));
-                
-    if(!file->is_open()) 
+
+    if(!file->is_open())
     {
-        utilityObject->error("Cannot open output file [%s]\n", fileName->c_str()); 
+        utilityObject->error("Cannot open output file [%s]\n", fileName->c_str());
         return false;
     }
-    name = *fileName; 
+    name = *fileName;
     typeOfFileMsg = fileType;
-    
+
     return true;
 }
 
@@ -64,8 +64,8 @@ std::ofstream* OutputFile::getPtrToFile()
 {
     return file.get();
 }
-                      
-std::string OutputFile::getOutputFileName(const std::string prompt, std::string path, 
+
+std::string OutputFile::getOutputFileName(const std::string prompt, std::string path,
                                           const std::string fileExtension)
 {
     std::string temp;
@@ -73,10 +73,10 @@ std::string OutputFile::getOutputFileName(const std::string prompt, std::string 
     std::string message;
     _fileName = path + fileExtension;
 
-    if(_fileName.compare(userParameters->getSeqName()) == 0) 
+    if(_fileName.compare(userParameters->getSeqName()) == 0)
     {
-        cerr << "WARNING: Output file name is the same as input file.\n";
-        if (userParameters->getMenuFlag()) 
+        Rcpp::Rcerr << "WARNING: Output file name is the same as input file.\n";
+        if (userParameters->getMenuFlag())
         {
             message = "\n\nEnter new name to avoid overwriting  [" + _fileName + "]: ";
             utilityObject->getStr(message, temp);
@@ -86,7 +86,7 @@ std::string OutputFile::getOutputFileName(const std::string prompt, std::string 
             }
         }
     }
-    else if (userParameters->getMenuFlag()) 
+    else if (userParameters->getMenuFlag())
     {
 
         message = prompt + " [" + _fileName + "]";
@@ -95,7 +95,7 @@ std::string OutputFile::getOutputFileName(const std::string prompt, std::string 
         {
             _fileName = temp;
         }
-    }   
+    }
     return _fileName;
 
 }

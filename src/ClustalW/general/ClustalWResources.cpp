@@ -69,7 +69,7 @@ string ClustalWResources::dirname(string path)
 
 void ClustalWResources::dump()
 {
-    printf("%s => %s [%s]\n%s => %s\n%s => %s\n",
+    Rprintf("%s => %s [%s]\n%s => %s\n%s => %s\n",
            "installPath", installPath.c_str(), CLUW_INSTALL_DIR,
            "executablePath", executablePath.c_str(),
            "homePath", homePath.c_str()

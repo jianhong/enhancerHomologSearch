@@ -85,9 +85,9 @@ public:
        {
            for(int col=0; col < m_dimCol; col++)
            {
-               cout << setprecision(20) << " "<< m_2DVector[row][col];
+               Rcpp::Rcout << setprecision(20) << " "<< m_2DVector[row][col];
            }
-           cout<<"\n";
+           Rcpp::Rcout<<"\n";
        }
    }
 

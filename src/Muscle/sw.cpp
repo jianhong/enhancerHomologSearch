@@ -13,7 +13,7 @@ static const char *LocalScoreToStr(SCORE s)
 	static char str[16];
 	if (MINUS_INFINITY == s)
 		return "     *";
-	sprintf(str, "%6.2f", s);
+	snprintf(str, 16, "%6.2f", s);
 	return str;
 	}
 
@@ -123,7 +123,7 @@ SCORE SW(const ProfPos *PA, unsigned uLengthA, const ProfPos *PB,
 				scoreBest = scoreMM;
 			else if (scoreDM >= scoreMM && scoreDM >= scoreIM)
 				scoreBest = scoreDM;
-			else 
+			else
 				{
 				assert(scoreIM >= scoreMM && scoreIM >= scoreDM);
 				scoreBest = scoreIM;
@@ -166,7 +166,7 @@ SCORE SW(const ProfPos *PA, unsigned uLengthA, const ProfPos *PB,
 			SCORE scoreBest;
 			if (scoreMI >= scoreII)
 				scoreBest = scoreMI;
-			else 
+			else
 				{
 				assert(scoreII > scoreMI);
 				scoreBest = scoreII;
@@ -189,7 +189,7 @@ SCORE SW(const ProfPos *PA, unsigned uLengthA, const ProfPos *PB,
 #endif
 
 	assert(scoreMax == DPM(uPrefixLengthAMax, uPrefixLengthBMax));
-	TraceBackSW(PA, uLengthA, PB, uLengthB, DPM_, DPD_, DPI_, 
+	TraceBackSW(PA, uLengthA, PB, uLengthB, DPM_, DPD_, DPI_,
 	  uPrefixLengthAMax, uPrefixLengthBMax, Path);
 
 #if	TRACE

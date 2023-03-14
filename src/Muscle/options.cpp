@@ -1,5 +1,6 @@
 #include "muscle.h"
 #include <stdio.h>
+#include <Rcpp.h>
 
 struct VALUE_OPT
 	{
@@ -142,7 +143,7 @@ static bool TestSetValueOpt(const char *Arg, const char *Value)
 			{
 			if (0 == Value)
 				{
-				fprintf(stderr, "Option -%s must have value\n", Arg);
+				Rcpp::Rcerr << "Option -" << Arg << " must have value" << "\n";
 					throw EXIT_NotStarted;
 				}
 			ValueOpts[i].m_pstrValue = strsave(Value);
@@ -176,7 +177,7 @@ void ProcessArgVect(int argc, char *argv[])
 		const char *Arg = argv[iArgIndex];
 		if (Arg[0] != '-')
 			{
-			fprintf(stderr, "Command-line option \"%s\" must start with '-'\n", Arg);
+			Rcpp::Rcerr << "Command-line option \""<< Arg << "\" must start with '-'" << "\n";
 			throw EXIT_NotStarted;
 			}
 		const char *ArgName = Arg + 1;
@@ -185,7 +186,7 @@ void ProcessArgVect(int argc, char *argv[])
 			++iArgIndex;
 			continue;
 			}
-		
+
 		char *Value = 0;
 		if (iArgIndex < argc - 1)
 			Value = argv[iArgIndex+1];
@@ -194,7 +195,7 @@ void ProcessArgVect(int argc, char *argv[])
 			iArgIndex += 2;
 			continue;
 			}
-		fprintf(stderr, "Invalid command line option \"%s\"\n", ArgName);
+		Rcpp::Rcerr << "Invalid command line option \""<< ArgName <<"\"" << "\n";
 		Usage();
 		throw EXIT_NotStarted;
 		}

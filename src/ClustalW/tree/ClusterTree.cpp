@@ -1,7 +1,7 @@
 /**
  * Author: Mark Larkin
- * 
- * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.  
+ *
+ * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.
  */
 #ifdef HAVE_CONFIG_H
     #include "config.h"
@@ -34,22 +34,22 @@ ClusterTree::ClusterTree()
  *                                                                                         *
  *                                                                                         *
  *******************************************************************************************/
- 
- 
- 
+
+
+
 void ClusterTree::distanceMatrixOutput(ofstream* outFile, clustalw::DistMatrix* matToPrint,
                                         clustalw::Alignment *alignPtr)
 {
     if(outFile == NULL || !outFile->is_open())
     {
-        clustalw::utilityObject->error("Cannot output the distance matrix, file is not open\n");        
+        clustalw::utilityObject->error("Cannot output the distance matrix, file is not open\n");
         return;
     }
-     
+
     int i, j;
     int _maxNames = alignPtr->getMaxNames();
     (*outFile) << setw(6) << lastSeq - firstSeq + 1;
-    
+
     for (i = 1; i <= lastSeq - firstSeq + 1; i++)
     {
         (*outFile) << "\n" << left << setw(_maxNames) << alignPtr->getName(i) << " ";
@@ -90,7 +90,7 @@ void ClusterTree::overspillMessage(int overspill,int totalDists)
       "\n of divergence you will have great difficulty"
       "\n getting robust and reliable trees.\n\n";
 
-    clustalw::utilityObject->warning(message.c_str()); 
+    clustalw::utilityObject->warning(message.c_str());
 }
 
 /*
@@ -106,16 +106,16 @@ void ClusterTree::treeGapDelete(clustalw::Alignment *alignPtr)
     int _lenFirstSeq = alignPtr->getSeqLength(firstSeq);
     int _gapPos1 = clustalw::userParameters->getGapPos1();
     int _gapPos2 = clustalw::userParameters->getGapPos2();
-    
+
     treeGaps.resize(_maxAlnLength + 1);
-    
+
     for (posn = 1; posn <= _lenFirstSeq; ++posn)
     {
         treeGaps[posn] = 0;
         for (seqn = 1; seqn <= lastSeq - firstSeq + 1; ++seqn)
         {
             const vector<int>* _seqM = alignPtr->getSequence(seqn + firstSeq - 1);
-            
+
             if(posn > alignPtr->getSeqLength(seqn + firstSeq - 1))
             {
                 break; // Dont read locations that cannot be read!
@@ -136,8 +136,8 @@ int ClusterTree::dnaDistanceMatrix(ofstream* treeFile, clustalw::Alignment *alig
     int res1, res2;
     int overspill = 0;
     double p, q, e, a, b, k;
-    
-    treeGapDelete(alignPtr); // flag positions with gaps (tree_gaps[i] = 1 ) 
+
+    treeGapDelete(alignPtr); // flag positions with gaps (tree_gaps[i] = 1 )
 
     if (verbose)
     {
@@ -164,28 +164,28 @@ int ClusterTree::dnaDistanceMatrix(ofstream* treeFile, clustalw::Alignment *alig
             (*treeFile) << "\n\n";
         }
     }
-    
+
     int _numSeqs = alignPtr->getNumSeqs();
     quickDistMat.reset(new clustalw::DistMatrix(_numSeqs + 1));
     int _lenFirstSeq = alignPtr->getSeqLength(firstSeq);
     int _gapPos1 = clustalw::userParameters->getGapPos1();
     int _gapPos2 = clustalw::userParameters->getGapPos2();
     int lenSeqM, lenSeqN;
-     // for every pair of sequence 
+     // for every pair of sequence
     for (m = 1; m < lastSeq - firstSeq + 1; ++m)
     {
         const vector<int>* _seqM = alignPtr->getSequence(m + firstSeq - 1);
         lenSeqM = alignPtr->getSeqLength(m + firstSeq - 1);
-        
+
         for (n = m + 1; n <= lastSeq - firstSeq + 1; ++n)
         {
             const vector<int>* _seqN = alignPtr->getSequence(n + firstSeq - 1);
             lenSeqN = alignPtr->getSeqLength(n + firstSeq - 1);
-            
+
             p = q = e = 0.0;
             quickDistMat->SetAt(m, n, 0.0);
             quickDistMat->SetAt(n ,m, 0.0);
-            
+
             for (i = 1; i <= _lenFirstSeq; ++i)
             {
                 j = bootPositions[i];
@@ -193,7 +193,7 @@ int ClusterTree::dnaDistanceMatrix(ofstream* treeFile, clustalw::Alignment *alig
                 {
                     goto skip;
                 }
-                // gap position 
+                // gap position
 /** *******************************************************************************
  * BUG!!!!!!!      NOTE this was found for protein. Presuming the same here       *
  * NOTE: the following if statements were coded in so as to produce               *
@@ -210,12 +210,12 @@ int ClusterTree::dnaDistanceMatrix(ofstream* treeFile, clustalw::Alignment *alig
                         res1 = -3;
                     }
                     else
-                    {    
+                    {
                         res1 = 0;
                     }
                 }
                 else
-                { 
+                {
                     res1 = (*_seqM)[j];
                 }
                 if(j > lenSeqN)
@@ -225,7 +225,7 @@ int ClusterTree::dnaDistanceMatrix(ofstream* treeFile, clustalw::Alignment *alig
                         res2 = -3;
                     }
                     else
-                    {    
+                    {
                         res2 = 0;
                     }
                 }
@@ -269,7 +269,7 @@ int ClusterTree::dnaDistanceMatrix(ofstream* treeFile, clustalw::Alignment *alig
             {
                 if (e == 0)
                 {
-                    cerr << "\n WARNING: sequences " << m << " and " << n 
+                    Rcpp::Rcerr << "\n WARNING: sequences " << m << " and " << n
                          << " are non-overlapping\n";
                     k = 0.0;
                     p = 0.0;
@@ -297,20 +297,20 @@ int ClusterTree::dnaDistanceMatrix(ofstream* treeFile, clustalw::Alignment *alig
                 }
                 quickDistMat->SetAt(m, n, k);
                 quickDistMat->SetAt(n ,m, k);
-                if (verbose) 
+                if (verbose)
                 {
-                    (*treeFile) << setw(4) << m << " vs." << setw(4) << n << ":  DIST =  " 
+                    (*treeFile) << setw(4) << m << " vs." << setw(4) << n << ":  DIST =  "
                                 << setw(4) << fixed << setprecision(4)
                                 << k << "; p = " << fixed << setprecision(4) << p << "; q = "
                                 << fixed << setprecision(4) << q << "; length = " << setw(6)
-                                << fixed << setprecision(0) << e << "\n"; 
+                                << fixed << setprecision(0) << e << "\n";
                 }
             }
             else
             {
                 if (e == 0)
                 {
-                    cerr << "\n WARNING: sequences " << m << " and " << n 
+                    Rcpp::Rcerr << "\n WARNING: sequences " << m << " and " << n
                          << " are non-overlapping\n";;
                     p = 0.0;
                     q = 0.0;
@@ -366,13 +366,13 @@ int ClusterTree::dnaDistanceMatrix(ofstream* treeFile, clustalw::Alignment *alig
                 quickDistMat->SetAt(m, n, k);
                 quickDistMat->SetAt(n ,m, k);
                 if (verbose)
-                // if screen output 
+                // if screen output
                 {
-                    (*treeFile) << setw(4) << m << " vs." << setw(4) << n 
+                    (*treeFile) << setw(4) << m << " vs." << setw(4) << n
                                 << ":  DIST =  " << fixed << setprecision(4)
                                 << k << "; p = " << fixed <<  setprecision(4) << p << "; q = "
                                 << fixed << setprecision(4) << q << "; length = " << setw(6)
-                                << fixed << setprecision(0) << e << "\n"; 
+                                << fixed << setprecision(0) << e << "\n";
                 }
 
             }
@@ -389,7 +389,7 @@ int ClusterTree::protDistanceMatrix(ofstream* treeFile, clustalw::Alignment *ali
     int overspill = 0;
     double p, e, k, tableEntry;
 
-    treeGapDelete(alignPtr); // flag positions with gaps (tree_gaps[i] = 1 ) 
+    treeGapDelete(alignPtr); // flag positions with gaps (tree_gaps[i] = 1 )
 
     if (verbose)
     {
@@ -419,7 +419,7 @@ int ClusterTree::protDistanceMatrix(ofstream* treeFile, clustalw::Alignment *ali
     int _gapPos1 = clustalw::userParameters->getGapPos1();
     int _gapPos2 = clustalw::userParameters->getGapPos2();
     int lenSeqM, lenSeqN;
-    // for every pair of sequence 
+    // for every pair of sequence
     for (m = 1; m < _numSeqs; ++m)
     {
         const vector<int>* _seqM = alignPtr->getSequence(m);
@@ -455,12 +455,12 @@ int ClusterTree::protDistanceMatrix(ofstream* treeFile, clustalw::Alignment *ali
                         res1 = -3;
                     }
                     else
-                    {    
+                    {
                         res1 = 0;
                     }
                 }
                 else
-                { 
+                {
                     res1 = (*_seqM)[j];
                 }
                 if(j > lenSeqN)
@@ -470,7 +470,7 @@ int ClusterTree::protDistanceMatrix(ofstream* treeFile, clustalw::Alignment *ali
                         res2 = -3;
                     }
                     else
-                    {    
+                    {
                         res2 = 0;
                     }
                 }
@@ -531,7 +531,7 @@ int ClusterTree::protDistanceMatrix(ofstream* treeFile, clustalw::Alignment *ali
             quickDistMat->SetAt(n ,m, k);
             if (verbose)
             {
-                (*treeFile) << setw(4) << m << " vs." << setw(4) << n 
+                (*treeFile) << setw(4) << m << " vs." << setw(4) << n
                             << "  DIST = " << fixed << setprecision(4)
                             << k << ";  length = " << setw(6)
                             << setprecision(0) << e << "\n";
@@ -563,20 +563,20 @@ bool ClusterTree::isAmbiguity(int c)
 /*
  * The function calcPercIdentity calculates the percent identity of the sequences
  * and outputs it to a the file pfile. NOTE this is not used at the moment. It was in
- * the old code, but there was no way to access it from the menu. This may change. 
+ * the old code, but there was no way to access it from the menu. This may change.
  */
 void ClusterTree::calcPercIdentity(ofstream* pfile, clustalw::Alignment *alignPtr)
 {
     clustalw::DistMatrix percentMat;
-  
+
     float ident;
     int nmatch;
-  
+
     int val1, val2;
-  
+
     int i,j,k, length_longest;
     int length_shortest;
-    
+
     int rs = 0, rl = 0;
     // findout sequence length, longest and shortest;
     length_longest = 0;
@@ -584,7 +584,7 @@ void ClusterTree::calcPercIdentity(ofstream* pfile, clustalw::Alignment *alignPt
 
     int _numSeqs = alignPtr->getNumSeqs();
     int _seqLength;
-    for (i = 1; i <= _numSeqs; i++) 
+    for (i = 1; i <= _numSeqs; i++)
     {
         _seqLength = alignPtr->getSeqLength(i);
         if (length_longest < _seqLength)
@@ -592,32 +592,32 @@ void ClusterTree::calcPercIdentity(ofstream* pfile, clustalw::Alignment *alignPt
             length_longest = _seqLength;
             rs = i;
         }
-        if (length_shortest > _seqLength) 
+        if (length_shortest > _seqLength)
         {
             length_shortest = _seqLength;
             rl = i;
         }
-    } 
+    }
 
     percentMat.ResizeRect(_numSeqs + 1);
     nmatch = 0;
     int _lenSeqI, _lenSeqJ;
     int _maxAA = clustalw::userParameters->getMaxAA();
-    
-    for (i = 1; i <= _numSeqs; i++) 
+
+    for (i = 1; i <= _numSeqs; i++)
     {
         const vector<int>* _seqI = alignPtr->getSequence(i);
         _lenSeqI = alignPtr->getSeqLength(i);
-        
-        for (j = i; j <= _numSeqs; j++) 
+
+        for (j = i; j <= _numSeqs; j++)
         {
             const vector<int>* _seqJ = alignPtr->getSequence(j);
             _lenSeqJ = alignPtr->getSeqLength(j);
-            
-            cout << "\n           " << alignPtr->getName(j) << " ";
+
+            Rcpp::Rcout << "\n           " << alignPtr->getName(j) << " ";
             ident = 0;
             nmatch = 0;
-            for(k = 1; k <= length_longest; k++) 
+            for(k = 1; k <= length_longest; k++)
             {
                 if((k > _lenSeqI) || (k > _lenSeqJ))
                 {
@@ -627,15 +627,15 @@ void ClusterTree::calcPercIdentity(ofstream* pfile, clustalw::Alignment *alignPt
                 val2 = (*_seqJ)[k];
 
                 if (((val1 < 0) || (val1 > _maxAA)) || ((val2 < 0) || (val2 > _maxAA)))
-                { 
+                {
                     continue; // residue = '-';
                 }
-                if (val1 == val2) 
+                if (val1 == val2)
                 {
                     ident++ ;
                     nmatch++;
                 }
-                else 
+                else
                 {
                     nmatch++ ;
                 }
@@ -647,15 +647,15 @@ void ClusterTree::calcPercIdentity(ofstream* pfile, clustalw::Alignment *alignPt
     }
 
     int _maxNameSize = alignPtr->getMaxNames();
-    
+
     (*pfile) << "#\n#\n#  Percent Identity  Matrix - created by Clustal"
              << clustalw::userParameters->getRevisionLevel() << " \n#\n#\n";
-    for(i = 1; i <= _numSeqs; i++) 
+    for(i = 1; i <= _numSeqs; i++)
     {
-        (*pfile) << "\n " << right << setw(5) << i << ": "; 
+        (*pfile) << "\n " << right << setw(5) << i << ": ";
         (*pfile) << left << setw(_maxNameSize) << alignPtr->getName(i);
-        
-        for(j = 1; j <= _numSeqs; j++) 
+
+        for(j = 1; j <= _numSeqs; j++)
         {
             (*pfile) << setw(8) << right << fixed << setprecision(0) << percentMat(i, j);
         }
@@ -699,7 +699,7 @@ void ClusterTree::compareTree(PhyloTree* tree1, PhyloTree* tree2, vector<int>* h
  * NOTE this will go into the OutputFile class and will not be needed here anymore.
  *
  */
-/*string ClusterTree::getOutputFileName(const string prompt, string path, 
+/*string ClusterTree::getOutputFileName(const string prompt, string path,
                                       const string fileExtension)
 {
     string temp;
@@ -707,10 +707,10 @@ void ClusterTree::compareTree(PhyloTree* tree1, PhyloTree* tree2, vector<int>* h
     string message;
     _fileName = path + fileExtension;
 
-    if(_fileName.compare(clustalw::userParameters->getSeqName()) == 0) 
+    if(_fileName.compare(clustalw::userParameters->getSeqName()) == 0)
     {
-        cout << "Output file name is the same as input file.\n";
-        if (clustalw::userParameters->getMenuFlag()) 
+        Rcpp::Rcout << "Output file name is the same as input file.\n";
+        if (clustalw::userParameters->getMenuFlag())
         {
             message = "\n\nEnter new name to avoid overwriting  [" + _fileName + "]: ";
             clustalw::utilityObject->getStr(message, temp);
@@ -720,7 +720,7 @@ void ClusterTree::compareTree(PhyloTree* tree1, PhyloTree* tree2, vector<int>* h
             }
         }
     }
-    else if (clustalw::userParameters->getMenuFlag()) 
+    else if (clustalw::userParameters->getMenuFlag())
     {
 
         message = prompt + " [" + _fileName + "]";
@@ -729,7 +729,7 @@ void ClusterTree::compareTree(PhyloTree* tree1, PhyloTree* tree2, vector<int>* h
         {
             _fileName = temp;
         }
-    }   
+    }
     return _fileName;
 
 }*/
@@ -744,17 +744,17 @@ bool ClusterTree::transition(int base1, int base2)
     {
         return true;
     }
-    // A <--> G 
+    // A <--> G
     if (((base1 == 17) && (base2 == 2)) || ((base1 == 2) && (base2 == 17)))
     {
         return true;
     }
-    // T <--> C 
+    // T <--> C
     return false;
 }
 
 /**
- * This function is used to open all the bootstrap tree files. It opens them with the 
+ * This function is used to open all the bootstrap tree files. It opens them with the
  * correct message prompt.
  */
 bool ClusterTree::openFilesForBootstrap(clustalw::OutputFile* clustalFile, clustalw::OutputFile* phylipFile,
@@ -762,50 +762,50 @@ bool ClusterTree::openFilesForBootstrap(clustalw::OutputFile* clustalFile, clust
 {
     if (clustalw::userParameters->getOutputTreeClustal())
     {
-        if(!clustalFile || !clustalFile->openFile(&(treeNames->clustalName), 
+        if(!clustalFile || !clustalFile->openFile(&(treeNames->clustalName),
                                   bootstrapPrompt, path, "njb", bootstrapFileTypeMsg))
         {
             return false;
-        } 
-    }   
-        
+        }
+    }
+
     if (clustalw::userParameters->getOutputTreePhylip())
-    {     
-        if(!phylipFile || !phylipFile->openFile(&(treeNames->phylipName), 
+    {
+        if(!phylipFile || !phylipFile->openFile(&(treeNames->phylipName),
                                 bootstrapPrompt, path, "phb", bootstrapFileTypeMsg))
         {
             return false;
-        }                     
-    }    
+        }
+    }
 
     if (clustalw::userParameters->getOutputTreeNexus())
     {
-        if(!nexusFile || !nexusFile->openFile(&(treeNames->nexusName), 
+        if(!nexusFile || !nexusFile->openFile(&(treeNames->nexusName),
                                 bootstrapPrompt, path, "treb", bootstrapFileTypeMsg))
         {
             return false;
-        }                   
-    }        
+        }
+    }
     return true;
-}                         
+}
 
-bool ClusterTree::openFilesForTreeFromAlignment(clustalw::OutputFile* clustalFile, 
-    clustalw::OutputFile* phylipFile, clustalw::OutputFile* distFile, clustalw::OutputFile* nexusFile, clustalw::OutputFile* pimFile, 
+bool ClusterTree::openFilesForTreeFromAlignment(clustalw::OutputFile* clustalFile,
+    clustalw::OutputFile* phylipFile, clustalw::OutputFile* distFile, clustalw::OutputFile* nexusFile, clustalw::OutputFile* pimFile,
                             clustalw::TreeNames* treeNames, string* path)
 {
     if (clustalw::userParameters->getOutputTreeClustal())
     {
-        if(!clustalFile || !clustalFile->openFile(&(treeNames->clustalName), 
+        if(!clustalFile || !clustalFile->openFile(&(treeNames->clustalName),
                                   "\nEnter name for CLUSTAL    tree output file  ",
                                   path, "nj", "Phylogenetic tree"))
         {
             return false;
-        } 
+        }
     }
-        
+
     if (clustalw::userParameters->getOutputTreePhylip())
-    {     
-        if(!phylipFile || !phylipFile->openFile(&(treeNames->phylipName), 
+    {
+        if(!phylipFile || !phylipFile->openFile(&(treeNames->phylipName),
                              "\nEnter name for PHYLIP     tree output file  ", path, "ph",
                              "Phylogenetic tree"))
         {
@@ -814,18 +814,18 @@ bool ClusterTree::openFilesForTreeFromAlignment(clustalw::OutputFile* clustalFil
     }
 
     if (clustalw::userParameters->getOutputTreeDistances())
-    {   
-        if(!distFile || !distFile->openFile(&(treeNames->distName), 
+    {
+        if(!distFile || !distFile->openFile(&(treeNames->distName),
                                "\nEnter name for distance matrix output file  ",
                                path, "dst", "Distance matrix"))
         {
             return false;
-        }         
+        }
     }
 
     if (clustalw::userParameters->getOutputTreeNexus())
     {
-        if(!nexusFile || !nexusFile->openFile(&(treeNames->nexusName), 
+        if(!nexusFile || !nexusFile->openFile(&(treeNames->nexusName),
                                 "\nEnter name for NEXUS tree output file  ", path,
                                      "tre", "Nexus tree"))
         {
@@ -834,25 +834,25 @@ bool ClusterTree::openFilesForTreeFromAlignment(clustalw::OutputFile* clustalFil
     }
 
     if (clustalw::userParameters->getOutputPim())
-    {       
-        if(!pimFile || !pimFile->openFile(&(treeNames->pimName), 
-                            "\nEnter name for % Identity matrix output file  ", path, "pim", 
+    {
+        if(!pimFile || !pimFile->openFile(&(treeNames->pimName),
+                            "\nEnter name for % Identity matrix output file  ", path, "pim",
                             "perc identity"))
         {
             return false;
-        }                       
+        }
     }
     return true;
 }
 
-int ClusterTree::calcQuickDistMatForAll(ofstream* clustalFile, ofstream* phylipFile, 
+int ClusterTree::calcQuickDistMatForAll(ofstream* clustalFile, ofstream* phylipFile,
                                   ofstream* nexusFile, ofstream* pimFile, ofstream* distFile,
                                   clustalw::Alignment* alignPtr)
 {
     int overspill = 0;
     bool _DNAFlag = clustalw::userParameters->getDNAFlag();
-    
-    overspill = calcQuickDistMatForSubSet(clustalFile, phylipFile, nexusFile, alignPtr);    
+
+    overspill = calcQuickDistMatForSubSet(clustalFile, phylipFile, nexusFile, alignPtr);
 
     if (pimFile && clustalw::userParameters->getOutputPim())
     {
@@ -883,15 +883,15 @@ int ClusterTree::calcQuickDistMatForAll(ofstream* clustalFile, ofstream* phylipF
                              alignPtr);
     }
     return overspill;
-}                    
+}
 
-int ClusterTree::calcQuickDistMatForSubSet(ofstream* clustalFile, ofstream* phylipFile, 
-                                          ofstream* nexusFile, clustalw::Alignment* alignPtr, 
+int ClusterTree::calcQuickDistMatForSubSet(ofstream* clustalFile, ofstream* phylipFile,
+                                          ofstream* nexusFile, clustalw::Alignment* alignPtr,
                                           bool inBootLoop)
 {
     int overspill = 0;
     bool _DNAFlag = clustalw::userParameters->getDNAFlag();
-    
+
     if (clustalFile && clustalw::userParameters->getOutputTreeClustal())
     {
         if(!inBootLoop)
@@ -901,7 +901,7 @@ int ClusterTree::calcQuickDistMatForSubSet(ofstream* clustalFile, ofstream* phyl
         else
         {
             verbose = false; // Turn off when we are in the loop in bootstrap!
-        }   
+        }
         if (_DNAFlag)
         {
             overspill = dnaDistanceMatrix(clustalFile, alignPtr);
@@ -914,7 +914,7 @@ int ClusterTree::calcQuickDistMatForSubSet(ofstream* clustalFile, ofstream* phyl
 
     if (phylipFile && clustalw::userParameters->getOutputTreePhylip())
     {
-        verbose = false; // Turn off file output 
+        verbose = false; // Turn off file output
         if (_DNAFlag)
         {
             overspill = dnaDistanceMatrix(phylipFile, alignPtr);
@@ -927,7 +927,7 @@ int ClusterTree::calcQuickDistMatForSubSet(ofstream* clustalFile, ofstream* phyl
 
     if (nexusFile && clustalw::userParameters->getOutputTreeNexus())
     {
-        verbose = false; // Turn off file output 
+        verbose = false; // Turn off file output
         if (_DNAFlag)
         {
             overspill = dnaDistanceMatrix(nexusFile, alignPtr);
@@ -937,7 +937,7 @@ int ClusterTree::calcQuickDistMatForSubSet(ofstream* clustalFile, ofstream* phyl
             overspill = protDistanceMatrix(nexusFile, alignPtr);
         }
     }
-    return overspill;    
+    return overspill;
 }
 
 void ClusterTree::printBootstrapHeaderToClustalFile(ofstream* clustalFile)
@@ -945,7 +945,7 @@ void ClusterTree::printBootstrapHeaderToClustalFile(ofstream* clustalFile)
     if(clustalFile)
     {
         (*clustalFile) << "\n\n\t\t\tBootstrap Confidence Limits\n\n";
-        (*clustalFile) << "\n Random number generator seed = " 
+        (*clustalFile) << "\n Random number generator seed = "
                        << setw(7)
                        << clustalw::userParameters->getBootRanSeed() << "\n";
         (*clustalFile) << "\n Number of bootstrap trials   = " << setw(7)
@@ -976,21 +976,21 @@ void ClusterTree::promptForBoolSeedAndNumTrials()
     }
 }
 
-void ClusterTree::printErrorMessageForBootstrap(int totalOverspill, int totalDists, 
+void ClusterTree::printErrorMessageForBootstrap(int totalOverspill, int totalDists,
                                                 int nfails)
 {
-    cerr << "\n";
-    cerr << "\n WARNING: " << totalOverspill 
-         << " of the distances out of a total of " 
+    Rcpp::Rcerr << "\n";
+    Rcpp::Rcerr << "\n WARNING: " << totalOverspill
+         << " of the distances out of a total of "
          << totalDists << " times" << clustalw::userParameters->getBootNumTrials();
-    cerr << "\n were out of range for the distance correction.";
-    cerr << "\n This affected " << nfails << " out of " 
+    Rcpp::Rcerr << "\n were out of range for the distance correction.";
+    Rcpp::Rcerr << "\n This affected " << nfails << " out of "
          << clustalw::userParameters->getBootNumTrials() << " bootstrap trials.";
-    cerr << "\n This may not be fatal but you have been warned!" << "\n";
-    cerr << "\n SUGGESTIONS: 1) turn off the correction";
-    cerr << "\n           or 2) remove the most distant sequences";
-    cerr << "\n           or 3) use the PHYLIP package.\n\n";
-            
+    Rcpp::Rcerr << "\n This may not be fatal but you have been warned!" << "\n";
+    Rcpp::Rcerr << "\n SUGGESTIONS: 1) turn off the correction";
+    Rcpp::Rcerr << "\n           or 2) remove the most distant sequences";
+    Rcpp::Rcerr << "\n           or 3) use the PHYLIP package.\n\n";
+
     if (clustalw::userParameters->getMenuFlag())
     {
         string dummy;
@@ -1011,8 +1011,8 @@ bool ClusterTree::checkIfConditionsMet(int numSeqs, int min)
         clustalw::utilityObject->error("Alignment has only %d sequences", numSeqs);
         return false;
     }
-    
+
     return true;
 }
-                                 
+
 }

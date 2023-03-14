@@ -73,9 +73,9 @@ bool FileReader::noEmptySequence(vector<Sequence> seqVector, string *offendingSe
 
     if(userParameters->getMenuFlag())
     {
-        cout << "\n\nSequences should all be in 1 file.\n";
-        cout << "\n7 formats accepted: \n";
-        cout << "NBRF/PIR, EMBL/SwissProt, Pearson (Fasta), GDE, Clustal, GCG/MSF, \
+        Rcpp::Rcout << "\n\nSequences should all be in 1 file.\n";
+        Rcpp::Rcout << "\n7 formats accepted: \n";
+        Rcpp::Rcout << "NBRF/PIR, EMBL/SwissProt, Pearson (Fasta), GDE, Clustal, GCG/MSF, \
                  RSF.\n\n\n";
     }
 
@@ -98,12 +98,12 @@ bool FileReader::noEmptySequence(vector<Sequence> seqVector, string *offendingSe
         alignPtr->clearSecStruct2();
 
         string typeOfAlign = userParameters->getDNAFlag() ? "DNA" : "PROTEIN";
-        cout << "Sequences assumed to be "
+        Rcpp::Rcout << "Sequences assumed to be "
              << typeOfAlign << endl;
 
         if (userParameters->getMenuFlag())
         {
-            cout << "\n\n";
+            Rcpp::Rcout << "\n\n";
             alignPtr->printSequencesAddedInfo();
         }
         if(userParameters->getDNAFlag())
@@ -489,7 +489,7 @@ int FileReader::profileInput(Alignment *alignPtr)
 
             userParameters->setProfile1Empty(false);
             userParameters->setProfile2Empty(true);
-            cout << "No. of seqs = " << alignPtr->getNumSeqs() << endl;
+            Rcpp::Rcout << "No. of seqs = " << alignPtr->getNumSeqs() << endl;
         }
         else
         {
@@ -517,9 +517,9 @@ int FileReader::profileInput(Alignment *alignPtr)
                 alignPtr->addGapPenaltyMask2(&gapPenaltyMask);
                 alignPtr->addSecStructName2(secStructName);
             }
-            cout << "No. of seqs in profile=" << alignPtr->getNumSeqs() - profile1NumOfSeqs
+            Rcpp::Rcout << "No. of seqs in profile=" << alignPtr->getNumSeqs() - profile1NumOfSeqs
                  << endl;
-            cout << "Total no. of seqs     =" << alignPtr->getNumSeqs() << endl;
+            Rcpp::Rcout << "Total no. of seqs     =" << alignPtr->getNumSeqs() << endl;
             userParameters->setProfile2Empty(false);
             userParameters->setEmpty(false);
         }
@@ -534,12 +534,12 @@ int FileReader::profileInput(Alignment *alignPtr)
     secStructName = "";
 
     string typeOfAlign = userParameters->getDNAFlag() ? "DNA" : "PROTEIN";
-    cout << "Sequences assumed to be "
+    Rcpp::Rcout << "Sequences assumed to be "
          << typeOfAlign << endl;
 
     if (userParameters->getMenuFlag())
     {
-        cout<< "\n\n";
+        Rcpp::Rcout<< "\n\n";
     }
 
     alignPtr->printSequencesAddedInfo();
@@ -597,46 +597,46 @@ void FileReader::checkInfile(int *nseqs, unique_ptr<FileParser>& fileParser)
          // EMBL/Swiss-Prot format ?
         fileParser.reset(new EMBLFileParser(sequenceFileName));
         if(userParameters->getDisplayInfo())
-            cout << "Sequence format is EMBL\n";
+            Rcpp::Rcout << "Sequence format is EMBL\n";
     }
     else if (utilityObject->lineType(_lineIn, "CLUSTAL"))
     {
         fileParser.reset(new ClustalFileParser(sequenceFileName));
         if(userParameters->getDisplayInfo())
-            cout << "Sequence format is CLUSTAL\n";
+            Rcpp::Rcout << "Sequence format is CLUSTAL\n";
     }
     else if (utilityObject->lineType(_lineIn, "PILEUP")) // MSF
     {
         fileParser.reset(new MSFFileParser(sequenceFileName));
         if(userParameters->getDisplayInfo())
-            cout << "Sequence format is MSF\n";
+            Rcpp::Rcout << "Sequence format is MSF\n";
     }
     else if (utilityObject->lineType(_lineIn, "!!AA_MULTIPLE_ALIGNMENT")) // MSF
     {
         fileParser.reset(new MSFFileParser(sequenceFileName));
         userParameters->setDNAFlag(false);
         if(userParameters->getDisplayInfo())
-            cout << "Sequence format is MSF\n";
+            Rcpp::Rcout << "Sequence format is MSF\n";
     }
     else if (utilityObject->lineType(_lineIn, "!!NA_MULTIPLE_ALIGNMENT")) // MSF
     {
         fileParser.reset(new MSFFileParser(sequenceFileName));
         userParameters->setDNAFlag(true);
         if(userParameters->getDisplayInfo())
-            cout << "Sequence format is MSF\n";
+            Rcpp::Rcout << "Sequence format is MSF\n";
     }
     else if (strstr(_lineIn, "MSF") && _lineIn[strlen(_lineIn) - 1] == '.' &&
         _lineIn[strlen(_lineIn) - 2] == '.') // MSF
     {
         fileParser.reset(new MSFFileParser(sequenceFileName));
         if(userParameters->getDisplayInfo())
-            cout << "Sequence format is MSF\n";
+            Rcpp::Rcout << "Sequence format is MSF\n";
     }
     else if (utilityObject->lineType(_lineIn, "!!RICH_SEQUENCE")) // RSF
     {
         fileParser.reset(new RSFFileParser(sequenceFileName));
         if(userParameters->getDisplayInfo())
-            cout << "Sequence format is RSF\n";
+            Rcpp::Rcout << "Sequence format is RSF\n";
     }
     else if (utilityObject->lineType(_lineIn, "#NEXUS"))
     {
@@ -651,7 +651,7 @@ void FileReader::checkInfile(int *nseqs, unique_ptr<FileParser>& fileParser)
                 // PIR
                 fileParser.reset(new PIRFileParser(sequenceFileName));
                 if(userParameters->getDisplayInfo())
-                    cout << "Sequence format is PIR\n";
+                    Rcpp::Rcout << "Sequence format is PIR\n";
             }
         }
         else
@@ -659,7 +659,7 @@ void FileReader::checkInfile(int *nseqs, unique_ptr<FileParser>& fileParser)
             // PEARSON
             fileParser.reset(new PearsonFileParser(sequenceFileName));
             if(userParameters->getDisplayInfo())
-                cout << "Sequence format is Pearson\n";
+                Rcpp::Rcout << "Sequence format is Pearson\n";
         }
     }
     else if ((*_lineIn == '"') || (*_lineIn == '%') || (*_lineIn == '#'))
@@ -667,7 +667,7 @@ void FileReader::checkInfile(int *nseqs, unique_ptr<FileParser>& fileParser)
         // GDE format
         fileParser.reset(new GDEFileParser(sequenceFileName));
         if(userParameters->getDisplayInfo())
-            cout << "Sequence format is GDE\n";
+            Rcpp::Rcout << "Sequence format is GDE\n";
 
         if (*_lineIn == '%')
         {

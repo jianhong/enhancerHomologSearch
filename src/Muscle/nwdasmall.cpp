@@ -369,7 +369,7 @@ static const char *LocalScoreToStr(SCORE s)
 	static char str[16];
 	if (s < -100000)
 		return "     *";
-	sprintf(str, "%6.1f", s);
+	snprintf(str, 16, "%6.1f", s);
 	return str;
 	}
 
@@ -520,7 +520,7 @@ static const char *BitsToStr(char Bits)
 	{
 	static char Str[32];
 
-	sprintf(Str, "%cM %cD %cE %cI %cJ",
+	snprintf(Str, 32, "%cM %cD %cE %cI %cJ",
 	  Get_M_Char(Bits),
 	  Get_D_Char(Bits),
 	  Get_E_Char(Bits),
@@ -770,7 +770,7 @@ SCORE NWDASmall(const ProfPos *PA, unsigned uLengthA, const ProfPos *PB,
 		  (j - 2)*e + PB[j-2].m_scoreGapClose;
 		SCORE M2 = ScoreProfPos2(PA[0], PB[j-1]) + PB[0].m_scoreGapOpen2 +
 		  (j - 2)*e2 + PB[j-2].m_scoreGapClose2;
-		
+
 		if (M >= M2)
 			{
 			MCurr[j] = M;
@@ -799,7 +799,7 @@ SCORE NWDASmall(const ProfPos *PA, unsigned uLengthA, const ProfPos *PB,
 		SetDPD(i, 0, DRow[0]);
 		SetDPE(i, 0, ERow[0]);
 
-		MCurr[0] = MINUS_INFINITY; 
+		MCurr[0] = MINUS_INFINITY;
 		if (i == 1)
 			{
 			MCurr[1] = ScoreProfPos2(PA[0], PB[0]);

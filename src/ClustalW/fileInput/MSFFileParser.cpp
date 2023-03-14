@@ -1,7 +1,7 @@
 /**
  * Author: Mark Larkin
- * 
- * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.  
+ *
+ * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.
  */
 /**
  * Changes:
@@ -20,24 +20,24 @@ namespace clustalw
 
 /**
  * MSFFileParser contructor sets up the chartab array.
- * @param filePath 
- * @return 
+ * @param filePath
+ * @return
  */
 MSFFileParser::MSFFileParser(string filePath)
 {
-    fileName = filePath; 
+    fileName = filePath;
     fillCharTab();
 }
 
 
-    
+
     vector<Sequence> MSFFileParser::getSeqRange(int firstSeq, int no, string *offendingSeq)
 {
     vector<Sequence> seqRangeVector;
     int i;
 
     for (i=0; i<no; i++)
-    { 
+    {
         Sequence tempSeq = getSeq(firstSeq + i);
         if (parseExitCode!=OK) {
             seqRangeVector.clear();
@@ -63,7 +63,7 @@ Sequence MSFFileParser::getSeq(int seqNum, string *offendingSeq)
     string name = "";
     string title = "";
     string blank = "";
-    
+
     _line[0] = EOS;
     int i, j, k;
     unsigned char c;
@@ -72,8 +72,8 @@ Sequence MSFFileParser::getSeq(int seqNum, string *offendingSeq)
     {
         _fileIn = new InFileStream;  //nige
         _fileIn->open(fileName.c_str());  //nige
-        _fileIn->seekg(0, std::ios::beg);       
-        
+        _fileIn->seekg(0, std::ios::beg);
+
         for (i = 0;; i++)
         {
             if (!_fileIn->getline(_line, MAXLINE + 1))
@@ -111,7 +111,7 @@ Sequence MSFFileParser::getSeq(int seqNum, string *offendingSeq)
                         break;
                     }
                 }
-                
+
                 // Get the name of the sequence
                 strncpy(_sname, _line + j, utilityObject->MIN(MAXNAMES, k - j));
                 _sname[utilityObject->MIN(MAXNAMES, k - j)] = EOS;
@@ -134,7 +134,7 @@ Sequence MSFFileParser::getSeq(int seqNum, string *offendingSeq)
                     {
                         break;
                     }
-                    // EOL 
+                    // EOL
                     c = chartab[c];
                     if (c)
                     {
@@ -157,7 +157,7 @@ Sequence MSFFileParser::getSeq(int seqNum, string *offendingSeq)
             }
         }
         _fileIn->close();
-        
+
         if ((int)characterSeq.length() > userParameters->getMaxAllowedSeqLength())
         {
             parseExitCode=SEQUENCETOOBIG;
@@ -171,7 +171,7 @@ Sequence MSFFileParser::getSeq(int seqNum, string *offendingSeq)
     catch(...)
     {
         _fileIn->close();
-        cerr << "An exception has occured in the function MSFFileParser::getSeq()\n"
+        Rcpp::Rcerr << "An exception has occured in the function MSFFileParser::getSeq()\n"
              << "Program needs to terminate.\nPlease contact the Clustal developers\n";
         throw 1;
     }
@@ -185,17 +185,17 @@ int MSFFileParser::countSeqs()
 {
     char _line[MAXLINE + 1];
     int _numSeqs;
-    
+
     try
     {
         _fileIn = new InFileStream;  //nige
         _fileIn->open(fileName.c_str());  //nige
-    
+
         if(!_fileIn->is_open())
         {
             return 0; // No sequences found!
         }
-    
+
         while (_fileIn->getline(_line, MAXLINE + 1))
         {
             if (utilityObject->lineType(_line, "//"))
@@ -211,7 +211,7 @@ int MSFFileParser::countSeqs()
                 break;
             }
             // Look for next non- blank line
-        } 
+        }
         _numSeqs = 1;
 
         while (_fileIn->getline(_line, MAXLINE + 1))
@@ -229,7 +229,7 @@ int MSFFileParser::countSeqs()
     catch(...)
     {
         _fileIn->close();
-        cerr << "An exception has occured in the function MSFFileParser::countSeqs()\n"
+        Rcpp::Rcerr << "An exception has occured in the function MSFFileParser::countSeqs()\n"
              << "Program needs to terminate.\nPlease contact the Clustal developers\n";
         throw 1;
     }
@@ -237,11 +237,11 @@ int MSFFileParser::countSeqs()
 
 /**
  * There is no secondary structure information in MSF files. Set structPenalties to NONE.
- * @param gapPenaltyMask 
- * @param secStructMask 
- * @param secStructName 
- * @param structPenalties 
- * @param length 
+ * @param gapPenaltyMask
+ * @param secStructMask
+ * @param secStructName
+ * @param structPenalties
+ * @param length
  */
 void MSFFileParser::getSecStructure(vector<char>& gapPenaltyMask, vector<char>& secStructMask,
                                     string& secStructName, int &structPenalties, int length)

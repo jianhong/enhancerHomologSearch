@@ -1,7 +1,7 @@
 /**
  * Author: Mark Larkin
- * 
- * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.  
+ *
+ * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.
  */
 #ifdef HAVE_CONFIG_H
     #include "config.h"
@@ -12,10 +12,10 @@ namespace clustalw
 {
 
 /**
- * 
- * @param prfLen 
- * @param firstS 
- * @param lastS 
+ *
+ * @param prfLen
+ * @param firstS
+ * @param lastS
  */
 ProfileBase::ProfileBase(int prfLen, int firstS, int lastS)
  : vwindow(5),
@@ -30,7 +30,7 @@ ProfileBase::ProfileBase(int prfLen, int firstS, int lastS)
     {
         vlut[i][i] = 1;
     }
-    
+
     pascarellaRes = "ACDEFGHKILMNPQRSTVYW";
     int pasprob[] = { 87, 87, 104, 69, 80, 139, 100, 104, 68, 79,
                      71, 137, 126, 93, 128, 124, 111, 75, 100, 77};
@@ -41,15 +41,15 @@ ProfileBase::ProfileBase(int prfLen, int firstS, int lastS)
 
 
 /**
- * 
- * @param seqArray 
- * @param gaps 
- * @param useStructPenalties 
- * @param gapPenaltyMask 
- * @param gapCoef 
- * @param lenCoef 
+ *
+ * @param seqArray
+ * @param gaps
+ * @param useStructPenalties
+ * @param gapPenaltyMask
+ * @param gapCoef
+ * @param lenCoef
  */
-void ProfileBase::calcGapCoeff(SeqArray* seqArray, vector<int>* gaps,  
+void ProfileBase::calcGapCoeff(SeqArray* seqArray, vector<int>* gaps,
          bool useStructPenalties, vector<char>* gapPenaltyMask, int gapCoef, int lenCoef)
 {
     int c;
@@ -60,13 +60,13 @@ void ProfileBase::calcGapCoeff(SeqArray* seqArray, vector<int>* gaps,
     vector<int> vWeight, resWeight, hydWeight;
     float scale;
     int _maxAA = userParameters->getMaxAA();
-    
+
     _numSeq = lastSeq - firstSeq;
     if(_numSeq == 2)
     {
         pcid = static_cast<int>(percentId(&(*seqArray)[firstSeq], &(*seqArray)[firstSeq + 1]));
     }
-    else 
+    else
         pcid = 0;
 
     for (j = 0; j < prfLength; j++)
@@ -82,7 +82,7 @@ void ProfileBase::calcGapCoeff(SeqArray* seqArray, vector<int>* gaps,
         gdist = 0;
     }
     else if (userParameters->getNoVarPenalties() == false && pcid > 60)
-    {            
+    {
         nHydPen = nPrefPen = true;
         nVarPen = false;
     }
@@ -92,14 +92,14 @@ void ProfileBase::calcGapCoeff(SeqArray* seqArray, vector<int>* gaps,
         nHydPen = userParameters->getNoHydPenalties();
         nPrefPen = userParameters->getNoPrefPenalties();
         gdist = userParameters->getGapDist();
-    }                  
-     
+    }
+
     for (i = firstSeq; i < lastSeq; i++)
     {
         // Include end gaps as gaps ?
         is = 0;
         ie = prfLength;
-        if (userParameters->getUseEndGaps() == false && 
+        if (userParameters->getUseEndGaps() == false &&
             userParameters->getEndGapPenalties() == false)
         {
             for (j = 0; j < prfLength; j++)
@@ -130,7 +130,7 @@ void ProfileBase::calcGapCoeff(SeqArray* seqArray, vector<int>* gaps,
     }
 
     int _DNAFlag = userParameters->getDNAFlag();
-    
+
     if ((!_DNAFlag) && (nVarPen == false))
     {
         vWeight.resize(prfLength + 2);
@@ -153,11 +153,11 @@ void ProfileBase::calcGapCoeff(SeqArray* seqArray, vector<int>* gaps,
     gapPos.resize(prfLength + 2);
 
     // mark the residues close to an existing gap (set gaps[i] = -ve)
-  
+
     if (_DNAFlag || (gdist <= 0))
     {
         for (i = 0; i < prfLength; i++)
-        { 
+        {
             gapPos[i] = (*gaps)[i];
         }
     }
@@ -171,20 +171,20 @@ void ProfileBase::calcGapCoeff(SeqArray* seqArray, vector<int>* gaps,
                 gapPos[i] = (*gaps)[i];
                 i++;
             }
-            else 
+            else
             {
                 for (j = -gdist + 1; j < 0; j++)
                 {
                     if ((i + j >= 0) && (i + j < prfLength) &&
                        (((*gaps)[i + j] == 0) || ((*gaps)[i + j] < j)))
-                    {     
+                    {
                         gapPos[i + j] = j;
                     }
                 }
                 while ((*gaps)[i] > 0)
                 {
                     if (i >= prfLength)
-                    { 
+                    {
                         break;
                     }
                     gapPos[i] = (*gaps)[i];
@@ -193,12 +193,12 @@ void ProfileBase::calcGapCoeff(SeqArray* seqArray, vector<int>* gaps,
                 for (j = 0; j < gdist; j++)
                 {
                     if ((*gaps)[i + j] > 0)
-                    { 
+                    {
                         break;
                     }
-                    if ((i + j >= 0) && (i + j < prfLength) && 
+                    if ((i + j >= 0) && (i + j < prfLength) &&
                        (((*gaps)[i + j] == 0) || ((*gaps)[i + j] < -j)))
-                    {     
+                    {
                          gapPos[i + j] = -j-1;
                     }
                 }
@@ -206,28 +206,28 @@ void ProfileBase::calcGapCoeff(SeqArray* seqArray, vector<int>* gaps,
             }
         }
     }
-    
+
     for (j = 0; j < prfLength; j++)
-    {          
+    {
         if (gapPos[j] <= 0)
         {
 
          // apply residue-specific and hydrophilic gap penalties.
-         
-            if (!_DNAFlag) 
+
+            if (!_DNAFlag)
             {
                 profile[j + 1][GAPCOL] = localPenalty(gapCoef, j, &resWeight, &hydWeight,
                                                        &vWeight);
                 profile[j+1][LENCOL] = lenCoef;
             }
-            else 
+            else
             {
                 profile[j + 1][GAPCOL] = gapCoef;
                 profile[j + 1][LENCOL] = lenCoef;
             }
 
          // increase gap penalty near to existing gaps.
-         
+
             if (gapPos[j] < 0)
             {
                 profile[j + 1][GAPCOL] = static_cast<int>((profile[j + 1][GAPCOL] * (2.0 + 2.0 * (gdist + gapPos[j]) / gdist)));
@@ -241,7 +241,7 @@ void ProfileBase::calcGapCoeff(SeqArray* seqArray, vector<int>* gaps,
         }
 
         // apply the gap penalty mask
-        
+
         if (useStructPenalties != NONE)
         {
             val = (*gapPenaltyMask)[j] - '0';
@@ -253,13 +253,13 @@ void ProfileBase::calcGapCoeff(SeqArray* seqArray, vector<int>* gaps,
         }
 
         // make sure no penalty is zero - even for all-gap positions
-        
+
         if (profile[j + 1][GAPCOL] <= 0)
-        { 
+        {
             profile[j + 1][GAPCOL] = 1;
         }
         if (profile[j + 1][LENCOL] <= 0)
-        { 
+        {
             profile[j + 1][LENCOL] = 1;
         }
     }
@@ -279,33 +279,33 @@ void ProfileBase::calcGapCoeff(SeqArray* seqArray, vector<int>* gaps,
     }
     if (userParameters->getDebug() > 0)
     {
-        cout << "Opening penalties:\n";
+        Rcpp::Rcout << "Opening penalties:\n";
         for(i = 0; i <= prfLength; i++)
-        { 
-            cout <<" " << i << ":" << profile[i][GAPCOL]<< " ";
+        {
+            Rcpp::Rcout <<" " << i << ":" << profile[i][GAPCOL]<< " ";
         }
-        cout << "\n";
+        Rcpp::Rcout << "\n";
     }
     if (userParameters->getDebug() > 0)
     {
-        cout << "Extension penalties:\n";
-        for(i = 0; i <= prfLength; i++) 
+        Rcpp::Rcout << "Extension penalties:\n";
+        for(i = 0; i <= prfLength; i++)
         {
-            cout << i << ":" << profile[i][LENCOL] << " ";
+            Rcpp::Rcout << i << ":" << profile[i][LENCOL] << " ";
         }
-        cout << "\n";
-    }    
+        Rcpp::Rcout << "\n";
+    }
 }
 
 /** **************************************************************************************
  *                               Protected functions                                     *
  *****************************************************************************************/
- 
+
 
 /**
- * 
- * @param aln 
- * @param weight 
+ *
+ * @param aln
+ * @param weight
  */
 void ProfileBase::calcVPenalties(SeqArray* aln, vector<int>* weight)
 {
@@ -313,7 +313,7 @@ void ProfileBase::calcVPenalties(SeqArray* aln, vector<int>* weight)
     int i, j, t;
     int _maxAA = userParameters->getMaxAA();
     int aminoCodeix1, aminoCodeix2;
-    
+
     for (i = 0; i < prfLength; i++)
     {
         (*weight)[i] = 0;
@@ -325,14 +325,14 @@ void ProfileBase::calcVPenalties(SeqArray* aln, vector<int>* weight)
                 ix1 = (*aln)[firstSeq][j];
                 ix2 = (*aln)[firstSeq + 1][j];
                 if ((ix1 < 0) || (ix1 > _maxAA) || (ix2 < 0) || (ix2 > _maxAA))
-                { 
+                {
                     continue;
                 }
                 aminoCodeix1 = userParameters->getAminoAcidCode(ix1);
                 aminoCodeix2 = userParameters->getAminoAcidCode(ix2);
                 (*weight)[i] += vlut[aminoCodeix1 - 'A'][aminoCodeix2 - 'A'];
                 t++;
-            } 
+            }
         }
         /* now we have a weight -t < w < t */
         (*weight)[i] +=t;
@@ -341,16 +341,16 @@ void ProfileBase::calcVPenalties(SeqArray* aln, vector<int>* weight)
         else
             (*weight)[i] = 100;
         /* now we have a weight vll < w < 100 */
-        if ((*weight)[i] < vll) 
+        if ((*weight)[i] < vll)
             (*weight)[i] = vll;
     }
 }
 
 
 /**
- * 
- * @param aln 
- * @param weight 
+ *
+ * @param aln
+ * @param weight
  */
 void ProfileBase::calcResidueSpecificPen(SeqArray* aln, vector<int>* weight)
 {
@@ -359,7 +359,7 @@ void ProfileBase::calcResidueSpecificPen(SeqArray* aln, vector<int>* weight)
     int i;
     int _maxAA = userParameters->getMaxAA();
     int _pascarellaNumRes = pascarellaRes.size();
-    
+
     _numSeq = lastSeq - firstSeq;
     for (i = 0; i < prfLength; i++)
     {
@@ -369,7 +369,7 @@ void ProfileBase::calcResidueSpecificPen(SeqArray* aln, vector<int>* weight)
             for (j = 0; j < _pascarellaNumRes; j++)
             {
                 ix = (*aln)[k][i];
-                if ((ix < 0) || (ix > _maxAA)) 
+                if ((ix < 0) || (ix > _maxAA))
                     continue;
                 if (userParameters->getAminoAcidCode(ix) == pascarellaRes[j])
                 {
@@ -383,9 +383,9 @@ void ProfileBase::calcResidueSpecificPen(SeqArray* aln, vector<int>* weight)
 }
 
 /**
- * 
- * @param aln 
- * @param weight 
+ *
+ * @param aln
+ * @param weight
  */
 void ProfileBase::calcHydrophilicPen(SeqArray* aln, vector<int>* weight)
 {
@@ -395,11 +395,11 @@ void ProfileBase::calcHydrophilicPen(SeqArray* aln, vector<int>* weight)
     vector<int> hyd;
     float scale;
     int _maxAA = userParameters->getMaxAA();
-    
+
     hyd.resize(prfLength + 2);
     string _hydResidues(userParameters->getHydResidues());
     numHydResidues = _hydResidues.size();
-        
+
     for (i = 0; i < prfLength; i++)
     {
         (*weight)[i] = 0;
@@ -413,7 +413,7 @@ void ProfileBase::calcHydrophilicPen(SeqArray* aln, vector<int>* weight)
             for (j = 0; j < numHydResidues; j++)
             {
                 res = (*aln)[k][i];
-                if ((res < 0) || (res > _maxAA)) 
+                if ((res < 0) || (res > _maxAA))
                     continue;
                 if (userParameters->getAminoAcidCode(res) == _hydResidues[j])
                 {
@@ -425,20 +425,20 @@ void ProfileBase::calcHydrophilicPen(SeqArray* aln, vector<int>* weight)
         i = 0;
         while (i < prfLength)
         {
-            if (hyd[i] == 0) 
+            if (hyd[i] == 0)
                 i++;
             else
             {
                 s = i;
                 while ((hyd[i] != 0) && (i < prfLength))
-                { 
+                {
                     i++;
                 }
                 e = i;
                 if (e - s > 3)
                 {
                     for (j = s; j < e; j++)
-                    { 
+                    {
                         (*weight)[j] += 100;
                     }
                 }
@@ -455,22 +455,22 @@ void ProfileBase::calcHydrophilicPen(SeqArray* aln, vector<int>* weight)
 
 
 /**
- * 
- * @param penalty 
- * @param n 
- * @param resWeight 
- * @param hydWeight 
- * @param vWeight 
- * @return 
+ *
+ * @param penalty
+ * @param n
+ * @param resWeight
+ * @param hydWeight
+ * @param vWeight
+ * @return
  */
-int ProfileBase::localPenalty(int penalty, int n, vector<int>* resWeight, 
+int ProfileBase::localPenalty(int penalty, int n, vector<int>* resWeight,
                               vector<int>* hydWeight, vector<int>* vWeight)
 {
     bool h = false;
     float gw;
 
     if (userParameters->getDNAFlag())
-    { 
+    {
         return(1);
     }
 
@@ -503,10 +503,10 @@ int ProfileBase::localPenalty(int penalty, int n, vector<int>* resWeight,
  ************************************************************************/
 
 /**
- * 
- * @param s1 
- * @param s2 
- * @return 
+ *
+ * @param s1
+ * @param s2
+ * @return
  */
 float ProfileBase::percentId(vector<int>* s1, vector<int>* s2)
 {
@@ -515,25 +515,25 @@ float ProfileBase::percentId(vector<int>* s1, vector<int>* s2)
     float score;
 
     count = total = 0;
-    for (i = 0; i < prfLength; i++) 
+    for (i = 0; i < prfLength; i++)
     {
-        if (((*s1)[i] >= 0) && ((*s1)[i] < userParameters->getMaxAA())) 
+        if (((*s1)[i] >= 0) && ((*s1)[i] < userParameters->getMaxAA()))
         {
             total++;
             if ((*s1)[i] == (*s2)[i])
-            { 
+            {
                 count++;
             }
         }
         if ((*s1)[i]==(-3) || (*s2)[i]==(-3))
-        { 
+        {
             break; // I dont have -3 at the end!
         }
 
     }
 
     if(total == 0)
-    { 
+    {
         score = 0;
     }
     else
@@ -542,6 +542,6 @@ float ProfileBase::percentId(vector<int>* s1, vector<int>* s2)
     }
     return (score);
 }
-                         
+
 
 }

@@ -7,6 +7,7 @@
 #define OUTPUTFILE_H
 #include <memory>
 #include <fstream>
+#include <Rcpp.h>
 namespace clustalw
 {
 

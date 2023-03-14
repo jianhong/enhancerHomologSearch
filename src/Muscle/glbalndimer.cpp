@@ -16,7 +16,7 @@ static const char *LocalScoreToStr(SCORE s)
 	static char str[16];
 	if (MINUS_INFINITY == s)
 		return "     *";
-	sprintf(str, "%6.3g", s);
+	snprintf(str, 16, "%6.3g", s);
 	return str;
 	}
 

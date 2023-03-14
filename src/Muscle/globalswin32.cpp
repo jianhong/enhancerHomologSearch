@@ -13,7 +13,7 @@ void DebugPrintf(const char *szFormat, ...)
 	char szStr[4096];
 
 	va_start(ArgList, szFormat);
-	vsprintf(szStr, szFormat, ArgList);
+	vsnprintf(szStr, 4096, szFormat, ArgList);
 
 	OutputDebugString(szStr);
 	}

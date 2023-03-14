@@ -168,7 +168,7 @@ void AlignSubFam(SeqVect &vAll, const Tree &GuideTree, unsigned uNodeIndex,
 	fIn.Close();
 
 	char CmdLine[4096];
-	sprintf(CmdLine, "probcons %s > %s 2> /dev/null", InTmp, OutTmp);
+	snprintf(CmdLine, 4096, "probcons %s > %s 2> /dev/null", InTmp, OutTmp);
 //	sprintf(CmdLine, "muscle -in %s -out %s -maxiters 1", InTmp, OutTmp);
 	int NotUsed = system(CmdLine);
 
@@ -240,7 +240,7 @@ void ProgAlignSubFams()
 			{
 			size_t n = strlen(Path) + 1 + strlen(FileName) + 1;
 			char *NewFileName = new char[n];
-			sprintf(NewFileName, "%s/%s", Path, FileName);
+			snprintf(NewFileName, n, "%s/%s", Path, FileName);
 			FileName = NewFileName;
 			}
 		TextFile File(FileName);

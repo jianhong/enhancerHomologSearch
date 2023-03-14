@@ -1,7 +1,7 @@
 /**
  * Author: Mark Larkin
- * 
- * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.  
+ *
+ * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.
  */
 #ifdef HAVE_CONFIG_H
     #include "config.h"
@@ -21,17 +21,17 @@ DebugLog::DebugLog(std::string _logFileName)
    minScore(0.0),
    maxScore(0.0)
 {
-    logFile = new std::ofstream();  
+    logFile = new std::ofstream();
     logFile->open(logFileName.c_str(), ios::out);
-    
+
     if(logFile->is_open())
     {
-        std::cout << "Logging debug info to file: " << logFileName << std::endl;
+        Rcpp::Rcout << "Logging debug info to file: " << logFileName << std::endl;
     }
     else
     {
-        std::cerr << "Could not open log file.\n";
-    }    
+        Rcpp::Rcerr << "Could not open log file.\n";
+    }
 }
 
 DebugLog::~DebugLog()
@@ -59,7 +59,7 @@ void DebugLog::logScore(float x)
     {
         maxScore = x;
     }
-        
+
     sumSoFar += x;
     numScores++;
 }

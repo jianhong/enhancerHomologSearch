@@ -34,7 +34,7 @@ static const char *LocalScoreToStr(SCORE s)
 	static char str[16];
 	if (s < -100000)
 		return "     *";
-	sprintf(str, "%6.1f", s);
+	snprintf(str, 16, "%6.1f", s);
 	return str;
 	}
 
@@ -283,7 +283,7 @@ SCORE NWDASimple(const ProfPos *PA, unsigned uLengthA, const ProfPos *PB,
 				scoreBest = scoreMI;
 				TBI(uPrefixLengthA, uPrefixLengthB) = 'M';
 				}
-			else 
+			else
 				{
 				assert(scoreII > scoreMI);
 				scoreBest = scoreII;
@@ -304,7 +304,7 @@ SCORE NWDASimple(const ProfPos *PA, unsigned uLengthA, const ProfPos *PB,
 				scoreBest = scoreMJ;
 				TBJ(uPrefixLengthA, uPrefixLengthB) = 'M';
 				}
-			else 
+			else
 				{
 				assert(scoreJJ > scoreMJ);
 				scoreBest = scoreJJ;
@@ -436,7 +436,7 @@ SCORE NWDASimple(const ProfPos *PA, unsigned uLengthA, const ProfPos *PB,
 			cEdgeType = TBI(PLA, PLB);
 			--PLB;
 			break;
-		
+
 		case 'J':
 			assert(PLB > 0);
 			cEdgeType = TBJ(PLA, PLB);

@@ -48,7 +48,7 @@ void RClustalWMain::run(UserArgs args, ClustalWInput *input, ClustalWOutput *out
 	//userParameters->setDebug(5);
 	#if DEBUGFULL
 		if(DEBUGLOG) {
-			Rcout << "debugging is on\n\n\n";
+			Rcpp::Rcout << "debugging is on\n\n\n";
 			logObject = new DebugLog("logfile.txt");
 			logObject->logMsg("Loggin is on!");
 		}
@@ -70,7 +70,7 @@ void RClustalWMain::run(UserArgs args, ClustalWInput *input, ClustalWOutput *out
 
 		//end = time (NULL);
 		//dif = difftime(end, start);
-		//Rcout << "It took " << dif << " seconds\n";
+		//Rcpp::Rcout << "It took " << dif << " seconds\n";
 	}
 
 	delete userParameters;

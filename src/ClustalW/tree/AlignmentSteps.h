@@ -1,7 +1,7 @@
 /**
  * Author: Mark Larkin
- * 
- * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.  
+ *
+ * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.
  */
 /**
  * The AlignmentSteps class is used to hold the progressive alignment steps that have
@@ -11,13 +11,14 @@
  * with the old sets array.
  *
  ***************************************************************************************/
- 
+
 #ifndef ALIGNMENTSTEPS_H
 #define ALIGNMENTSTEPS_H
 
 #include <vector>
 #include <string>
 #include <iostream>
+#include <Rcpp.h>
 
 using namespace std;
 
@@ -28,7 +29,7 @@ class AlignmentSteps
 {
     public:
         /* Functions */
-        AlignmentSteps() : numSteps(0){steps.push_back(vector<int>());}; // Empty vector 
+        AlignmentSteps() : numSteps(0){steps.push_back(vector<int>());}; // Empty vector
         void saveSet(int n, int *groups);
         void saveSet(vector<int>* groups);
         int getNumSteps();
@@ -41,7 +42,7 @@ class AlignmentSteps
 
     private:
         /* Functions */
-        
+
         /* Attributes */
         vector<vector<int> > steps;
         int numSteps;

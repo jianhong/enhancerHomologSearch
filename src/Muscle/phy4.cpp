@@ -95,13 +95,13 @@ static void ClusterBySubfamCount_Iteration(const Tree &tree, unsigned Subfams[],
 
 // Divide a tree containing N leaves into k families by
 // cutting the tree at a horizontal line at some height.
-// Each internal node defines a height for the cut, 
+// Each internal node defines a height for the cut,
 // considering all internal nodes enumerates all distinct
 // cuts. Visit internal nodes in decreasing order of height.
 // Visiting the node corresponds to moving the horizontal
 // line down to cut the tree at the height of that node.
 // We consider the cut to be "infinitestimally below"
-// the node, so the effect is to remove the current node 
+// the node, so the effect is to remove the current node
 // from the list of subfamilies and add its two children.
 // We must visit a parent before its children (so care may
 // be needed to handle zero edge lengths properly).
@@ -136,7 +136,7 @@ void ClusterBySubfamCount(const Tree &tree, unsigned uSubfamCount,
 // Iterate
 	for (unsigned i = 1; i < uSubfamCount; ++i)
 		ClusterBySubfamCount_Iteration(tree, Subfams, i);
-	
+
 	*ptruSubfamCount = uSubfamCount;
 	}
 
@@ -239,7 +239,7 @@ void Tree::PruneTree(const Tree &tree, unsigned Subfams[],
 	for (unsigned uSubfamIndex = 0; uSubfamIndex < uSubfamCount; ++uSubfamIndex)
 		{
 		char szName[32];
-		sprintf(szName, "Subfam_%u", uSubfamIndex + 1);
+		snprintf(szName, 32, "Subfam_%u", uSubfamIndex + 1);
 		m_ptrName[uSubfamIndex] = strsave(szName);
 		}
 

@@ -1,7 +1,7 @@
 /**
  * Author: Mark Larkin
- * 
- * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.  
+ *
+ * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.
  */
 #ifdef HAVE_CONFIG_H
     #include "config.h"
@@ -17,31 +17,31 @@ FastPairwiseAlign::FastPairwiseAlign()
     _maxAlnLength = 0;
 }
 
-void FastPairwiseAlign::pairwiseAlign(Alignment *alignPtr, DistMatrix *distMat, int iStart, 
+void FastPairwiseAlign::pairwiseAlign(Alignment *alignPtr, DistMatrix *distMat, int iStart,
                                       int iEnd, int jStart, int jEnd)
 {
     try
     {
         if(distMat->getSize() != alignPtr->getNumSeqs() + 1)
         {
-            cerr << "The distance matrix is not the right size!\n"
+            Rcpp::Rcerr << "The distance matrix is not the right size!\n"
                  << "Need to terminate program.\n";
             throw 1;
         }
         if((iStart < 0) || (iEnd < iStart) || (jStart < 0) || (jEnd < jStart))
         {
-            cout << "The range for pairwise Alignment is incorrect.\n"
+            Rcpp::Rcout << "The range for pairwise Alignment is incorrect.\n"
                  << "Need to terminate program.\n";
             throw 1;
         }
-    
+
         int i, j, dsr;
         double calcScore;
         bool _DNAFlag = userParameters->getDNAFlag();
         _maxAlnLength = alignPtr->getMaxAlnLength();
         int num = (2 * _maxAlnLength) + 1;
         accum.ResizeRect(5, num);
-    
+
         displ.resize(num);
         slopes.resize(num);
         diagIndex.resize(num);
@@ -50,7 +50,7 @@ void FastPairwiseAlign::pairwiseAlign(Alignment *alignPtr, DistMatrix *distMat, 
         zzb.resize(_maxAlnLength + 1);
         zzc.resize(_maxAlnLength + 1);
         zzd.resize(_maxAlnLength + 1);
-    
+
         if (_DNAFlag)
         {
             userParameters->setDNAParams();
@@ -60,8 +60,8 @@ void FastPairwiseAlign::pairwiseAlign(Alignment *alignPtr, DistMatrix *distMat, 
             userParameters->setProtParams();
         }
 
-        cout << "\n\n";
-    
+        Rcpp::Rcout << "\n\n";
+
         for (i = iStart + 1; i <= iEnd; ++i)
         {
             const vector<int>* _seqIPtr = alignPtr->getSequence(i);
@@ -106,13 +106,13 @@ void FastPairwiseAlign::pairwiseAlign(Alignment *alignPtr, DistMatrix *distMat, 
                 distMat->SetAt(i, j, _score);
                 //distMat->SetAt(j, i, _score); /* distMat symmetric, FS, 2009-04-06 */
 
-            
+
                 if(userParameters->getDisplayInfo())
                 {
                     if (calcScore > 0.1)
                     {
                         utilityObject->info("Sequences (%d:%d) Aligned. Score: %lg",
-                                            i, j, calcScore);     
+                                            i, j, calcScore);
                     }
                     else
                     {
@@ -121,7 +121,7 @@ void FastPairwiseAlign::pairwiseAlign(Alignment *alignPtr, DistMatrix *distMat, 
                 }
             }
         }
-        accum.clearArray();    
+        accum.clearArray();
         displ.clear();
         slopes.clear();
         diagIndex.clear();
@@ -133,33 +133,33 @@ void FastPairwiseAlign::pairwiseAlign(Alignment *alignPtr, DistMatrix *distMat, 
     }
     catch(const exception& e)
     {
-        cerr << "An exception has occured in the FastPairwiseAlign class.\n"
+        Rcpp::Rcerr << "An exception has occured in the FastPairwiseAlign class.\n"
              << e.what() << "\n";
         throw 1;
-    }    
+    }
 }
 
 
 /*
- * Note: There is a problem with the treatment of DNA/RNA. 
- * During file reading all residues are encoded as AminoAcids, 
- * even before it has been established if they are AA or not. 
- * This is bad and will have to be changed (later). 
- * 'A' is assigned code 0, C is assigned 2, G = 6, T=18, U=19. 
- * However, the fast alignment routines require that 
- * A=0, C=1, G=2, T=U=3. In the best case the results of the 
- * fast alignment (of DNA) will simply be meaningless, the 
- * worst case is a core dump. 
- * As a quick fix I implemented the following mask, that 
- * (for DNA/RNA) translates 0->0, 2->1, 6->2, 18->3, 19->3. 
- * This is awfull (it is not OO compliant) but it was quick, 
- * uses (much) less memory than a second DNA array, and is 
- * (much) faster than calling a translation function. 
- * Ideally this will be removed, but this requires changes 
- * to (i) the sequence encoding during file-reading AND 
+ * Note: There is a problem with the treatment of DNA/RNA.
+ * During file reading all residues are encoded as AminoAcids,
+ * even before it has been established if they are AA or not.
+ * This is bad and will have to be changed (later).
+ * 'A' is assigned code 0, C is assigned 2, G = 6, T=18, U=19.
+ * However, the fast alignment routines require that
+ * A=0, C=1, G=2, T=U=3. In the best case the results of the
+ * fast alignment (of DNA) will simply be meaningless, the
+ * worst case is a core dump.
+ * As a quick fix I implemented the following mask, that
+ * (for DNA/RNA) translates 0->0, 2->1, 6->2, 18->3, 19->3.
+ * This is awfull (it is not OO compliant) but it was quick,
+ * uses (much) less memory than a second DNA array, and is
+ * (much) faster than calling a translation function.
+ * Ideally this will be removed, but this requires changes
+ * to (i) the sequence encoding during file-reading AND
  * (ii) all the DNA substitution matrices. (Fabian, 2009-02-25)
  *
- *                A  B  C  D  E  F  G  H  I  K  L  M  0  N  P  Q  R  S 
+ *                A  B  C  D  E  F  G  H  I  K  L  M  0  N  P  Q  R  S
  *                T  U  W  X  Y  Z (goodmeasuregoodmeasuregood) */
 int ziAA2DNA[] = {0,-1, 1,-1,-1,-1, 2,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
 		  3, 3,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
@@ -173,14 +173,14 @@ void FastPairwiseAlign::pairAlign(const vector<int>* seq, int l1, int l2)
     int pot[8], i, j, l, m, limit, pos, tl1, vn1, vn2, flen, osptr, fs;
     int tv1, tv2, encrypt, subt1, subt2, rmndr;
     bool flag;
-    int residue; 
+    int residue;
     bool _DNAFlag = userParameters->getDNAFlag();
     int _ktup = userParameters->getKtup();
     int _maxAA = userParameters->getMaxAA();
     int _windowGap = userParameters->getWindowGap();
     int _window = userParameters->getWindow();
     int _signif = userParameters->getSignif();
-        
+
     if (_DNAFlag)
     {
         for (i = 1; i <= _ktup; ++i)
@@ -206,7 +206,7 @@ void FastPairwiseAlign::pairAlign(const vector<int>* seq, int l1, int l2)
     }
 
 
-    // increment diagonal score for each k_tuple match 
+    // increment diagonal score for each k_tuple match
 
     for (i = 1; i <= limit; ++i)
     {
@@ -228,7 +228,7 @@ void FastPairwiseAlign::pairAlign(const vector<int>* seq, int l1, int l2)
         }
     }
 
-    // choose the top SIGNIF diagonals 
+    // choose the top SIGNIF diagonals
 
     desQuickSort(displ, diagIndex, tl1);
 
@@ -314,9 +314,9 @@ void FastPairwiseAlign::pairAlign(const vector<int>* seq, int l1, int l2)
             fs = _ktup;
             next = maxSoFar;
 
-            
+
             //  A-loop
-             
+
 
             while (true)
             {
@@ -409,7 +409,7 @@ void FastPairwiseAlign::makePPtrs(vector<int>& tptr, vector<int>& pl, const vect
     int residue;
     int _ktup = userParameters->getKtup();
     int _maxAA = userParameters->getMaxAA();
-    
+
     for (i = 1; i <= _ktup; i++)
     {
         a[i] = (int)pow((double)(_maxAA + 1), (double)(i - 1));
@@ -424,7 +424,7 @@ void FastPairwiseAlign::makePPtrs(vector<int>& tptr, vector<int>& pl, const vect
     {
         tptr.resize(length + 1);
     }
-    
+
     for (i = 1; i <= limit; ++i)
     {
         pl[i] = 0;
@@ -471,7 +471,7 @@ void FastPairwiseAlign::makeNPtrs(vector<int>& tptr,vector<int>& pl, const vecto
     bool flag;
     int residue;
     int _ktup = userParameters->getKtup();
-    
+
     limit = (int)pow((double)4, (double)_ktup);
 
     if(limit >= (int)pl.size())
@@ -482,7 +482,7 @@ void FastPairwiseAlign::makeNPtrs(vector<int>& tptr,vector<int>& pl, const vecto
     {
         tptr.resize(length + 1);
     }
-    
+
     for (i = 1; i <= limit; ++i)
     {
         pl[i] = 0;
@@ -562,7 +562,7 @@ inline int FastPairwiseAlign::fragRelPos(int a1, int b1, int a2, int b2)
 {
     int ret;
     int _ktup = userParameters->getKtup();
-    
+
     ret = false;
     if (a1 - b1 == a2 - b2)
     {
@@ -583,15 +583,15 @@ inline int FastPairwiseAlign::fragRelPos(int a1, int b1, int a2, int b2)
 
 void FastPairwiseAlign::desQuickSort(vector<int>& array1, vector<int>& array2, int arraySize)
 {
-    // Quicksort routine, adapted from chapter 4, page 115 of software tools 
-    // by Kernighan and Plauger, (1986) 
-    // Sort the elements of array1 and sort the 
+    // Quicksort routine, adapted from chapter 4, page 115 of software tools
+    // by Kernighan and Plauger, (1986)
+    // Sort the elements of array1 and sort the
     // elements of array2 accordingly
     int temp1, temp2;
     int p, pivlin;
     int i, j;
     int lst[50], ust[50]; // the maximum no. of elements must be
-                            // < log(base2) of 50 
+                            // < log(base2) of 50
 
     lst[1] = 1;
     ust[1] = arraySize - 1;

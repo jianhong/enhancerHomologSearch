@@ -394,7 +394,7 @@ static void FmtInt(unsigned u, unsigned uWidth)
 	static char szStr[1024];
 	assert(uWidth < sizeof(szStr));
 	if (u > 0)
-		sprintf(szStr, "%u", u);
+		snprintf(szStr, 1024, "%u", u);
 	else
 		strcpy(szStr, ".");
 	Log(szStr);
@@ -408,7 +408,7 @@ static void FmtInt0(unsigned u, unsigned uWidth)
 	{
 	static char szStr[1024];
 	assert(uWidth < sizeof(szStr));
-	sprintf(szStr, "%u", u);
+	snprintf(szStr, 1024, "%u", u);
 	Log(szStr);
 	unsigned n = (unsigned) strlen(szStr);
 	if (n < uWidth)

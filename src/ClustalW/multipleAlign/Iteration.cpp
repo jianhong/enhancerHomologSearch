@@ -98,7 +98,7 @@ bool Iteration::iterationOnTreeNode(int numSeqsProf1, int numSeqsProf2, int& prf
 
 void Iteration::printSeqArray(SeqArray* arrayToPrint)
 {
-    cout << "HERE IS THE SEQARRAY\n";
+    Rcpp::Rcout << "HERE IS THE SEQARRAY\n";
     // I need to use iterators for everything here.
     SeqArray::iterator mainBeginIt = arrayToPrint->begin();
     SeqArray::iterator mainEndIt = arrayToPrint->end();
@@ -115,17 +115,17 @@ void Iteration::printSeqArray(SeqArray* arrayToPrint)
             {
                 if(*begin < (int)aaCodes.size())
                 {
-                    cout << aaCodes[*begin];
+                    Rcpp::Rcout << aaCodes[*begin];
                 }
                 else
                 {
-                    cout << "-";
+                    Rcpp::Rcout << "-";
                 }
             }
-            cout << "\n";
+            Rcpp::Rcout << "\n";
         }
     }
-    cout << "\n\n";
+    Rcpp::Rcout << "\n\n";
 }
 
 /**
@@ -164,7 +164,7 @@ bool Iteration::removeFirstIterate(Alignment* alnPtr)
     userParameters->setDoRemoveFirstIteration(NONE);
 
     double firstScore = scoreObj.getScore(alnPtr);
-    //cout << "firstScore = " << firstScore << "\n";
+    //Rcpp::Rcout << "firstScore = " << firstScore << "\n";
     double score = 0;
     double bestScore = firstScore;
     double dscore;
@@ -183,7 +183,7 @@ bool Iteration::removeFirstIterate(Alignment* alnPtr)
     profile2[1] = 0;
     vector<int> prof1Weight, prof2Weight;
     int iterations = userParameters->getNumIterations();
-    //cout << "Max num iterations = " << iterations << "\n";
+    //Rcpp::Rcout << "Max num iterations = " << iterations << "\n";
     Alignment bestAlignSoFar;
     TreeInterface tree;
     // One iteration consists of removing each of the sequences, reseting all the gap
@@ -191,7 +191,7 @@ bool Iteration::removeFirstIterate(Alignment* alnPtr)
     for(int n = 1; n <= iterations; n++)
     {
         scoreImproved = false;
-        cout << "ITERATION " << n << " OF " << iterations << "\n";
+        Rcpp::Rcout << "ITERATION " << n << " OF " << iterations << "\n";
         for(int i = 1; i <= nSeqs; i++)
         {
             vector<Sequence> seqVector;
@@ -291,9 +291,9 @@ bool Iteration::removeFirstIterate(Alignment* alnPtr)
 
             if(score < bestScore) // Might be a problem with this.
             {
-                //cout << "**********************************************\n";
-                //cout << "***** Better score found using iteration *****\n";
-                //cout << "**********************************************\n";
+                //Rcpp::Rcout << "**********************************************\n";
+                //Rcpp::Rcout << "***** Better score found using iteration *****\n";
+                //Rcpp::Rcout << "**********************************************\n";
                 bestScore = score;
                 bestAlignSoFar = iterateAlign;
                 scoreImproved = true;
@@ -304,7 +304,7 @@ bool Iteration::removeFirstIterate(Alignment* alnPtr)
         }
         if(scoreImproved == false)
         {
-            cout << "Score was not improved in last iteration. Exiting...\n";
+            Rcpp::Rcout << "Score was not improved in last iteration. Exiting...\n";
             break;
         }
     }
@@ -317,7 +317,7 @@ bool Iteration::removeFirstIterate(Alignment* alnPtr)
     //
     if(scoreImprovedAnyIteration) // If we need to update the alnPtr object.
     {
-        cout << "Iteration improved Align score: " << bestScore << "\n";
+        Rcpp::Rcout << "Iteration improved Align score: " << bestScore << "\n";
         int seqId;
         const vector<int>* improvedSeq;
         for(int i = 1; i <= nSeqs; i++) // For each seq in alnPtr
@@ -327,7 +327,7 @@ bool Iteration::removeFirstIterate(Alignment* alnPtr)
             alnPtr->updateSequence(i, improvedSeq);
         }
     }
-    cout << "FINAL score: " << bestScore << "\n";
+    Rcpp::Rcout << "FINAL score: " << bestScore << "\n";
     userParameters->setDoRemoveFirstIteration(iterate);
     return true; // It was successful.
 }

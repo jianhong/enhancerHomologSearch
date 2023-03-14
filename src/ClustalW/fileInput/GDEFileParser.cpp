@@ -1,7 +1,7 @@
 /**
  * Author: Mark Larkin
- * 
- * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.  
+ *
+ * Copyright (c) 2007 Des Higgins, Julie Thompson and Toby Gibson.
  */
 /**
  * Changes:
@@ -24,7 +24,7 @@ namespace clustalw
  */
 GDEFileParser::GDEFileParser(string filePath)
 {
-    fileName = filePath; 
+    fileName = filePath;
     fillCharTab();
 }
 
@@ -43,7 +43,7 @@ GDEFileParser::~GDEFileParser()
     int i;
 
     for (i=0; i<no; i++)
-    { 
+    {
         Sequence tempSeq = getSeq(firstSeq + i, offendingSeq);
         if (parseExitCode!=OK) {
             seqRangeVector.clear();
@@ -66,26 +66,26 @@ GDEFileParser::~GDEFileParser()
     string name = "";
     string title = "";
     string blank = "";
-    
-    _line[0] = EOS; 
-    
+
+    _line[0] = EOS;
+
     int i;
     unsigned char c;
     int _currentSeqNum = 0; // Not at any sequence yet!
-    
+
     try
     {
         _fileIn = new InFileStream;  //nige
         _fileIn->open(fileName.c_str());  //nige
         _fileIn->seekg(0, std::ios::beg);
-                
+
         bool dnaFlagSet = userParameters->getDNAFlag();
         while (_currentSeqNum != seqNum)
         {
             while((*_line != '#' && dnaFlagSet) ||
                   (*_line != '%' && !dnaFlagSet))
             {
-                if(!_fileIn->getline(_line, MAXLINE + 1)) 
+                if(!_fileIn->getline(_line, MAXLINE + 1))
                 {
                     _fileIn->close();
                     return Sequence(blank, blank, blank);
@@ -99,7 +99,7 @@ GDEFileParser::~GDEFileParser()
             // Get next line so that we are past the '#' or '%' line
             _fileIn->getline(_line, MAXLINE + 1);  //nige
         }
-        
+
         for (i = 1; i <= MAXNAMES; i++)
         {
             if (_line[i] == '(' || _line[i] == '\n' || _line[i] == '\r')
@@ -125,7 +125,7 @@ GDEFileParser::~GDEFileParser()
         utilityObject->blankToUnderscore(_sname);
         name = string(_sname);
         title = "";
-        
+
         while (_fileIn->getline(_line, MAXLINE + 1))
         {
             if (*_line == '%' ||  *_line == '#' ||  *_line == '"')
@@ -147,9 +147,9 @@ GDEFileParser::~GDEFileParser()
                 }
             }
         }
-        
+
         _fileIn->close();
-        
+
         if ((int)characterSeq.length() > userParameters->getMaxAllowedSeqLength())
         {
             parseExitCode=SEQUENCETOOBIG;
@@ -163,7 +163,7 @@ GDEFileParser::~GDEFileParser()
     catch(...)
     {
         _fileIn->close();
-        cerr << "There was an exception in the GDEnFileParser::getSeq function.\n"
+        Rcpp::Rcerr << "There was an exception in the GDEnFileParser::getSeq function.\n"
              << "Need to end program\n";
         throw 1;
     }
@@ -171,23 +171,23 @@ GDEFileParser::~GDEFileParser()
 }
 
 /*
- * The countSeqs function returns the number of sequences in the file. 
+ * The countSeqs function returns the number of sequences in the file.
  */
 int GDEFileParser::countSeqs()
 {
     char line[MAXLINE + 1];
     int _nseqs = 0;
-    
+
     try
     {
         _fileIn = new InFileStream;  //nige
         _fileIn->open(fileName.c_str());  //nige
-    
+
         if(!_fileIn->is_open())
         {
             return 0; // No sequences found!
         }
-    
+
         while (_fileIn->getline(line, MAXLINE + 1))
         {
             if ((*line == '%') && (userParameters->getDNAFlag() == false))
@@ -206,10 +206,10 @@ int GDEFileParser::countSeqs()
     catch(...)
     {
         _fileIn->close();
-        cerr << "An exception has occured in the function GDEFileParser::countSeqs()\n"
+        Rcpp::Rcerr << "An exception has occured in the function GDEFileParser::countSeqs()\n"
              << "Program needs to terminate.\nPlease contact the Clustal developers\n";
         throw 1;
-    }    
+    }
 }
 
 /*
@@ -230,17 +230,17 @@ void GDEFileParser::getSecStructure(vector<char>& gapPenaltyMask, vector<char>& 
     char _sname[MAXNAMES + 1];
     int i, len, offset = 0;
     unsigned char c;
-    
+
     try
     {
         _fileIn = new InFileStream;  //nige
         _fileIn->open(fileName.c_str());  //nige
         _fileIn->seekg(0, std::ios::beg);
-    
+
         // NOTE I think I should empty the masks before pushing onto them!
         gapPenaltyMask.clear();
         secStructMask.clear();
-    
+
         for (;;)
         {
             _line[0] = '\0';
@@ -254,7 +254,7 @@ void GDEFileParser::getSecStructure(vector<char>& gapPenaltyMask, vector<char>& 
                 }
             }
 
-            // is it a secondary structure entry? 
+            // is it a secondary structure entry?
             if (strncmp(&_line[1], "SS_", 3) == 0)
             {
                 for (i = 1; i <= MAXNAMES - 3; i++)
@@ -267,7 +267,7 @@ void GDEFileParser::getSecStructure(vector<char>& gapPenaltyMask, vector<char>& 
                 }
                 i--;
                 _sname[i] = EOS;
-            
+
                 // NOTE NOTE NOTE
                 // Is it possible for this to be executed????????????????
                 // if _line contains ( then we break and dont put it into _sname
@@ -294,7 +294,7 @@ void GDEFileParser::getSecStructure(vector<char>& gapPenaltyMask, vector<char>& 
 
                 utilityObject->blankToUnderscore(_sname);
                 secStructName = string(_sname);
-            
+
                 if (userParameters->getInteractive() && !userParameters->getGui())
                 {
                     strcpy(_title, "Found secondary structure in alignment file: ");
@@ -337,7 +337,7 @@ void GDEFileParser::getSecStructure(vector<char>& gapPenaltyMask, vector<char>& 
                     }
                 }
             }
-        
+
             // or is it a gap penalty mask entry?
             else if (strncmp(&_line[1], "GM_", 3) == 0)
             {
@@ -351,7 +351,7 @@ void GDEFileParser::getSecStructure(vector<char>& gapPenaltyMask, vector<char>& 
                 }
                 i--;
                 _sname[i] = EOS;
-            
+
                 // NOTE NOTE
                 // Again I dont think it is possible for _sname to have ( !!!!
                 if (_sname[i - 1] == '(')
@@ -373,7 +373,7 @@ void GDEFileParser::getSecStructure(vector<char>& gapPenaltyMask, vector<char>& 
                         break;
                     }
                 }
-            
+
                 utilityObject->blankToUnderscore(_sname);
                 secStructName = string(_sname);
 
@@ -387,7 +387,7 @@ void GDEFileParser::getSecStructure(vector<char>& gapPenaltyMask, vector<char>& 
                 else
                 {
                     (*_lin2) = 'y';
-                }            
+                }
                 if (guigetss || ((*_lin2 != 'n') && (*_lin2 != 'N')))
                 {
                     structPenalties = GMASK;
@@ -429,7 +429,7 @@ void GDEFileParser::getSecStructure(vector<char>& gapPenaltyMask, vector<char>& 
     catch(...)
     {
         _fileIn->close();
-        cerr << "An exception has occured in the function GDEFileParser::getSecStructure()\n"
+        Rcpp::Rcerr << "An exception has occured in the function GDEFileParser::getSecStructure()\n"
              << "Program needs to terminate.\nPlease contact the Clustal developers\n";
         throw 1;
     }
