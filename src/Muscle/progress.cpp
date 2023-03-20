@@ -1,13 +1,14 @@
 #include "muscle.h"
 #include <stdio.h>
 #include <time.h>
+#include <Rcpp.h>
 
 // Functions that provide visible feedback to the user
 // that progress is being made.
 
 static unsigned g_uIter = 0;		// Main MUSCLE iteration 1, 2..
 static unsigned g_uLocalMaxIters = 0;	// Max iters
-static FILE *g_fProgress = stderr;	// Default to standard error
+//static FILE *g_fProgress = stderr;	// Default to standard error
 static char g_strFileName[32];		// File name
 static time_t g_tLocalStart;				// Start time
 static char g_strDesc[32];			// Description
@@ -53,7 +54,7 @@ void SetSeqStats(unsigned uSeqCount, unsigned uMaxL, unsigned uAvgL)
 	if (g_bQuiet)
 		return;
 
-	fprintf(g_fProgress, "%s %u seqs, max length %u, avg  length %u\n",
+	REprintf("%s %u seqs, max length %u, avg  length %u\n",
 	  g_strFileName, uSeqCount, uMaxL, uAvgL);
 	if (g_bVerbose)
 		Log("%u seqs, max length %u, avg  length %u\n",
@@ -94,7 +95,7 @@ void SetProgressDesc(const char szDesc[])
 static void Wipe(int n)
 	{
 	for (int i = 0; i < n; ++i)
-		fprintf(g_fProgress, " ");
+		Rcpp::Rcerr << " ";
 	}
 
 void Progress(const char *szFormat, ...)
@@ -111,13 +112,12 @@ void Progress(const char *szFormat, ...)
 	va_start(ArgList, szFormat);
 	vsnprintf(szStr, 4096, szFormat, ArgList);
 
-	fprintf(g_fProgress, "%8.8s  %12s  %s",
+	REprintf("%8.8s  %12s  %s",
 	  ElapsedTimeAsStr(),
 	  MemToStr(MB),
 	  szStr);
 
-	fprintf(g_fProgress, "\n");
-	fflush(g_fProgress);
+	Rcpp::Rcerr << "\n";
 	}
 
 void Progress(unsigned uStep, unsigned uTotalSteps)
@@ -129,7 +129,7 @@ void Progress(unsigned uStep, unsigned uTotalSteps)
 
 	double dPct = ((uStep + 1)*100.0)/uTotalSteps;
 	double MB = GetMemUseMB();
-	fprintf(g_fProgress, "%8.8s  %12s  Iter %3u  %6.2f%%  %s",
+	REprintf("%8.8s  %12s  Iter %3u  %6.2f%%  %s",
 	  ElapsedTimeAsStr(),
 	  MemToStr(MB),
 	  g_uIter,
@@ -143,7 +143,7 @@ void Progress(unsigned uStep, unsigned uTotalSteps)
 		g_bWipeDesc = false;
 		}
 
-	fprintf(g_fProgress, "\r");
+	Rcpp::Rcerr << "\r";
 
 	g_uTotalSteps = uTotalSteps;
 	}
@@ -166,7 +166,7 @@ void ProgressStepsDone()
 		return;
 
 	Progress(g_uTotalSteps - 1, g_uTotalSteps);
-	fprintf(g_fProgress, "\n");
+	Rcpp::Rcerr << "\n";
 	g_bWipeDesc = true;
 	g_nPrevDescLength = (int) strlen(g_strDesc);
 	}
