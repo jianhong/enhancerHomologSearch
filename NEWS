@@ -1,3 +1,7 @@
+# Change in 1.5.2
+
+  o try to fix the ambiguous `byte` reference by rename `byte` to `BYTE_8t`
+
 # Change in 1.5.1
 
   o Remove stdout, stderr, cout, cerr, rand from source.

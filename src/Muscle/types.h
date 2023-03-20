@@ -1,7 +1,7 @@
 #ifndef types_h
 #define types_h
 
-typedef unsigned char byte;
+typedef unsigned char BYTE_8t;
 typedef unsigned short ushort;
 
 typedef float SCOREMATRIX[32][32];

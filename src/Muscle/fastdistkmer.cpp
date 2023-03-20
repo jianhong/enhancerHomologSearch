@@ -28,7 +28,7 @@ LiA    10  5     100,000  0.964   0.652
 
 We select A with k=4 because it has the best
 correlations. The only drawback is a large table
-size, but space is readily available and the only 
+size, but space is readily available and the only
 additional time cost is in resetting the table to
 zero, which can be done quickly with memset or by
 keeping a list of the k-mers that were found (should
@@ -76,16 +76,16 @@ const char *KmerToStr(unsigned Kmer)
 	return s;
 	}
 
-void CountKmers(const byte s[], unsigned uSeqLength, byte KmerCounts[])
+void CountKmers(const BYTE_8t s[], unsigned uSeqLength, BYTE_8t KmerCounts[])
 	{
 #if	TRACE
 	Log("CountKmers\n");
 #endif
-	memset(KmerCounts, 0, TABLE_SIZE*sizeof(byte));
+	memset(KmerCounts, 0, TABLE_SIZE*sizeof(BYTE_8t));
 
-	const byte *ptrKmerStart = s;
-	const byte *ptrKmerEnd = s + 4;
-	const byte *ptrSeqEnd = s + uSeqLength;
+	const BYTE_8t *ptrKmerStart = s;
+	const BYTE_8t *ptrKmerEnd = s + 4;
+	const BYTE_8t *ptrSeqEnd = s + uSeqLength;
 
 	unsigned c3 = s[0]*N_3;
 	unsigned c2 = s[1]*N_2;
@@ -116,15 +116,15 @@ void CountKmers(const byte s[], unsigned uSeqLength, byte KmerCounts[])
 		}
 	}
 
-unsigned CommonKmerCount(const byte Seq[], unsigned uSeqLength,
-  const byte KmerCounts1[], const byte Seq2[], unsigned uSeqLength2)
+unsigned CommonKmerCount(const BYTE_8t Seq[], unsigned uSeqLength,
+  const BYTE_8t KmerCounts1[], const BYTE_8t Seq2[], unsigned uSeqLength2)
 	{
-	byte KmerCounts2[TABLE_SIZE];
+	BYTE_8t KmerCounts2[TABLE_SIZE];
 	CountKmers(Seq2, uSeqLength2, KmerCounts2);
 
-	const byte *ptrKmerStart = Seq;
-	const byte *ptrKmerEnd = Seq + 4;
-	const byte *ptrSeqEnd = Seq + uSeqLength;
+	const BYTE_8t *ptrKmerStart = Seq;
+	const BYTE_8t *ptrKmerEnd = Seq + 4;
+	const BYTE_8t *ptrSeqEnd = Seq + uSeqLength;
 
 	unsigned c3 = Seq[0]*N_3;
 	unsigned c2 = Seq[1]*N_2;
@@ -138,8 +138,8 @@ unsigned CommonKmerCount(const byte Seq[], unsigned uSeqLength,
 		{
 		assert(Kmer < TABLE_SIZE);
 
-		const byte Count1 = KmerCounts1[Kmer];
-		const byte Count2 = KmerCounts2[Kmer];
+		const BYTE_8t Count1 = KmerCounts1[Kmer];
+		const BYTE_8t Count2 = KmerCounts2[Kmer];
 
 		uCommonCount += MIN(Count1, Count2);
 
@@ -160,7 +160,7 @@ unsigned CommonKmerCount(const byte Seq[], unsigned uSeqLength,
 	return uCommonCount;
 	}
 
-static void SeqToLetters(const Seq &s, byte Letters[])
+static void SeqToLetters(const Seq &s, BYTE_8t Letters[])
 	{
 	const unsigned uSeqLength = s.Length();
 	for (unsigned uCol = 0; uCol < uSeqLength; ++uCol)
@@ -177,7 +177,7 @@ static void SeqToLetters(const Seq &s, byte Letters[])
 
 void FastDistKmer(const SeqVect &v, DistFunc &DF)
 	{
-	byte KmerCounts[TABLE_SIZE];
+	BYTE_8t KmerCounts[TABLE_SIZE];
 
 	const unsigned uSeqCount = v.GetSeqCount();
 
@@ -204,8 +204,8 @@ void FastDistKmer(const SeqVect &v, DistFunc &DF)
 	if (0 == uMaxLength)
 		return;
 
-	byte *Seq1Letters = new byte[uMaxLength];
-	byte *Seq2Letters = new byte[uMaxLength];
+	BYTE_8t *Seq1Letters = new BYTE_8t[uMaxLength];
+	BYTE_8t *Seq2Letters = new BYTE_8t[uMaxLength];
 
 	for (unsigned uSeqIndex1 = 0; uSeqIndex1 < uSeqCount - 1; ++uSeqIndex1)
 		{
