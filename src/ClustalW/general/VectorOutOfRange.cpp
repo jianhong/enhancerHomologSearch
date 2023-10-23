@@ -24,8 +24,9 @@ const char* VectorOutOfRange::what() const throw()
     std::ostringstream message;
     message << "\nIn Vector "<< _name << ", vector index " << _index << " exceeds bounds 1-" 
             << _max << "\n";
-    std::string outputMessage = message.str();
-    return outputMessage.c_str();
+    const std::string& outputMessage = message.str();
+    const char* msg = outputMessage.c_str();
+    return msg;
 }
 
 const char* VectorOutOfRange::what()
@@ -33,8 +34,9 @@ const char* VectorOutOfRange::what()
     std::ostringstream message;
     message << "\nIn Vector "<< _name << ", vector index " << _index << " exceeds bounds 1-" 
             << _max << "\n";
-    std::string outputMessage = message.str();
-    return outputMessage.c_str();
+    const std::string& outputMessage = message.str();
+    const char* msg = outputMessage.c_str();
+    return msg;
 }
 
 }

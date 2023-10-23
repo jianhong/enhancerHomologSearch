@@ -30,6 +30,7 @@ suppressPackageStartupMessages({
   library(MotifDb)
   library(motifmatchr)
 })
+pval <- NULL
 knitr::opts_chunk$set(warning=FALSE, message=FALSE)
 ```
 

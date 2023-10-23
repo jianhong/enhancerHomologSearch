@@ -1,7 +1,7 @@
 #include "muscle.h"
 #include "distfunc.h"
 
-const float INFINITY = float(1e29);
+const float FLOAT_INFINITY = float(1e29);
 const unsigned NILL = uInsane;
 
 static float *ShortestPathEstimate;
@@ -13,7 +13,7 @@ static void GetMostDistantPair(DistFunc &DF, unsigned *ptrIndex1, unsigned *ptrI
 	if (uNodeCount < 2)
 		Quit("GetMostDistantPair: < 2 seqs");
 
-	float MaxDist = -1; 
+	float MaxDist = -1;
 	unsigned Index1 = uInsane;
 	unsigned Index2 = uInsane;
 	for (unsigned i = 0; i < uNodeCount; ++i)
@@ -43,7 +43,7 @@ static void InitializeSingleSource(DistFunc &DF, unsigned uIndex)
 
 	for (unsigned i = 0; i < uNodeCount; ++i)
 		{
-		ShortestPathEstimate[i] = INFINITY;
+		ShortestPathEstimate[i] = FLOAT_INFINITY;
 		Predecessor[i] = NILL;
 		}
 	ShortestPathEstimate[uIndex] = 0;

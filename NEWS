@@ -1,3 +1,7 @@
+# Change in 1.7.1
+
+  o Fix an issue for conflict constant INFINITY defineed in the system/math.h.
+
 # Change in 1.5.3
 
   o Fix an stderr.

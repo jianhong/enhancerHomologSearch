@@ -5,3 +5,4 @@
 *.so
 *.o
 *.Rproj
+**.DS_Store
