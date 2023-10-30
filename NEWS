@@ -1,5 +1,9 @@
 # Change in 1.8.1
 
+  o Import subset method from S4Vectors.
+
+# Change in 1.8.1
+
   o Fix the the potential issue for subset function by initial distance to NULL.
 
 # Change in 1.7.1
