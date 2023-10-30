@@ -186,6 +186,7 @@ setMethod("subsetByOverlaps",
           })
 #' @rdname Enhancers-class
 #' @aliases subset,Enhancers-method
+#' @importMethodsFrom S4Vectors subset
 #' @export
 setMethod("subset",
           signature(x="Enhancers"),
