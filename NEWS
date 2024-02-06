@@ -1,6 +1,10 @@
+# Change in 1.9.3
+
+  o Fix some warnings in Muscle cpp source.
+
 # Change in 1.9.2
 
-  o Import method subset from S4Vectors.
+  o Import subset method from S4Vectors.
 
 # Change in 1.9.1
 

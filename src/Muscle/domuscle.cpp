@@ -71,7 +71,7 @@ void DoMuscle(MuscleInput *msaInput, MuscleOutput *msaOutput)
 			{
 			size_t n = strlen(Path) + 1 + strlen(FileName) + 1;
 			char *NewFileName = new char[n];
-			snprintf(NewFileName, sizeof(NewFileName), "%s/%s", Path, FileName);
+			snprintf(NewFileName, sizeof(NewFileName)*n, "%s/%s", Path, FileName);
 			FileName = NewFileName;
 			}
 		TextFile File(FileName);

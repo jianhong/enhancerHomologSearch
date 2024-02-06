@@ -48,8 +48,8 @@ void DiagList::FromPath(const PWPath &Path)
 
 	const unsigned uEdgeCount = Path.GetEdgeCount();
 	unsigned uLength = 0;
-	unsigned uStartPosA;
-	unsigned uStartPosB;
+	unsigned uStartPosA = 0;
+	unsigned uStartPosB = 0;
 	for (unsigned uEdgeIndex = 0; uEdgeIndex < uEdgeCount; ++uEdgeIndex)
 		{
 		const PWEdge &Edge = Path.GetEdge(uEdgeIndex);
