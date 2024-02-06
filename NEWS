@@ -1,4 +1,8 @@
-# Change in 1.8.1
+# Change in 1.8.3
+
+  o Fix some warnings in Muscle cpp source.
+
+# Change in 1.8.2
 
   o Import subset method from S4Vectors.
 
