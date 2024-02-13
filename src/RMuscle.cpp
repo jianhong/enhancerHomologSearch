@@ -472,7 +472,7 @@ SEXP RMuscle(SEXP rInputSeqs,
 		SetLogFile();
 
 		if (g_bVersion) {
-			Rprintf("%s\n", MUSCLE_LONG_VERSION);
+			Rprintf("%f\n", MUSCLE_LONG_VERSION);
 		}
 
 		if (!g_bQuiet)
