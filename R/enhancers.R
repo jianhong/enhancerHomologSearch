@@ -8,9 +8,9 @@ setClassUnion("BSgenomeOrNULL", c("BSgenome", "NULL"))
 #' which includes the sequences of enhancers and their genomic coordinates.
 #' @aliases Enhancers
 #' @rdname Enhancers-class
-#' @slot genome An object of \link[BSgenome:BSgenome-class]{BSgenome}.
-#' @slot peaks An object of \link[GenomicRanges:GRanges-class]{GRanges}.
-#' @slot TFBP An object of \link[Matrix:lsparseMatrix-classes]{lgCMatrix}.
+#' @slot genome An object of \linkS4class{BSgenome}.
+#' @slot peaks An object of \linkS4class{GRanges}.
+#' @slot TFBP An object of \linkS4class{lgCMatrix}.
 #' @slot TFBP0 An vector of logical.
 #' @import methods
 #' @importFrom Biostrings DNAStringSet
@@ -40,9 +40,9 @@ setClass("Enhancers",
          })
 
 #' @rdname Enhancers-class
-#' @param genome An object of \link[BSgenome:BSgenome-class]{BSgenome}.
-#' @param peaks An object of \link[GenomicRanges:GRanges-class]{GRanges}.
-#' @param TFBP An object of \link[Matrix:lsparseMatrix-classes]{lgCMatrix}.
+#' @param genome An object of \linkS4class{BSgenome}.
+#' @param peaks An object of \linkS4class{GRanges}.
+#' @param TFBP An object of \linkS4class{lgCMatrix}.
 #' @param TFBP0 An vector of logical.
 #' \code{"Enhancers"}
 #' @importFrom Matrix Matrix

@@ -79,11 +79,11 @@ Enhancers(genome, peaks, TFBP, TFBP0)
 \S4method{show}{Enhancers}(object)
 }
 \arguments{
-\item{genome}{An object of \link[BSgenome:BSgenome-class]{BSgenome}.}
+\item{genome}{An object of \linkS4class{BSgenome}.}
 
-\item{peaks}{An object of \link[GenomicRanges:GRanges-class]{GRanges}.}
+\item{peaks}{An object of \linkS4class{GRanges}.}
 
-\item{TFBP}{An object of \link[Matrix:lsparseMatrix-classes]{lgCMatrix}.}
+\item{TFBP}{An object of \linkS4class{lgCMatrix}.}
 
 \item{TFBP0}{An vector of logical.
 \code{"Enhancers"}}
@@ -112,11 +112,11 @@ which includes the sequences of enhancers and their genomic coordinates.
 \section{Slots}{
 
 \describe{
-\item{\code{genome}}{An object of \link[BSgenome:BSgenome-class]{BSgenome}.}
+\item{\code{genome}}{An object of \linkS4class{BSgenome}.}
 
-\item{\code{peaks}}{An object of \link[GenomicRanges:GRanges-class]{GRanges}.}
+\item{\code{peaks}}{An object of \linkS4class{GRanges}.}
 
-\item{\code{TFBP}}{An object of \link[Matrix:lsparseMatrix-classes]{lgCMatrix}.}
+\item{\code{TFBP}}{An object of \linkS4class{lgCMatrix}.}
 
 \item{\code{TFBP0}}{An vector of logical.}
 }}
