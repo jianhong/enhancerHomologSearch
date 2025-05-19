@@ -93,8 +93,8 @@ alignmentOne <- function(query, subject, block=1000, bpparam = bpparam(), ...){
 #' @param order how the sequences should be ordered in the output object; if "aligned" is chosen, the sequences are ordered in the way the multiple sequence alignment algorithm orders them. If "input" is chosen, the sequences in the output object are ordered in the same way as the input sequences.
 #' @param \dots Parameters can be used by Muscle, or ClustalW.
 #' @return An object of \link{Enhancers}.
-#' @importFrom Biostrings reverseComplement pattern
-#' @importFrom pwalign pairwiseAlignment unaligned
+#' @importFrom Biostrings reverseComplement
+#' @importFrom pwalign pairwiseAlignment unaligned pattern
 #' @importFrom BiocGenerics score
 #' @importFrom IRanges subject
 #' @importFrom utils combn
