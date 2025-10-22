@@ -205,8 +205,8 @@ if(!exists("genome<-")){
 
 #' @rdname Enhancers-class
 #' @aliases seqinfo,Enhancers-method
-#' @importFrom GenomeInfoDb seqinfo
-#' @importMethodsFrom GenomeInfoDb seqinfo
+#' @importFrom Seqinfo seqinfo
+#' @importMethodsFrom Seqinfo seqinfo
 #' @exportMethod `seqinfo`
 setMethod("seqinfo",
           signature(x="Enhancers"),
@@ -216,8 +216,8 @@ setMethod("seqinfo",
 #' @rdname Enhancers-class
 #' @aliases genome
 #' @aliases genome,Enhancers-method
-#' @importFrom GenomeInfoDb genome
-#' @importMethodsFrom GenomeInfoDb genome
+#' @importFrom Seqinfo genome
+#' @importMethodsFrom Seqinfo genome
 #' @exportMethod `genome`
 setMethod("genome",
          signature(x="Enhancers"),
@@ -228,8 +228,8 @@ setMethod("genome",
 #' @aliases genome<-
 #' @aliases genome<-,Enhancers-method
 #' @aliases genome<-,Enhancers,BSgenome-method
-#' @importFrom GenomeInfoDb genome<-
-#' @importMethodsFrom GenomeInfoDb genome<-
+#' @importFrom Seqinfo genome<-
+#' @importMethodsFrom Seqinfo genome<-
 #' @exportMethod `genome<-`
 setReplaceMethod("genome",
                  signature(x="Enhancers"),

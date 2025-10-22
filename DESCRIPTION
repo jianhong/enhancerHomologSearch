@@ -1,7 +1,7 @@
 Package: enhancerHomologSearch
 Type: Package
 Title: Identification of putative mammalian orthologs to given enhancer
-Version: 1.15.1
+Version: 1.15.2
 Authors@R: c(person(given="Jianhong", family="Ou", email="jou@morgridge.org", 
                  role=c("aut", "cre"), comment=c(ORCID="0000-0002-8652-2488")),
             person(given="Valentina", family="Cigliola", role=c("dtc")),
@@ -16,7 +16,7 @@ BugReports: https://github.com/jianhong/enhancerHomologSearch/issues
 URL: https://jianhong.github.io/enhancerHomologSearch
 Depends: R (>= 4.1.0), methods
 Imports: BiocGenerics, Biostrings, BSgenome, BiocParallel, BiocFileCache,
-         GenomeInfoDb, GenomicRanges,
+         Seqinfo, GenomicRanges,
          httr,
          IRanges,
          jsonlite,
@@ -26,7 +26,7 @@ Imports: BiocGenerics, Biostrings, BSgenome, BiocParallel, BiocFileCache,
          rtracklayer, Rcpp,
          S4Vectors, stats,
          utils
-Suggests: knitr, rmarkdown,
+Suggests: GenomeInfoDb, knitr, rmarkdown,
   BSgenome.Drerio.UCSC.danRer10,
   BSgenome.Hsapiens.UCSC.hg38,
   BSgenome.Mmusculus.UCSC.mm10,
