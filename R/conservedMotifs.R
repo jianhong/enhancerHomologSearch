@@ -18,8 +18,8 @@
 #' @param format The format of output files with motif match positions.
 #'  Available formats are 'txt' and 'html'. Default is 'txt'.
 #' @importFrom motifmatchr matchMotifs
-#' @importFrom Biostrings unmasked mask getSeq DNAMultipleAlignment
-#' reverseComplement
+#' @importFrom Biostrings unmasked mask getSeq reverseComplement
+#' @importFrom MultipleAlignment DNAMultipleAlignment
 #' @importFrom IRanges gaps Views
 #' @importMethodsFrom Matrix t rowSums
 #' @export

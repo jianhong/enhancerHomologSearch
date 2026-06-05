@@ -6,8 +6,7 @@
 #' @param k the k-let size.
 #' @param n the number of random sequences to generate.
 #' @return An object of \link[Biostrings:XStringSet-class]{BStringSet}.
-#' @importFrom Biostrings readDNAStringSet DNAStringSet RNAStringSet
-#'  AAStringSet
+#' @importFrom Biostrings readDNAStringSet DNAStringSet RNAStringSet AAStringSet
 #' @importFrom methods is
 #' @export
 #' @references Jiang, M., Anderson, J., Gillespie, J. et al.

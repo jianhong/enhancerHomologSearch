@@ -1,7 +1,7 @@
 Package: enhancerHomologSearch
 Type: Package
 Title: Identification of putative mammalian orthologs to given enhancer
-Version: 1.19.0
+Version: 1.17.1
 Authors@R: c(person(given="Jianhong", family="Ou", email="jou@morgridge.org", 
                  role=c("aut", "cre"), comment=c(ORCID="0000-0002-8652-2488")),
             person(given="Valentina", family="Cigliola", role=c("dtc")),
@@ -22,6 +22,7 @@ Imports: BiocGenerics, Biostrings, BSgenome, BiocParallel, BiocFileCache,
          jsonlite,
          motifmatchr,
          Matrix,
+         MultipleAlignment,
          pwalign,
          rtracklayer, Rcpp,
          S4Vectors, stats,
@@ -41,5 +42,5 @@ biocViews: Sequencing, GeneRegulation, Alignment
 License: GPL (>= 2)
 Encoding: UTF-8
 VignetteBuilder: knitr
-RoxygenNote: 7.3.2
+RoxygenNote: 8.0.0
 LinkingTo: Rcpp
