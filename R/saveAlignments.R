@@ -70,7 +70,8 @@ write.phylip_html <- function(x, filepath, block=80){
             "</div></body></html>")
   writeLines(html, filepath)
 }
-#' @importFrom Biostrings consensusMatrix DNAStringSet write.phylip matchPattern alphabetFrequency injectHardMask
+#' @importFrom Biostrings consensusMatrix DNAStringSet matchPattern alphabetFrequency injectHardMask
+#' @importFrom MultipleAlignment write.phylip
 #' @importFrom IRanges IRangesList Views
 #' @importFrom utils write.csv
 saveAln <- function (x, filepath, motifConsensus, format) {
